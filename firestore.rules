@@ -1,0 +1,116 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 0.1 Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (request.auth.token.email == "anaaonoo2@gmail.com" || request.auth.uid == "ADMIN_UID_PLACEHOLDER");
+    }
+
+    // 1. Validation Blueprints (Pillar 2)
+    function isValidUser(data, uid) {
+      return data.keys().hasAll(['uid', 'email', 'coins', 'balance', 'level', 'multiplier', 'dailyStreak', 'referralCode', 'createdAt', 'updatedAt'])
+        && data.uid == uid
+        && data.email is string && data.email.size() <= 200
+        && data.coins is number && data.coins >= 0
+        && data.balance is number && data.balance >= 0
+        && data.level in ['Bronze', 'Silver', 'Gold', 'VIP']
+        && data.multiplier is number && data.multiplier >= 1.0
+        && data.dailyStreak is number && data.dailyStreak >= 0
+        && data.referralCode is string && data.referralCode.size() >= 5
+        && (data.get('displayName', '') is string)
+        && (data.get('photoURL', '') is string)
+        && (data.get('referredBy', '') is string)
+        && (data.get('lastClaimed', 0) is number)
+        && (data.updatedAt == request.time || data.updatedAt is timestamp);
+    }
+
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['type', 'amount', 'status', 'date', 'createdAt'])
+        && data.type in ['earn', 'withdraw']
+        && data.amount is number
+        && data.status in ['pending', 'completed', 'failed']
+        && data.date is number
+        && (data.createdAt == request.time || data.createdAt is timestamp);
+    }
+
+    function isValidWithdrawal(data) {
+      return data.keys().hasAll(['userId', 'userEmail', 'userName', 'amount', 'method', 'details', 'status', 'transactionId', 'createdAt'])
+        && data.userId == request.auth.uid
+        && data.userEmail is string
+        && data.amount is number && data.amount > 0
+        && data.status == 'pending'
+        && (data.createdAt == request.time || data.createdAt is timestamp);
+    }
+
+    // 2. Routes (Pillar 1, 3, 4, 8)
+    match /users/{uid} {
+      allow list: if isSignedIn(); // Necessary for referral code lookup
+      allow get: if isOwner(uid) || isAdmin();
+      
+      allow create: if isOwner(uid) 
+        && isValidId(uid)
+        && isValidUser(incoming(), uid)
+        && incoming().createdAt == request.time;
+
+      allow update: if (isValidUser(incoming(), uid) && (
+        isAdmin() || (
+          isOwner(uid)
+          && incoming().uid == existing().uid
+          && incoming().email == existing().email
+          && incoming().referralCode == existing().referralCode
+          && incoming().createdAt == existing().createdAt
+          && (
+            // Action: Earn Points
+            (incoming().diff(existing()).affectedKeys().hasOnly(['coins', 'balance', 'updatedAt'])) ||
+            // Action: Claim Daily
+            (incoming().diff(existing()).affectedKeys().hasOnly(['coins', 'balance', 'dailyStreak', 'lastClaimed', 'updatedAt'])) ||
+            // Action: Withdrawal Request (Balance deduction)
+            (incoming().diff(existing()).affectedKeys().hasOnly(['balance', 'updatedAt'])) ||
+            // Action: Level Up
+            (incoming().diff(existing()).affectedKeys().hasOnly(['level', 'multiplier', 'updatedAt'])) ||
+            // Action: Referral (Set referredBy and reward coins)
+            (incoming().diff(existing()).affectedKeys().hasOnly(['referredBy', 'coins', 'updatedAt']) && !existing().keys().hasAny(['referredBy']))
+          )
+        )
+      ));
+
+      match /transactions/{transactionId} {
+        allow list: if isOwner(uid) || isAdmin();
+        allow get: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid) && isValidTransaction(incoming());
+      }
+    }
+
+    match /withdrawals/{withdrawalId} {
+      allow list: if isSignedIn() && (resource.data.status == 'approved' || isAdmin());
+      allow get: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid) || (resource.data.status == 'approved');
+      allow create: if isSignedIn() && isValidId(withdrawalId) && isValidWithdrawal(incoming());
+      allow update: if isAdmin();
+    }
+  }
+}
