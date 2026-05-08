@@ -11,7 +11,6 @@ import {
   query, 
   where, 
   getDocs,
-  Timestamp,
   getDoc
 } from "firebase/firestore";
 import { db, OperationType, handleFirestoreError } from "../lib/firebase";
@@ -77,39 +76,40 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const userDocRef = doc(db, "users", user.uid);
     
-    // Check if user exists, if not create
     const checkUser = async () => {
-      const snap = await getDoc(userDocRef);
-      if (!snap.exists()) {
-        const newReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-        const userData = {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          coins: 0,
-          balance: 0,
-          level: "Bronze",
-          multiplier: 1.0,
-          dailyStreak: 1,
-          referralCode: newReferralCode,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        };
-        await setDoc(userDocRef, userData);
+      try {
+        const snap = await getDoc(userDocRef);
+        if (!snap.exists()) {
+          const newReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+          const userData = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            coins: 0,
+            balance: 0,
+            level: "Bronze",
+            multiplier: 1.0,
+            dailyStreak: 1,
+            referralCode: newReferralCode,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          };
+          await setDoc(userDocRef, userData);
 
-        // Apply pending referral if exists
-        const pendingRef = sessionStorage.getItem("pending_referral");
-        if (pendingRef) {
-          await processReferral(pendingRef);
-          sessionStorage.removeItem("pending_referral");
+          const pendingRef = sessionStorage.getItem("pending_referral");
+          if (pendingRef) {
+            await processReferral(pendingRef);
+            sessionStorage.removeItem("pending_referral");
+          }
         }
+      } catch (e) {
+        handleFirestoreError(e, OperationType.WRITE, `users/${user.uid}`);
       }
     };
 
     checkUser();
 
-    // Listen to user data
     const queryParams = new URLSearchParams(window.location.search);
     const refCode = queryParams.get("ref");
     if (refCode) {
@@ -134,14 +134,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       handleFirestoreError(error, OperationType.GET, `users/${user.uid}`);
     });
 
-    // Listen to transactions
     const transactionsRef = collection(db, "users", user.uid, "transactions");
     const unsubTransactions = onSnapshot(transactionsRef, (snap) => {
       const txs = snap.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Transaction[];
-      // Sort by date desc
       txs.sort((a, b) => b.date - a.date);
       setState(prev => ({ ...prev, transactions: txs }));
     }, (error) => {
@@ -194,7 +192,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         updatedAt: serverTimestamp()
       });
 
-      // User's own transaction record
       const txDoc = await addDoc(transactionRef, {
         type: "withdraw",
         amount: amount,
@@ -204,7 +201,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         createdAt: serverTimestamp()
       });
 
-      // Global record for admin
       await addDoc(globalWithdrawalsRef, {
         userId: user.uid,
         userEmail: user.email,
@@ -240,7 +236,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const awardAdReward = async () => {
-    // Standard reward for viewing an ad is 10 coins (before multiplier)
     await addCoins(10);
   };
 
@@ -259,7 +254,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!user || state.referralCode === code) return false;
     
     try {
-      // Find the user with this referral code
       const usersRef = collection(db, "users");
       const q = query(usersRef, where("referralCode", "==", code.toUpperCase()));
       const snap = await getDocs(q);
@@ -269,25 +263,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const referrerDoc = snap.docs[0];
       const referrerId = referrerDoc.id;
       
-      // Update current user
       const userDocRef = doc(db, "users", user.uid);
       const currentUserSnap = await getDoc(userDocRef);
-      if (currentUserSnap.exists() && currentUserSnap.data().referredBy) return false; // Already referred
+      if (currentUserSnap.exists() && currentUserSnap.data().referredBy) return false;
 
       await updateDoc(userDocRef, {
         referredBy: referrerId,
-        coins: state.coins + 100, // Reward new user
+        coins: state.coins + 100,
         updatedAt: serverTimestamp()
       });
 
-      // Reward referrer
       const referrerRef = doc(db, "users", referrerId);
       await updateDoc(referrerRef, {
-        coins: referrerDoc.data().coins + 250, // Reward referrer
+        coins: (referrerDoc.data().coins || 0) + 250,
         updatedAt: serverTimestamp()
       });
 
-      // Add transactions
       await addDoc(collection(db, "users", user.uid, "transactions"), {
         type: "earn",
         amount: 100,
