@@ -1,28 +1,31 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { onAuthStateChanged, signInWithPopup, signOut, User } from "firebase/auth";
-import { auth, googleProvider } from "../lib/firebase";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
-const AuthContext = createContext<any>(undefined);
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+}
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
     });
+    return unsubscribe;
   }, []);
 
-  const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
-  const logout = () => signOut(auth);
-
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, loading }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
-}
+};
 
 export const useAuth = () => useContext(AuthContext);
