@@ -18,11 +18,12 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export enum OperationType {
-  READ = 'read',
+  GET = 'get',
+  LIST = 'list',
   WRITE = 'write'
 }
 
-export const handleFirestoreError = (error: any, operation: OperationType) => {
-  console.error(`Firestore ${operation} error:`, error);
+export const handleFirestoreError = (error: any, operation: OperationType, path?: string) => {
+  console.error(`Firestore ${operation} error at ${path}:`, error);
   return error;
 };
