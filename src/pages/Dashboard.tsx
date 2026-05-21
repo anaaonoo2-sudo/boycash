@@ -33,7 +33,7 @@ export default function Dashboard() {
       <NewsTicker />
 
       {/* Main Balance Card */}
-      <GlassCard className="relative overflow-hidden p-10 bg-gradient-to-br from-primary/30 via-transparent to-secondary/20 border-white/20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] group">
+      <GlassCard className="relative overflow-hidden px-8 py-10 bg-gradient-to-br from-primary/30 via-transparent to-secondary/20 border-white/20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] group">
         {/* Animated Orbs */}
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
@@ -67,28 +67,28 @@ export default function Dashboard() {
             </motion.div>
           </div>
           
-          <div className="flex items-baseline gap-3">
-            <span className="text-5xl font-extrabold text-white/20 tracking-tighter">$</span>
-            <span className="text-8xl font-black tracking-tight text-white drop-shadow-[0_20px_60px_rgba(255,255,255,0.2)]">
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-extrabold text-white/20 tracking-tighter">$</span>
+            <span className="text-7xl font-black tracking-tight text-white drop-shadow-[0_20px_60px_rgba(255,255,255,0.2)]">
               {state.balance.toFixed(2)}
             </span>
           </div>
           
-          <div className="mt-12 flex gap-4">
-            <div className="flex-1 flex items-center gap-4 bg-white/5 backdrop-blur-3xl py-4 px-6 rounded-[1.5rem] border border-white/10 shadow-2xl group-hover:bg-white/10 transition-all duration-700">
-              <CoinIcon size={28} />
+          <div className="mt-10 flex gap-3">
+            <div className="flex-1 flex items-center gap-3 bg-white/5 backdrop-blur-3xl py-3 px-5 rounded-[1.25rem] border border-white/10 shadow-2xl group-hover:bg-white/10 transition-all duration-700">
+              <CoinIcon size={24} />
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-0.5">{t("coins")}</span>
-                <span className="text-xl font-black text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">{state.coins.toLocaleString()}</span>
+                <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-0.5">{t("coins")}</span>
+                <span className="text-lg font-black text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">{state.coins.toLocaleString()}</span>
               </div>
             </div>
-            <div className="flex-1 flex items-center gap-4 bg-white/5 backdrop-blur-3xl py-4 px-6 rounded-[1.5rem] border border-white/10 shadow-2xl group-hover:bg-white/10 transition-all duration-700 delay-100">
-              <div className="p-2 rounded-xl bg-primary/20">
-                <Zap size={22} className="text-primary fill-primary/30" />
+            <div className="flex-1 flex items-center gap-3 bg-white/5 backdrop-blur-3xl py-3 px-5 rounded-[1.25rem] border border-white/10 shadow-2xl group-hover:bg-white/10 transition-all duration-700 delay-100">
+              <div className="p-1.5 rounded-lg bg-primary/20">
+                <Zap size={18} className="text-primary fill-primary/30" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-0.5">{t("rank")}</span>
-                <span className="text-lg font-black text-white uppercase tracking-tighter">{t("level_short")} {state.level}</span>
+                <span className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-0.5">{t("rank")}</span>
+                <span className="text-base font-black text-white uppercase tracking-tighter">{t("level_short")} {state.level}</span>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function Dashboard() {
       </Button>
 
       {/* Quick Access Action Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <Button 
           variant="primary" 
           glow 
@@ -116,15 +116,15 @@ export default function Dashboard() {
             setIsAdLoading(true);
             triggerAd(() => {
               setIsAdLoading(false);
-              navigate('/earn'); // Still navigate to show the reward animation
+              navigate('/earn'); 
             });
           }}
-          className="w-full py-6 rounded-[2rem] flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-amber-500 to-orange-600 border-none shadow-[0_10px_30px_rgba(245,158,11,0.3)] group disabled:opacity-50"
+          className="w-full py-5 rounded-[1.75rem] flex flex-col items-center justify-center gap-1.5 bg-gradient-to-br from-amber-500 to-orange-600 border-none shadow-[0_10px_30px_rgba(245,158,11,0.2)] group disabled:opacity-50"
         >
-          <PlayCircle size={32} className={cn("transition-transform text-white", isAdLoading ? "animate-spin" : "group-hover:scale-110")} />
+          <PlayCircle size={28} className={cn("transition-transform text-white", isAdLoading ? "animate-spin" : "group-hover:scale-110")} />
           <div className="text-center">
-            <span className="block font-black uppercase tracking-[0.2em] text-[10px] text-white/80">{isAdLoading ? t("loading") : t("watch_ad_btn")}</span>
-            <span className="block font-black uppercase tracking-tight text-sm text-white">{isAdLoading ? t("wait_5s") : t("earn_rewards")}</span>
+            <span className="block font-black uppercase tracking-[0.2em] text-[8px] text-white/80">{isAdLoading ? t("loading") : t("watch_ad_btn")}</span>
+            <span className="block font-black uppercase tracking-tight text-xs text-white">{isAdLoading ? t("wait_5s") : t("earn_rewards")}</span>
           </div>
         </Button>
 
@@ -135,12 +135,12 @@ export default function Dashboard() {
             const directLink = "https://installyourfiles.com/script_include.php?id=1892642";
             window.open(directLink, "_blank", "noopener,noreferrer");
           }}
-          className="w-full py-6 rounded-[2rem] flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500 to-teal-700 border-none shadow-[0_10px_30px_rgba(16,185,129,0.3)] group"
+          className="w-full py-5 rounded-[1.75rem] flex flex-col items-center justify-center gap-1.5 bg-gradient-to-br from-emerald-500 to-teal-700 border-none shadow-[0_10px_30px_rgba(16,185,129,0.2)] group"
         >
-          <Zap size={32} className="group-hover:scale-110 transition-transform text-white fill-white/20" />
+          <Zap size={28} className="group-hover:scale-110 transition-transform text-white fill-white/20" />
           <div className="text-center">
-            <span className="block font-black uppercase tracking-[0.2em] text-[10px] text-white/80">{t("complete_offers_btn")}</span>
-            <span className="block font-black uppercase tracking-tight text-sm text-white">{t("high_payouts")}</span>
+            <span className="block font-black uppercase tracking-[0.2em] text-[8px] text-white/80">{t("complete_offers_btn")}</span>
+            <span className="block font-black uppercase tracking-tight text-xs text-white">{t("high_payouts")}</span>
           </div>
         </Button>
       </div>

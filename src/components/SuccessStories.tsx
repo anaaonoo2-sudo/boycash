@@ -75,35 +75,35 @@ const SuccessStories = () => {
          </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <AnimatePresence mode="popLayout">
           {payouts.map((p, i) => (
             <motion.div
               key={p.id}
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: i * 0.1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ delay: i * 0.05 }}
             >
-              <GlassCard className="p-3 bg-gradient-to-r from-emerald-500/5 to-transparent border-emerald-500/10 flex items-center justify-between relative overflow-hidden group">
+              <GlassCard className="p-2.5 bg-gradient-to-r from-emerald-500/5 to-transparent border-emerald-500/10 flex items-center justify-between relative overflow-hidden group">
                  <div className="absolute top-0 right-0 w-12 h-12 bg-emerald-500/5 blur-xl rounded-full" />
                  
-                 <div className="flex items-center gap-3 relative z-10">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/10 group-hover:scale-110 transition-transform">
-                       <User size={16} />
+                 <div className="flex items-center gap-2.5 relative z-10">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/10 group-hover:scale-105 transition-transform">
+                       <User size={14} />
                     </div>
                     <div>
-                       <h4 className="text-[10px] font-black text-white uppercase tracking-tighter">{p.userName}</h4>
-                       <p className="text-[8px] text-white/30 uppercase font-black">{p.method}</p>
+                       <h4 className="text-[10px] font-black text-white uppercase tracking-tighter leading-none mb-1">{p.userName}</h4>
+                       <p className="text-[8px] text-white/30 uppercase font-black leading-none">{p.method}</p>
                     </div>
                  </div>
 
                  <div className="flex items-center gap-2 relative z-10">
-                    <div className="flex items-center gap-0.5 bg-white/5 px-2 py-1 rounded-lg border border-white/10">
-                       <DollarSign size={10} className="text-emerald-400" />
+                    <div className="flex items-center gap-0.5 bg-white/5 px-2 py-0.5 rounded-md border border-white/10">
+                       <DollarSign size={8} className="text-emerald-400" />
                        <span className="text-xs font-black text-white tracking-tighter">{p.amount.toFixed(2)}</span>
                     </div>
-                    <div className="p-1 rounded-full bg-emerald-500 text-dark-bg">
+                    <div className="p-0.5 rounded-full bg-emerald-500 text-dark-bg">
                        <CheckCircle size={10} />
                     </div>
                  </div>

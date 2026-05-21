@@ -22,25 +22,26 @@ export default function Button({
   const baseStyles = "relative px-8 py-4 rounded-[1.25rem] font-bold text-sm uppercase tracking-widest transition-all duration-500 disabled:opacity-40 disabled:cursor-not-allowed overflow-hidden group";
   
   const variants = {
-    primary: "bg-gradient-to-br from-primary to-[#7c2d12] text-white shadow-[0_10px_20px_-5px_rgba(168,85,247,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)]",
-    secondary: "bg-gradient-to-br from-secondary to-[#1e3a8a] text-white shadow-[0_10px_20px_-5px_rgba(59,130,246,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)]",
-    green: "bg-gradient-to-br from-accent-green to-[#064e3b] text-white shadow-[0_10px_20px_-5px_rgba(16,185,129,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)]",
-    blue: "bg-gradient-to-br from-accent-blue to-[#0c4a6e] text-white shadow-[0_10px_20px_-5px_rgba(14,165,233,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)]",
-    ghost: "bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20"
+    primary: "bg-gradient-to-br from-primary via-purple-600 to-indigo-700 text-white shadow-[0_10px_25px_-5px_rgba(168,85,247,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-primary/20",
+    secondary: "bg-gradient-to-br from-secondary via-blue-600 to-blue-800 text-white shadow-[0_10px_25px_-5px_rgba(59,130,246,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-secondary/20",
+    green: "bg-gradient-to-br from-accent-green via-emerald-600 to-teal-800 text-white shadow-[0_10px_25px_-5px_rgba(16,185,129,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-accent-green/20",
+    blue: "bg-gradient-to-br from-accent-blue via-sky-600 to-sky-800 text-white shadow-[0_10px_25px_-5px_rgba(14,165,233,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-accent-blue/20",
+    ghost: "bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 backdrop-blur-xl"
   };
 
   const glows = {
-    primary: "shadow-[0_0_50px_-10px_rgba(168,85,247,0.6)]",
-    secondary: "shadow-[0_0_50px_-10px_rgba(59,130,246,0.6)]",
-    green: "shadow-[0_0_50px_-10px_rgba(16,185,129,0.6)]",
-    blue: "shadow-[0_0_50px_-10px_rgba(14,165,233,0.6)]",
+    primary: "shadow-[0_0_40px_-5px_rgba(168,85,247,0.5)]",
+    secondary: "shadow-[0_0_40px_-5px_rgba(59,130,246,0.5)]",
+    green: "shadow-[0_0_40px_-5px_rgba(16,185,129,0.5)]",
+    blue: "shadow-[0_0_40px_-5px_rgba(14,165,233,0.5)]",
     ghost: ""
   };
 
   return (
     <motion.button
-      whileTap={{ scale: 0.96, y: 1 }}
-      whileHover={{ scale: 1.02, y: -1 }}
+      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.01, y: -1 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={cn(
         baseStyles,
         variants[variant],

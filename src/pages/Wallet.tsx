@@ -142,21 +142,21 @@ export default function Wallet() {
         />
         
         <div className="text-center relative z-10">
-          <p className="text-[12px] font-bold text-white/40 mb-4 uppercase tracking-[0.5em]">{t("total_assets")}</p>
-          <h2 className="text-8xl font-black text-white drop-shadow-[0_20px_60px_rgba(255,255,255,0.2)] mb-10 tracking-tighter">
-            <span className="text-4xl font-normal opacity-30 mr-1">$</span>
+          <p className="text-[11px] font-bold text-white/40 mb-3 uppercase tracking-[0.5em]">{t("total_assets")}</p>
+          <h2 className="text-6xl sm:text-7xl font-black text-white drop-shadow-[0_20px_60px_rgba(255,255,255,0.2)] mb-8 tracking-tighter">
+            <span className="text-3xl font-normal opacity-30 mr-1">$</span>
             {state.balance.toFixed(2)}
           </h2>
           
-          <div className="w-full h-16 bg-white/[0.04] backdrop-blur-3xl border border-white/10 rounded-[2rem] flex items-center px-8 gap-5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group transition-all duration-500 hover:bg-white/[0.08]">
-            <CoinIcon size={32} />
+          <div className="w-full h-14 bg-white/[0.04] backdrop-blur-3xl border border-white/10 rounded-[1.5rem] flex items-center px-6 gap-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group transition-all duration-500 hover:bg-white/[0.08]">
+            <CoinIcon size={24} />
             <div className="flex-1 flex flex-col items-start translate-y-0.5">
-               <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">{t("coins")} AVAILABLE</span>
-               <span className="text-2xl font-bold text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">{state.coins.toLocaleString()}</span>
+               <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mb-0.5">{t("coins")} AVAILABLE</span>
+               <span className="text-xl font-bold text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]">{state.coins.toLocaleString()}</span>
             </div>
-            <div className="flex items-center gap-3">
-                 <div className="w-2.5 h-2.5 rounded-full bg-accent-green shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
-                 <span className="text-[11px] font-bold text-white/60 uppercase tracking-widest leading-none">Live Network</span>
+            <div className="flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
+                 <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-none">Live</span>
             </div>
           </div>
         </div>
@@ -285,13 +285,13 @@ export default function Wallet() {
           {methods.map((m, i) => (
             <motion.div
               key={i}
-              whileHover={{ x: 10, scale: 1.02 }}
+              whileHover={{ x: 5, scale: 1.01 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
               className="group"
             >
               <GlassCard 
                 className={cn(
-                  "relative h-[100px] w-full rounded-2xl p-5 flex items-center transition-all duration-500",
+                  "relative h-[80px] w-full rounded-xl p-4 flex items-center transition-all duration-500",
                   m.border || "border-white/10",
                   `bg-gradient-to-r ${m.color.split(' ')[0]}/20 via-black/20 to-transparent`,
                   m.glow,

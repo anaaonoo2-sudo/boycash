@@ -83,16 +83,16 @@ export default function Layout({ children }: LayoutProps) {
       </header>
 
       <main className={cn(
-        "flex-1 w-full mx-auto px-4 pt-24 pb-8 transition-all duration-700 ease-in-out",
-        isAdmin ? "max-w-5xl" : "max-w-[540px]",
-        !user && "max-w-3xl"
+        "flex-1 w-full mx-auto px-4 sm:px-6 pt-24 pb-12 transition-all duration-700 ease-in-out",
+        isAdmin ? "max-w-6xl" : "max-w-xl",
+        !user && "max-w-4xl"
       )}>
         {children}
       </main>
 
       {/* Bottom Navigation */}
       {user && (
-        <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 w-[90%] max-w-[460px] glass-card py-4 px-8 flex justify-between items-center z-50 rounded-[3rem] border-white/20 shadow-[0_25px_60px_rgba(0,0,0,0.7)] backdrop-blur-[50px]">
+        <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-lg glass-card py-4 px-6 flex justify-between items-center z-50 rounded-[2.5rem] border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.8)] backdrop-blur-[40px]">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
