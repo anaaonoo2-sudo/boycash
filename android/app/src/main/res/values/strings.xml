@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BoyCash</string>
+    <string name="title_activity_main">BoyCash</string>
+    <string name="package_name">com.boycash.app</string>
+    <string name="custom_url_scheme">com.boycash.app</string>
+</resources>

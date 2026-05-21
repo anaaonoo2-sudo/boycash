@@ -1,0 +1,11 @@
+{
+  "name": "BoyCash",
+  "description": "The Ultimate Rewards Super-App. Earn coins via tasks, games, and referrals with premium glassmorphism UI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "Fintech",
+    "Rewards",
+    "Multi-language",
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
