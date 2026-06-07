@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "367328224851",
+    "project_id": "boycash-dc4e4",
+    "storage_bucket": "boycash-dc4e4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367328224851:android:0ff951a312b0da705cc8a6",
+        "android_client_info": {
+          "package_name": "com.boycash.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367328224851-stiuli3v4cig4iasr9gj437tdn705rdr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.boycash.app",
+            "certificate_hash": "f1b35b168fa4ed5731f74ad68b4813f5f0877a8d"
+          }
+        },
+        {
+          "client_id": "367328224851-tpggbnvo9l2tq2fvlh8i020l8aabms85.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.boycash.app",
+            "certificate_hash": "8f614c7fc431daddd528dcbe4440d32f8a6632a0"
+          }
+        },
+        {
+          "client_id": "367328224851-me4jp2lg5bplvc4ko6ajlerqne2agns6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxDnlfM9YCGj2befAk15x_WQ95mO3KjLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367328224851-me4jp2lg5bplvc4ko6ajlerqne2agns6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
