@@ -17,7 +17,7 @@
     padding: 0;
     width: 100%;
     height: 100%;
-    background-image: url("/bg.png") !important; background-size: cover; background-position: center; background-attachment: fixed;
+    background-image: url("/bg.png"); background-size: cover; background-position: center; background-repeat: no-repeat;
     overflow: hidden;
     color: white;
     overscroll-behavior: none;
@@ -44,9 +44,7 @@
     contain-intrinsic-size: 1000px;
     display: flex;
     flex-direction: column;
-    background: radial-gradient(circle at 15% -10%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 85% -10%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                #000000;
+    background: transparent;
   }
 }
 
