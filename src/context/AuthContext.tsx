@@ -8,6 +8,7 @@ import {
   User as FirebaseUser,
   getRedirectResult,
   signInWithRedirect,
+  signInWithCredential,
   RecaptchaVerifier,
   signInWithPhoneNumber,
   ConfirmationResult,
@@ -136,10 +137,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async () => {
   setAuthError(null);
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
   try {
-    await signInWithRedirect(auth, provider);
+    const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
+    await GoogleAuth.initialize({
+      clientId: '367328224851-me4jp2lg5bplvc4ko6ajlerqne2agns6.apps.googleusercontent.com',
+      scopes: ['profile', 'email'],
+      grantOfflineAccess: true,
+    });
+    const googleUser = await GoogleAuth.signIn();
+    const credential = GoogleAuthProvider.credential(googleUser.authentication.idToken);
+    await signInWithCredential(auth, credential);
   } catch (error: any) {
     handleAuthError(error);
     }
