@@ -292,7 +292,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-secondary p-0.5 shadow-2xl shadow-primary/30 group">
                   <div className="w-full h-full rounded-[1.4rem] bg-[#030712] flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
                      <img 
-                       src="/src/assets/images/regenerated_image_1778432815039.png" 
+                       src="/coin-logo.png" 
                        alt="BoyCash Logo" 
                        className="w-full h-full object-cover rounded-[1.2rem] group-hover:scale-110 transition-transform duration-700"
                      />

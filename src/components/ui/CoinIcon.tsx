@@ -19,7 +19,7 @@ export default function CoinIcon({ className, size = 24 }: CoinIconProps) {
       {/* Coin Body */}
       <div className="absolute inset-[10%] rounded-full overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.6)] border border-white/30 z-10">
         <img 
-          src="/src/assets/images/regenerated_image_1778432815039.png" 
+          src="/coin-logo.png" 
           alt="Coin"
           className="w-full h-full object-cover"
         />
