@@ -8,6 +8,14 @@ const config: CapacitorConfig = {
     allowMixedContent: true,
     webContentsDebuggingEnabled: false
   },
+  server: {
+    androidScheme: 'https',
+    allowNavigation: [
+      '*.googleapis.com',
+      '*.google.com',
+      'generativelanguage.googleapis.com'
+    ]
+  },
   plugins: {
     GoogleAuth: {
       scopes: ['profile', 'email'],
