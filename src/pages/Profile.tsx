@@ -101,6 +101,8 @@ export default function Profile() {
                  src={user?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.uid || 'Profile'}`} 
                  className="w-full h-full object-cover"
                  alt="Avatar"
+                 referrerPolicy="no-referrer"
+                 crossOrigin="anonymous"
                />
             </div>
           </div>
