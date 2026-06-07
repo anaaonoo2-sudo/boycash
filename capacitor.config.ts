@@ -4,20 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.boycash.app',
   appName: 'BoyCash',
   webDir: 'dist',
-  server: {
-    url: "https://boycash.vercel.app",
-    androidScheme: 'https',
-    iosScheme: 'https',
-    cleartext: true,
-    allowNavigation: [
-      'boycash.vercel.app',
-      'boycash-dc4e4.firebaseapp.com',
-      'boycash-dc4e4.web.app',
-      'accounts.google.com',
-      '*.google.com',
-      '*.googleapis.com'
-    ]
-  },
   android: {
     allowMixedContent: true,
     webContentsDebuggingEnabled: false
