@@ -11,11 +11,16 @@ const config: CapacitorConfig = {
     cleartext: true,
     allowNavigation: [
       'boycash.vercel.app',
-      'boycash-dc4e4.firebaseapp.com'
+      'boycash-dc4e4.firebaseapp.com',
+      'boycash-dc4e4.web.app',
+      'accounts.google.com',
+      '*.google.com',
+      '*.googleapis.com'
     ]
   },
   android: {
-    allowMixedContent: true
+    allowMixedContent: true,
+    webContentsDebuggingEnabled: false
   },
   plugins: {
     GoogleAuth: {
