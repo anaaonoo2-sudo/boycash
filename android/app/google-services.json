@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "367328224851-o3rgj1nh3mrqp2qnmu69fpq2qep9i72f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.boycash.app",
+            "certificate_hash": "1b401de7968293b7da5e9af9a63dc7714c52fb44"
+          }
+        },
+        {
           "client_id": "367328224851-stiuli3v4cig4iasr9gj437tdn705rdr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
