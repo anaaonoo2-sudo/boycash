@@ -9,7 +9,8 @@ export async function askAssistant(prompt: string, history: { role: "user" | "mo
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${API_KEY}`,
-      "HTTP-Referer": "https://boycash.vercel.app",
+      "Referer": "https://boycash.vercel.app",
+      "Origin": "https://boycash.vercel.app",
       "X-Title": "BoyCash"
     },
     body: JSON.stringify({
