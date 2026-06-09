@@ -1,7 +1,7 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
 import i18n from "../lib/i18n";
 
-const API_KEY = "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";
+const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
 
 export async function askAssistant(prompt: string, history: { role: "user" | "model"; text: string }[] = []) {
   try {
@@ -21,6 +21,6 @@ export async function askAssistant(prompt: string, history: { role: "user" | "mo
     if (data.error) return `Error: ${data.error.message}`;
     return data.choices[0].message.content;
   } catch (error: any) {
-    return `Exception: ${error.message}`;
+    return i18n.t("ai_connection_error");
   }
 }
