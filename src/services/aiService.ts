@@ -4,21 +4,23 @@ import i18n from "../lib/i18n";
 const API_KEY = "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";
 
 export async function askAssistant(prompt: string, history: { role: "user" | "model"; text: string }[] = []) {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`,
-      "Referer": "https://boycash.vercel.app",
-      "Origin": "https://boycash.vercel.app",
-      "X-Title": "BoyCash"
-    },
-    body: JSON.stringify({
-      model: "google/gemma-4-31b-it:free",
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-  const data = await response.json();
-  if (data.error) return `Error: ${data.error.message}`;
-  return data.choices[0].message.content;
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`,
+        "X-Title": "BoyCash"
+      },
+      body: JSON.stringify({
+        model: "google/gemma-4-31b-it:free",
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    if (data.error) return `Error: ${data.error.message}`;
+    return data.choices[0].message.content;
+  } catch (error: any) {
+    return `Exception: ${error.message}`;
+  }
 }
