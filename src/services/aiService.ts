@@ -1,7 +1,7 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
 import i18n from "../lib/i18n";
 
-const API_KEY = "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";
+const API_KEY = "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";
 
 export async function askAssistant(prompt: string, history: { role: "user" | "model"; text: string }[] = []) {
   try {
