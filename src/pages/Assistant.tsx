@@ -190,7 +190,7 @@ export default function Assistant() {
       </div>
 
       <div className="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-2 shrink-0">
-        {t("developer_label")}: <span className="text-primary italic">Bouchibat</span>
+
       </div>
     </div>
   );
