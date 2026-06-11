@@ -1,11 +1,10 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import GlassCard from "@/src/components/ui/GlassCard";
 import Button from "@/src/components/ui/Button";
 import { Send, Bot, User, Loader2 } from "lucide-react";
 import { askAssistant } from "@/src/services/aiService";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { cn } from "@/src/lib/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -23,6 +22,7 @@ export default function Assistant() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -37,6 +37,16 @@ export default function Assistant() {
     }
   }, [messages, isLoading]);
 
+  useEffect(() => {
+    const initialHeight = window.innerHeight;
+    const handleResize = () => {
+      const diff = initialHeight - window.innerHeight;
+      setKeyboardHeight(diff > 100 ? diff : 0);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleSend = useCallback(async (customInput?: string) => {
     const textToSend = customInput || input.trim();
     if (!textToSend || isLoading) return;
@@ -50,10 +60,7 @@ export default function Assistant() {
     try {
       const historyForAI = updatedMessages
         .filter((_, index) => index > 0 || updatedMessages[0].role !== "model")
-        .map(m => ({
-          role: m.role,
-          text: m.text
-        }));
+        .map(m => ({ role: m.role, text: m.text }));
 
       const response = await askAssistant(textToSend, historyForAI);
       setMessages(prev => [...prev, { role: "model", text: response }]);
@@ -72,8 +79,14 @@ export default function Assistant() {
     }
   }, [location.pathname, location.state, navigate, handleSend]);
 
+  const isKeyboardOpen = keyboardHeight > 100;
+
   return (
-    <div className="flex flex-col h-[calc(100vh-210px)] space-y-4" dir={isRtl ? "rtl" : "ltr"}>
+    <div
+      className="flex flex-col space-y-4 transition-all duration-300"
+      style={{ height: `calc(100vh - ${isKeyboardOpen ? 80 : 210}px)` }}
+      dir={isRtl ? "rtl" : "ltr"}
+    >
       <header className="text-center shrink-0">
         <h1 className="text-2xl font-black neon-text-blue uppercase tracking-tighter">{t("ask_ai")}</h1>
         <p className="text-[10px] text-white/40 uppercase font-black tracking-widest leading-none">{t("ai_powered")}</p>
@@ -89,10 +102,7 @@ export default function Assistant() {
               key={i}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className={cn(
-                "flex gap-3",
-                m.role === 'user' ? "flex-row-reverse" : "flex-row"
-              )}
+              className={cn("flex gap-3", m.role === 'user' ? "flex-row-reverse" : "flex-row")}
             >
               <div className={cn(
                 "w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 border border-white/10 shadow-lg",
@@ -127,10 +137,7 @@ export default function Assistant() {
           )}
         </div>
 
-        <div className={cn(
-          "mt-2 space-y-3 relative z-30 shrink-0 transition-all duration-300 ease-out",
-          "mb-0 translate-y-0 scale-100"
-        )}>
+        <div className="mt-2 space-y-3 relative z-30 shrink-0">
           <div className={cn(
             "flex gap-2 overflow-x-auto pb-1 scrollbar-hide transition-opacity",
             isFocused ? "opacity-100" : "opacity-0 h-0 pointer-events-none"
@@ -147,10 +154,7 @@ export default function Assistant() {
           </div>
 
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
+            onSubmit={(e) => { e.preventDefault(); handleSend(); }}
             className={cn(
               "bg-white rounded-2xl p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border transition-colors",
               isFocused ? "border-primary" : "border-white/20"
@@ -163,9 +167,7 @@ export default function Assistant() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onFocus={() => setIsFocused(true)}
-                  onBlur={() => {
-                    setTimeout(() => setIsFocused(false), 300);
-                  }}
+                  onBlur={() => { setTimeout(() => setIsFocused(false), 300); }}
                   placeholder={t("type_question")}
                   className={cn(
                     "w-full bg-transparent border-none rounded-xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all font-medium",
@@ -188,9 +190,6 @@ export default function Assistant() {
           </form>
         </div>
       </div>
-
-      <div className="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-2 shrink-0">
     </div>
   );
-        }
-                
+}
