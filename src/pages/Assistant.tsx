@@ -1,11 +1,10 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import GlassCard from "@/src/components/ui/GlassCard";
 import Button from "@/src/components/ui/Button";
 import { Send, Bot, User, Loader2 } from "lucide-react";
 import { askAssistant } from "@/src/services/aiService";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { cn } from "@/src/lib/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -23,9 +22,7 @@ export default function Assistant() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (messages.length === 0) {
@@ -39,34 +36,9 @@ export default function Assistant() {
     }
   }, [messages, isLoading]);
 
-  // Keyboard detection using visualViewport API
-  useEffect(() => {
-    const viewport = window.visualViewport;
-    if (!viewport) return;
-
-    const handleResize = () => {
-      const keyboardH = window.innerHeight - viewport.height - viewport.offsetTop;
-      setKeyboardHeight(keyboardH > 50 ? keyboardH : 0);
-      // Scroll to bottom when keyboard opens
-      setTimeout(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
-      }, 100);
-    };
-
-    viewport.addEventListener("resize", handleResize);
-    viewport.addEventListener("scroll", handleResize);
-    return () => {
-      viewport.removeEventListener("resize", handleResize);
-      viewport.removeEventListener("scroll", handleResize);
-    };
-  }, []);
-
   const handleSend = useCallback(async (customInput?: string) => {
     const textToSend = customInput || input.trim();
     if (!textToSend || isLoading) return;
-
     if (!customInput) setInput("");
 
     const updatedMessages = [...messages, { role: "user", text: textToSend } as Message];
@@ -76,14 +48,10 @@ export default function Assistant() {
     try {
       const historyForAI = updatedMessages
         .filter((_, index) => index > 0 || updatedMessages[0].role !== "model")
-        .map(m => ({
-          role: m.role,
-          text: m.text
-        }));
-
+        .map(m => ({ role: m.role, text: m.text }));
       const response = await askAssistant(textToSend, historyForAI);
       setMessages(prev => [...prev, { role: "model", text: response }]);
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { role: "model", text: t("error_occurred") }]);
     } finally {
       setIsLoading(false);
@@ -99,30 +67,27 @@ export default function Assistant() {
   }, [location.pathname, location.state, navigate, handleSend]);
 
   return (
-    <div
-      className="flex flex-col h-[calc(100vh-210px)]"
-      dir={isRtl ? "rtl" : "ltr"}
-      style={{ paddingBottom: keyboardHeight > 0 ? keyboardHeight : 0 }}
-    >
+    // نستخدم 100% من الـ main container اللي يحدده Layout
+    <div className="flex flex-col h-full" dir={isRtl ? "rtl" : "ltr"}>
+
+      {/* Header */}
       <header className="text-center shrink-0 mb-3">
         <h1 className="text-2xl font-black neon-text-blue uppercase tracking-tighter">{t("ask_ai")}</h1>
         <p className="text-[10px] text-white/40 uppercase font-black tracking-widest leading-none">{t("ai_powered")}</p>
       </header>
 
-      {/* Messages area - scrollable */}
+      {/* Messages - يأخذ كل المساحة المتبقية */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-4 pr-1 pb-4 scrollbar-hide min-h-0"
+        className="flex-1 overflow-y-auto space-y-4 pb-2 scrollbar-hide"
+        style={{ minHeight: 0 }}
       >
         {messages.map((m, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className={cn(
-              "flex gap-3",
-              m.role === 'user' ? "flex-row-reverse" : "flex-row"
-            )}
+            className={cn("flex gap-3", m.role === 'user' ? "flex-row-reverse" : "flex-row")}
           >
             <div className={cn(
               "w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 border border-white/10 shadow-lg",
@@ -140,12 +105,9 @@ export default function Assistant() {
             </div>
           </motion.div>
         ))}
+
         {isLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex gap-3 animate-pulse"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3 animate-pulse">
             <div className="w-9 h-9 rounded-2xl bg-white/10 text-secondary flex items-center justify-center border border-white/10">
               <Bot size={18} />
             </div>
@@ -157,15 +119,14 @@ export default function Assistant() {
         )}
       </div>
 
-      {/* Bottom input area - always visible above keyboard */}
-      <div className="shrink-0 space-y-2 mt-2">
-        {/* Quick chips - always visible */}
+      {/* Input - دايماً في الأسفل */}
+      <div className="shrink-0 space-y-2 pt-2">
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           {[t("q_withdraw"), t("q_points"), t("q_min")].map((text) => (
             <button
               key={text}
               onClick={() => handleSend(text)}
-              className="whitespace-nowrap px-4 py-2 rounded-xl bg-white/10 border border-white/10 text-[11px] font-bold text-white/80 hover:bg-white/20 transition-all active:scale-95"
+              className="whitespace-nowrap px-4 py-2 rounded-xl bg-white/10 border border-white/10 text-[11px] font-bold text-white/80 active:scale-95 transition-all"
             >
               {text}
             </button>
@@ -173,50 +134,38 @@ export default function Assistant() {
         </div>
 
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSend();
-          }}
+          onSubmit={(e) => { e.preventDefault(); handleSend(); }}
           className={cn(
             "bg-white rounded-2xl p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)] border transition-colors",
             isFocused ? "border-primary" : "border-white/20"
           )}
         >
           <div className="flex gap-2 items-center">
-            <div className="flex-1 relative">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => {
-                  setTimeout(() => setIsFocused(false), 300);
-                }}
-                placeholder={t("type_question")}
-                className={cn(
-                  "w-full bg-transparent border-none rounded-xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all font-medium",
-                  isRtl ? "text-right" : "text-left"
-                )}
-              />
-            </div>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setTimeout(() => setIsFocused(false), 300)}
+              placeholder={t("type_question")}
+              className={cn(
+                "flex-1 bg-transparent border-none rounded-xl px-4 py-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none font-medium",
+                isRtl ? "text-right" : "text-left"
+              )}
+            />
             <Button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="w-12 h-12 rounded-xl bg-primary hover:bg-primary/90 text-white shadow-lg transition-all active:scale-95 flex items-center justify-center p-0 shrink-0 cursor-pointer relative z-50"
+              className="w-12 h-12 rounded-xl bg-primary hover:bg-primary/90 text-white shadow-lg transition-all active:scale-95 flex items-center justify-center p-0 shrink-0 cursor-pointer"
             >
-              {isLoading ? (
-                <Loader2 size={22} className="animate-spin" />
-              ) : (
-                <Send size={22} className={cn("rotate-0", isRtl ? "scale-x-[-1]" : "")} />
-              )}
+              {isLoading ? <Loader2 size={22} className="animate-spin" /> : <Send size={22} className={cn(isRtl ? "scale-x-[-1]" : "")} />}
             </Button>
           </div>
         </form>
-      </div>
 
-      <div className="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-2 shrink-0">
-        {t("developer_label")}: <span className="text-primary italic">Bouchibat</span>
+        <p className="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-1">
+          {t("developer_label")}: <span className="text-primary italic">Bouchibat</span>
+        </p>
       </div>
     </div>
   );

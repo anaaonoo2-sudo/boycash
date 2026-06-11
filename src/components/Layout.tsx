@@ -1,5 +1,5 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { House, Zap, Wallet, Trophy, User, Settings as SettingsIcon, MessageCircleCode } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -18,22 +18,10 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const isRTL = i18n.language === "ar";
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     document.dir = isRTL ? "rtl" : "ltr";
   }, [isRTL]);
-
-  useEffect(() => {
-    const initialHeight = window.innerHeight;
-    const handleResize = () => {
-      setKeyboardOpen(window.innerHeight < initialHeight - 100);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const isAssistant = location.pathname === "/assistant";
 
   const navItems = [
     { icon: House, label: t("dashboard"), path: "/" },
@@ -95,19 +83,19 @@ export default function Layout({ children }: LayoutProps) {
       </header>
 
       <main className={cn(
-        "flex-1 w-full mx-auto px-4 sm:px-6 pt-24 pb-12 transition-all duration-700 ease-in-out",
+        "flex-1 w-full mx-auto px-4 sm:px-6 transition-all duration-700 ease-in-out",
         isAdmin ? "max-w-6xl" : "max-w-xl",
-        !user && "max-w-4xl"
+        !user && "max-w-4xl",
+        location.pathname === '/assistant'
+          ? "pt-24 pb-36 flex flex-col"
+          : "pt-24 pb-12"
       )}>
         {children}
       </main>
 
       {/* Bottom Navigation */}
       {user && (
-        <nav className={cn(
-          "fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-lg glass-card py-4 px-6 flex justify-between items-center z-50 rounded-[2.5rem] border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.8)] backdrop-blur-[40px] transition-all duration-300",
-          keyboardOpen && isAssistant ? "opacity-0 pointer-events-none translate-y-20" : "opacity-100 translate-y-0"
-        )}>
+        <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-lg glass-card py-4 px-6 flex justify-between items-center z-50 rounded-[2.5rem] border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.8)] backdrop-blur-[40px]">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -138,7 +126,7 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
       )}
 
-      <footer className={`w-full text-center py-8 text-[9px] text-gray-700 flex flex-col gap-3 font-sans${isAssistant ? " hidden" : ""}`}>
+      <footer className="w-full text-center py-8 text-[9px] text-gray-700 flex flex-col gap-3 font-sans">
         <div className="flex justify-center gap-6 uppercase font-black tracking-[0.2em] opacity-50">
           <NavLink to="/privacy" className="hover:text-primary transition-all hover:tracking-[0.3em]">{t("privacy_policy")}</NavLink>
           <span className="opacity-10 scale-150">•</span>
