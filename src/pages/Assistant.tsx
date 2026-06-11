@@ -73,7 +73,7 @@ export default function Assistant() {
   }, [location.pathname, location.state, navigate, handleSend]);
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-80px)] space-y-4" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="flex flex-col h-full" dir={isRtl ? "rtl" : "ltr"}>
       <header className="text-center shrink-0">
         <h1 className="text-2xl font-black neon-text-blue uppercase tracking-tighter">{t("ask_ai")}</h1>
         <p className="text-[10px] text-white/40 uppercase font-black tracking-widest leading-none">{t("ai_powered")}</p>
