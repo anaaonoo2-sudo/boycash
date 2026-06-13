@@ -289,7 +289,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           
           <div className="w-full max-w-sm z-10 text-center">
             <div className="mb-3 flex flex-col items-center">
-               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-0.5 shadow-2xl shadow-primary/30 group">
+               <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary to-secondary p-0.5 shadow-2xl shadow-primary/30 group">
                   <div className="w-full h-full rounded-[1.4rem] bg-[#030712] flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
                      <img 
                        src="/coin-logo.png" 
@@ -298,7 +298,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                      />
                   </div>
                </div>
-               <h1 className="mt-2 text-3xl font-black tracking-tighter uppercase italic text-white drop-shadow-[0_8px_24px_rgba(139,92,246,0.5)]">
+               <h1 className="mt-4 text-5xl font-black tracking-tighter uppercase italic text-white drop-shadow-[0_8px_24px_rgba(139,92,246,0.5)]">
                  Boy<span className="text-primary">Cash</span>
                </h1>
                <p className="text-[10px] text-white/50 font-black uppercase tracking-[0.4em] mt-2 flex items-center gap-3">
@@ -380,7 +380,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={signIn}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <img src="https://www.google.com/favicon.ico" className="w-5 h-5 group-hover:scale-110 transition-transform" alt="Google" />
                       <span className="text-[11px] uppercase tracking-[0.2em]">Continue with Google</span>
@@ -392,7 +392,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={() => setShowEmailInput(true)}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <div className="w-5 h-5 flex items-center justify-center">
                          <Mail size={18} className="text-[#EA4335]" />
@@ -406,7 +406,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={() => setShowPhoneInput(true)}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <div className="w-5 h-5 flex items-center justify-center">
                          <Phone size={18} className="text-[#10b981]" />
@@ -420,7 +420,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={signInWithDevice}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <div className="w-5 h-5 flex items-center justify-center">
                          <Smartphone size={18} className="text-primary" />
