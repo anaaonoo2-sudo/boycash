@@ -281,15 +281,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           </div>
         </div>
       ) : (!user && window.location.pathname !== '/privacy' && window.location.pathname !== '/terms') ? (
-        <div className="min-fixed inset-0 z-50 bg-[#020617] flex items-center justify-center p-4 overflow-hidden font-sans">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden font-sans bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url(/bg.png)" }}>
           {/* Enhanced Background */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 blur-[120px] -mr-64 -mt-64 rounded-full opacity-50" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/20 blur-[120px] -ml-64 -mb-64 rounded-full opacity-50" />
+          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-primary/20 blur-[100px] -mr-32 -mt-32 rounded-full opacity-50" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-secondary/20 blur-[100px] -ml-32 -mb-32 rounded-full opacity-50" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.1),transparent_70%)] pointer-events-none" />
           
           <div className="w-full max-w-sm z-10 text-center">
             <div className="mb-3 flex flex-col items-center">
-               <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-secondary p-0.5 shadow-2xl shadow-primary/30 group">
+               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary p-0.5 shadow-2xl shadow-primary/30 group">
                   <div className="w-full h-full rounded-[1.4rem] bg-[#030712] flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
                      <img 
                        src="/coin-logo.png" 
@@ -298,7 +298,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                      />
                   </div>
                </div>
-               <h1 className="mt-4 text-5xl font-black tracking-tighter uppercase italic text-white drop-shadow-[0_8px_24px_rgba(139,92,246,0.5)]">
+               <h1 className="mt-2 text-3xl font-black tracking-tighter uppercase italic text-white drop-shadow-[0_8px_24px_rgba(139,92,246,0.5)]">
                  Boy<span className="text-primary">Cash</span>
                </h1>
                <p className="text-[10px] text-white/50 font-black uppercase tracking-[0.4em] mt-2 flex items-center gap-3">
@@ -312,13 +312,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="glass-card p-7 border-white/20 bg-black/40 shadow-[0_40px_100px_rgba(0,0,0,0.8)] ring-1 ring-white/10 relative overflow-hidden"
+              className="glass-card p-4 border-white/20 bg-black/40 shadow-[0_40px_100px_rgba(0,0,0,0.8)] ring-1 ring-white/10 relative overflow-hidden"
             >
                 {/* Decorative Elements */}
                 <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/20 blur-3xl rounded-full" />
                 <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-secondary/20 blur-3xl rounded-full" />
 
-                <h2 className="text-2xl font-black mb-2 uppercase italic tracking-tight text-white leading-none">
+                <h2 className="text-xl font-black mb-1 uppercase italic tracking-tight text-white leading-none">
                   {showPhoneInput ? "Phone Access" : showEmailInput ? "Direct Link" : "Join the Game"}
                 </h2>
                 <p className="text-[10px] text-gray-400 mb-3 uppercase tracking-widest font-bold leading-loose opacity-70">
@@ -329,14 +329,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                       : "Choose your identity to secure your earnings."}
                 </p>
 
-                <div className="mb-5 flex items-start gap-4 text-left bg-white/[0.05] p-5 rounded-2xl border-2 border-white/10 group hover:border-primary/50 transition-all duration-500 shadow-lg shadow-black/20">
+                <div className="mb-3 flex items-start gap-3 text-left bg-white/[0.05] p-3 rounded-2xl border-2 border-white/10 group hover:border-primary/50 transition-all duration-500 shadow-lg shadow-black/20">
                    <div className="relative flex items-center pt-1">
                      <input 
                        type="checkbox" 
                        id="terms-checkbox"
                        checked={acceptedTerms}
                        onChange={(e) => setAcceptedTerms(e.target.checked)}
-                       className="w-8 h-8 rounded-xl border-white/30 bg-black/50 text-base appearance-none checked:bg-primary border-3 transition-all relative z-10 cursor-pointer hover:border-primary"
+                       className="w-6 h-6 rounded-lg border-white/30 bg-black/50 text-base appearance-none checked:bg-primary border-3 transition-all relative z-10 cursor-pointer hover:border-primary"
                      />
                      {acceptedTerms && (
                        <Zap size={16} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white fill-white pointer-events-none z-20" />
@@ -372,7 +372,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 )}
 
                 {!showPhoneInput && !showEmailInput ? (
-                  <div className={`flex flex-col gap-3 ${!acceptedTerms ? 'opacity-40 cursor-not-allowed grayscale' : ''} transition-all duration-500`}>
+                  <div className={`flex flex-col gap-2 ${!acceptedTerms ? 'opacity-40 cursor-not-allowed grayscale' : ''} transition-all duration-500`}>
                     {!acceptedTerms && (
                       <p className="text-[9px] text-primary font-black uppercase mb-1 animate-pulse italic tracking-widest text-center">Agree to terms to unlock access</p>
                     )}
@@ -380,7 +380,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={signIn}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <img src="https://www.google.com/favicon.ico" className="w-5 h-5 group-hover:scale-110 transition-transform" alt="Google" />
                       <span className="text-[11px] uppercase tracking-[0.2em]">Continue with Google</span>
@@ -392,7 +392,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={() => setShowEmailInput(true)}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <div className="w-5 h-5 flex items-center justify-center">
                          <Mail size={18} className="text-[#EA4335]" />
@@ -406,7 +406,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={() => setShowPhoneInput(true)}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <div className="w-5 h-5 flex items-center justify-center">
                          <Phone size={18} className="text-[#10b981]" />
@@ -420,7 +420,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     <button 
                       onClick={signInWithDevice}
                       disabled={!acceptedTerms}
-                      className="group relative w-full h-14 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
+                      className="group relative w-full h-11 bg-white/5 border border-white/10 text-white font-bold rounded-2xl flex items-center px-6 gap-4 hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
                     >
                       <div className="w-5 h-5 flex items-center justify-center">
                          <Smartphone size={18} className="text-primary" />
@@ -549,8 +549,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
                 <div id="recaptcha-container"></div>
 
-                <div className="mt-10 flex flex-col items-center gap-6">
-                  <div className="flex items-center gap-6 text-[10px] text-gray-400 uppercase font-black tracking-widest">
+                <div className="mt-4 flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-4 text-[10px] text-gray-400 uppercase font-black tracking-widest">
                      <a href="/privacy" className="hover:text-primary transition-colors border-b border-transparent hover:border-primary pb-1">Privacy</a>
                      <span className="opacity-10 w-1 h-1 bg-white rounded-full"></span>
                      <a href="/terms" className="hover:text-primary transition-colors border-b border-transparent hover:border-primary pb-1">Terms</a>
@@ -569,9 +569,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   </div>
                 </div>
               
-              <div className="mt-10 pt-8 border-t border-white/[0.05] grid grid-cols-2 gap-4">
-                 <div className="flex items-center gap-3 bg-white/[0.02] p-3 rounded-xl border border-white/[0.03]">
-                    <div className="w-8 h-8 rounded-lg bg-accent-green/10 flex items-center justify-center text-accent-green shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+              <div className="mt-4 pt-3 border-t border-white/[0.05] grid grid-cols-2 gap-2">
+                 <div className="flex items-center gap-3 bg-white/[0.02] p-2 rounded-xl border border-white/[0.03]">
+                    <div className="w-6 h-6 rounded-lg bg-accent-green/10 flex items-center justify-center text-accent-green shadow-[0_0_15px_rgba(34,197,94,0.1)]">
                        <Shield size={14} />
                     </div>
                     <div className="flex flex-col">
@@ -579,8 +579,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                       <span className="text-[8px] font-bold text-gray-500 uppercase tracking-tighter line-clamp-1">Multi-factor ready</span>
                     </div>
                  </div>
-                 <div className="flex items-center gap-3 bg-white/[0.02] p-3 rounded-xl border border-white/[0.03]">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+                 <div className="flex items-center gap-3 bg-white/[0.02] p-2 rounded-xl border border-white/[0.03]">
+                    <div className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(168,85,247,0.1)]">
                        <Zap size={14} />
                     </div>
                     <div className="flex flex-col">
