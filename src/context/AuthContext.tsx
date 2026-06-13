@@ -281,7 +281,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           </div>
         </div>
       ) : (!user && window.location.pathname !== '/privacy' && window.location.pathname !== '/terms') ? (
-        <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+        <div className="min-fixed inset-0 z-50 bg-[#020617] flex items-center justify-center p-4 overflow-hidden font-sans">
           {/* Enhanced Background */}
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 blur-[120px] -mr-64 -mt-64 rounded-full opacity-50" />
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/20 blur-[120px] -ml-64 -mb-64 rounded-full opacity-50" />
