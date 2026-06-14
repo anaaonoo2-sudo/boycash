@@ -3,7 +3,7 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { StatusBar, Style } from "@capacitor/status-bar";
 
 StatusBar.setStyle({ style: Style.Dark });
-StatusBar.setBackgroundColor({ color: "#080419" });
+StatusBar.setBackgroundColor({ color: "#0d0621" });
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Earn from "./pages/Earn";
