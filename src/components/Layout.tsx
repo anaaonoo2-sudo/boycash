@@ -124,7 +124,7 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
       )}
 
-      <footer className={cn("w-full text-center py-8 text-[9px] text-gray-700 flex flex-col gap-3 font-sans", location.pathname === "/assistant" && "hidden")}>
+      <footer className={cn(location.pathname === "/admin" ? "hidden" : "", "w-full text-center py-8 text-[9px] text-gray-700 flex flex-col gap-3 font-sans", location.pathname === "/assistant" && "hidden")}>
         <div className="flex justify-center gap-6 uppercase font-black tracking-[0.2em] opacity-50">
           <NavLink to="/privacy" className="hover:text-primary transition-all hover:tracking-[0.3em]">{t("privacy_policy")}</NavLink>
           <span className="opacity-10 scale-150">•</span>
