@@ -396,7 +396,7 @@ export default function AdminDashboard() {
             </div>
 
             {loading ? (
-              <div className="py-20 flex flex-col items-center gap-4 min-h-[300px]">
+              <div className="py-20 flex flex-col items-center gap-4 min-h-[500px]">
                  <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
                  <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em]">Fetching Data...</p>
               </div>
