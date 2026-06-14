@@ -74,3 +74,4 @@
   .neon-text-green { color: var(--color-accent-green); text-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
   .neon-text-blue { color: var(--color-accent-blue); text-shadow: 0 0 6px rgba(14, 165, 233, 0.4); }
 }
+header { padding-top: env(safe-area-inset-top); }
