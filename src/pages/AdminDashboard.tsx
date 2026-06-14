@@ -91,7 +91,7 @@ export default function AdminDashboard() {
       fetchAnnouncements();
       fetchTasks();
     }
-  }, [isAdmin, navigate, loading]);
+  }, [isAdmin, navigate]);
 
   const fetchData = async () => {
     if (!isAdmin) return;
