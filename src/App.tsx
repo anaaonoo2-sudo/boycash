@@ -1,5 +1,9 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { StatusBar, Style } from "@capacitor/status-bar";
+
+StatusBar.setStyle({ style: Style.Dark });
+StatusBar.setBackgroundColor({ color: "#080419" });
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Earn from "./pages/Earn";
