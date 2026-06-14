@@ -41,7 +41,7 @@ export default function Layout({ children }: LayoutProps) {
       </div>
 
       {/* Top Bar */}
-      <header className="fixed top-0 left-0 right-0 z-[60] bg-black/40 backdrop-blur-[40px] px-6 py-4 flex items-center justify-between border-b border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+      <header className="fixed top-0 left-0 right-0 z-[60] bg-transparent backdrop-blur-[40px] px-6 py-4 flex items-center justify-between border-b border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4">
            <div className="p-2 rounded-2xl bg-gradient-to-br from-primary to-secondary shadow-[0_0_20px_rgba(168,85,247,0.3)]">
              <CoinIcon size={24} />
