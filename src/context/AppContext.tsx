@@ -236,15 +236,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const claimDaily = async () => {
     if (!user) return;
+    const now = Date.now();
+    const lastClaimed = state.lastClaimed || 0;
+    const hoursSinceClaim = (now - lastClaimed) / (1000 * 60 * 60);
+    if (hoursSinceClaim < 24) {
+      const hoursLeft = Math.ceil(24 - hoursSinceClaim);
+      toast.error(hoursLeft + " hours remaining");
+      return;
+    }
     const rewards = [10, 15, 25, 40, 55, 75, 100];
     const reward = rewards[state.dailyStreak - 1] || 10;
-    
     await addCoins(reward);
-    
     const userDocRef = doc(db, "users", user.uid);
     await updateDoc(userDocRef, {
       dailyStreak: (state.dailyStreak % 7) + 1,
-      lastClaimed: Date.now(),
+      lastClaimed: now,
       updatedAt: serverTimestamp()
     });
   };
