@@ -149,8 +149,11 @@ export default function Earn() {
       setCompletedTaskIds(prev => new Set(prev).add(task.id));
       setVerifyingTaskId(null);
       confetti({
-        particleCount: 100,
+        particleCount: 60,
         spread: 70,
+        gravity: 1.4,
+        decay: 0.92,
+        startVelocity: 35,
         origin: { y: 0.6 }
       });
       toast.success(`Success! +${task.reward} coins`);
@@ -167,7 +170,7 @@ export default function Earn() {
       const rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, () => {
         awardAdReward();
         setLastWin(10);
-        confetti({ particleCount: 50, spread: 60, colors: ["#fbbf24", "#d97706"] });
+        confetti({ particleCount: 40, spread: 55, gravity: 1.4, decay: 0.92, startVelocity: 35, colors: ["#fbbf24", "#d97706"] });
         toast.success(t("points_added"));
         rewardListener.remove();
       });
@@ -213,8 +216,11 @@ export default function Earn() {
     setLastWin(amount);
     addCoins(amount);
     confetti({
-      particleCount: 50,
+      particleCount: 40,
       spread: 60,
+      gravity: 1.4,
+      decay: 0.92,
+      startVelocity: 35,
       colors: ["#a855f7", "#3b82f6"]
     });
     if (!adsDisabled) {
@@ -227,7 +233,7 @@ export default function Earn() {
     setActiveGame("admob_loading");
     setTimeout(() => {
       addCoins(lastWin);
-      confetti({ particleCount: 150, spread: 100 });
+      confetti({ particleCount: 70, spread: 100, gravity: 1.4, decay: 0.92, startVelocity: 35 });
       setShowAd(false);
       setActiveGame(null);
     }, 5000);
