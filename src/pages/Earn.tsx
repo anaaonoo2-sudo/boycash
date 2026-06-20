@@ -24,6 +24,7 @@ import { useAuth } from "@/src/context/AuthContext";
 import Button from "@/src/components/ui/Button";
 import confetti from "canvas-confetti";
 import CoinIcon from "@/src/components/ui/CoinIcon";
+import SpinWheel from "@/src/components/ui/SpinWheel";
 import { cn } from "@/src/lib/utils";
 import { toast } from "react-hot-toast";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
@@ -455,11 +456,7 @@ export default function Earn() {
               {activeGame === "spin" && (
                 <div className="text-center space-y-6">
                   <h2 className="text-2xl font-black text-white">{t("spin_wheel")}</h2>
-                  <div className="w-48 h-48 rounded-full border-4 border-primary/20 mx-auto flex items-center justify-center relative overflow-hidden shadow-2xl">
-                     <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 4, ease: "linear" }} className="absolute inset-0 bg-[conic-gradient(from_0deg,#a855f7,#3b82f6,#22c55e,#a855f7)] opacity-20" />
-                    <RefreshCcw size={48} className="text-primary" />
-                  </div>
-                  <Button variant="primary" glow className="w-full py-4 text-xs font-black uppercase" onClick={() => handleWin(50)}>{t("spin_now")}</Button>
+                  <SpinWheel onWin={handleWin} />
                 </div>
               )}
 
