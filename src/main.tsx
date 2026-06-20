@@ -4,6 +4,9 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import './lib/i18n';
+import { AdMob } from '@capacitor-community/admob';
+
+AdMob.initialize();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

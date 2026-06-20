@@ -25,6 +25,7 @@ import Button from "@/src/components/ui/Button";
 import confetti from "canvas-confetti";
 import CoinIcon from "@/src/components/ui/CoinIcon";
 import SpinWheel from "@/src/components/ui/SpinWheel";
+import { AdMob, RewardAdPluginEvents, AdMobRewardItem } from "@capacitor-community/admob";
 import { cn } from "@/src/lib/utils";
 import { toast } from "react-hot-toast";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
@@ -158,31 +159,32 @@ export default function Earn() {
     }
   };
 
-  const handleRewardedAd = () => {
-    const anyWindow = window as any;
+  const handleRewardedAd = async () => {
     const AD_UNIT_ID = import.meta.env.VITE_ADMOB_REWARDED_ID || "ca-app-pub-2691032504478251/3649519865";
-    
-    if (anyWindow.Android && anyWindow.Android.showRewardedAd) {
-      anyWindow.Android.showRewardedAd(AD_UNIT_ID);
-      return;
-    }
-    if (anyWindow.webkit && anyWindow.webkit.messageHandlers && anyWindow.webkit.messageHandlers.showRewardedAd) {
-      anyWindow.webkit.messageHandlers.showRewardedAd.postMessage({ unitId: AD_UNIT_ID });
-      return;
-    }
-
     setActiveGame("admob_loading");
-    setTimeout(() => {
-      awardAdReward();
-      setLastWin(10);
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        colors: ["#fbbf24", "#d97706"]
+    try {
+      await AdMob.prepareRewardVideoAd({ adId: AD_UNIT_ID });
+      const rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, () => {
+        awardAdReward();
+        setLastWin(10);
+        confetti({ particleCount: 50, spread: 60, colors: ["#fbbf24", "#d97706"] });
+        toast.success(t("points_added"));
+        rewardListener.remove();
       });
+      const dismissListener = await AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
+        setActiveGame(null);
+        dismissListener.remove();
+      });
+      const failListener = await AdMob.addListener(RewardAdPluginEvents.FailedToShow, () => {
+        toast.error(t("ai_connection_error"));
+        setActiveGame(null);
+        failListener.remove();
+      });
+      await AdMob.showRewardVideoAd();
+    } catch (error) {
+      toast.error(t("ai_connection_error"));
       setActiveGame(null);
-      toast.success(t("points_added"));
-    }, 5000);
+    }
   };
 
   const openOffers = () => {
