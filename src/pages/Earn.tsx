@@ -194,7 +194,6 @@ export default function Earn() {
     const directLink = import.meta.env.VITE_OFFERS_LINK || "https://installyourfiles.com/script_include.php?id=1892642";
     try {
       window.open(directLink, "_blank", "noopener,noreferrer");
-      addCoins(5);
       toast.success(t("offers_opened"));
     } catch (error) {
       console.error("Failed to open offers link:", error);
