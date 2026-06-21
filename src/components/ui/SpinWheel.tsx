@@ -1,5 +1,5 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 
 interface Prize {
@@ -20,18 +20,49 @@ const PRIZES: Prize[] = [
 ];
 
 const SEGMENT_ANGLE = 360 / PRIZES.length;
+const STORAGE_KEY = "last_spin_date";
 
 interface SpinWheelProps {
   onWin: (amount: number) => void;
   disabled?: boolean;
 }
 
+function getTimeUntilMidnight() {
+  const now = new Date();
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  const diff = midnight.getTime() - now.getTime();
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
 export default function SpinWheel({ onWin, disabled }: SpinWheelProps) {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
+  const [alreadySpun, setAlreadySpun] = useState(false);
+  const [countdown, setCountdown] = useState("");
+
+  useEffect(() => {
+    const lastSpin = localStorage.getItem(STORAGE_KEY);
+    const today = new Date().toDateString();
+    if (lastSpin === today) {
+      setAlreadySpun(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!alreadySpun) return;
+    const interval = setInterval(() => {
+      setCountdown(getTimeUntilMidnight());
+    }, 1000);
+    setCountdown(getTimeUntilMidnight());
+    return () => clearInterval(interval);
+  }, [alreadySpun]);
 
   const spin = () => {
-    if (spinning || disabled) return;
+    if (spinning || disabled || alreadySpun) return;
     setSpinning(true);
 
     const prizeIndex = Math.floor(Math.random() * PRIZES.length);
@@ -43,6 +74,9 @@ export default function SpinWheel({ onWin, disabled }: SpinWheelProps) {
 
     setTimeout(() => {
       setSpinning(false);
+      const today = new Date().toDateString();
+      localStorage.setItem(STORAGE_KEY, today);
+      setAlreadySpun(true);
       onWin(PRIZES[prizeIndex].amount);
     }, 3200);
   };
@@ -81,6 +115,7 @@ export default function SpinWheel({ onWin, disabled }: SpinWheelProps) {
                   fill={prize.color}
                   stroke="#0a0a0f"
                   strokeWidth="1.5"
+                  opacity={alreadySpun ? 0.4 : 1}
                 />
                 <text
                   x={labelX}
@@ -101,13 +136,20 @@ export default function SpinWheel({ onWin, disabled }: SpinWheelProps) {
         </motion.svg>
       </div>
 
-      <button
-        onClick={spin}
-        disabled={spinning || disabled}
-        className="w-full py-4 rounded-xl text-xs font-black uppercase bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
-      >
-        {spinning ? "..." : "SPIN NOW"}
-      </button>
+      {alreadySpun ? (
+        <div className="w-full text-center space-y-2">
+          <p className="text-xs font-black uppercase text-white/40">Next spin available in</p>
+          <p className="text-2xl font-black text-primary tracking-widest">{countdown}</p>
+        </div>
+      ) : (
+        <button
+          onClick={spin}
+          disabled={spinning || disabled}
+          className="w-full py-4 rounded-xl text-xs font-black uppercase bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
+        >
+          {spinning ? "..." : "SPIN NOW"}
+        </button>
+      )}
     </div>
   );
 }
