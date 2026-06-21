@@ -128,7 +128,7 @@ export default function Assistant() {
         </div>
 
         <div className={cn(
-          "fixed bottom-28 left-4 right-4 z-30 space-y-3 transition-all duration-300 ease-out"
+          "fixed bottom-0 left-0 right-0 z-30 space-y-3 transition-all duration-300 ease-out p-4 pb-6 bg-transparent"
         )}>
           <div className={cn(
             "flex gap-2 overflow-x-auto pb-1 scrollbar-hide transition-opacity",
