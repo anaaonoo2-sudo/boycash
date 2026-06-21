@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import GlassCard from "@/src/components/ui/GlassCard";
 import Button from "@/src/components/ui/Button";
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, User, Loader2 } from "lucide-react";
 import { askAssistant } from "@/src/services/aiService";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/src/lib/utils";
@@ -98,7 +98,7 @@ export default function Assistant() {
                 "w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 border border-white/10 shadow-lg",
                 m.role === 'user' ? "bg-primary text-white" : "bg-white/10 text-secondary"
               )}>
-                {m.role === 'user' ? <User size={18} /> : <Bot size={18} />}
+                {m.role === 'user' ? <User size={18} /> : <img src="/bot-avatar.jpg" style={{width:"18px",height:"18px",borderRadius:"50%",objectFit:"cover"}} />}
               </div>
               <div className={cn(
                 "px-4 py-3 rounded-2xl text-[13px] max-w-[85%] leading-relaxed shadow-lg",
@@ -117,7 +117,7 @@ export default function Assistant() {
               className="flex gap-3 animate-pulse"
             >
               <div className="w-9 h-9 rounded-2xl bg-white/10 text-secondary flex items-center justify-center border border-white/10">
-                <Bot size={18} />
+                <img src="/bot-avatar.jpg" style={{width:"18px",height:"18px",borderRadius:"50%",objectFit:"cover"}} />
               </div>
               <div className="bg-white/5 text-gray-400 px-5 py-3 rounded-2xl flex items-center gap-3 border border-white/5">
                 <Loader2 size={14} className="animate-spin text-primary" />
