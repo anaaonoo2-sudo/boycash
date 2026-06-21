@@ -139,9 +139,9 @@ const Support = () => {
 
           <div className="text-center p-4">
             <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-2 font-black">أو تواصل مباشرة عبر</p>
-            <a href="mailto:anaaonoo2@gmail.com" className="flex items-center justify-center gap-2 text-primary hover:underline font-bold text-sm">
+            <a href="mailto:bouchibattauomi@gmail.com" className="flex items-center justify-center gap-2 text-primary hover:underline font-bold text-sm">
               <Mail size={16} />
-              anaaonoo2@gmail.com
+              bouchibattauomi@gmail.com
             </a>
           </div>
         </div>
