@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import React, { useState, useEffect } from "react";
 import GlassCard from "@/src/components/ui/GlassCard";
 import Button from "@/src/components/ui/Button";

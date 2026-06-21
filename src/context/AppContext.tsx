@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { 
   doc, 

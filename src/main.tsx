@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';

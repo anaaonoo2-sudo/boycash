@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import { ReactNode, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { House, Zap, Wallet, Trophy, User, Settings as SettingsIcon, MessageCircleCode } from "lucide-react";
@@ -132,7 +132,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
         <div className="flex flex-col gap-1 opacity-30 font-bold uppercase tracking-widest">
           <p>{t("copyright")}</p>
-          <p className="lowercase tracking-normal italic">Contact: anaaonoo2@gmail.com</p>
+          <p className="lowercase tracking-normal italic">Contact: bouchibattauomi@gmail.com</p>
         </div>
       </footer>
     </div>

@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { useState } from "react";

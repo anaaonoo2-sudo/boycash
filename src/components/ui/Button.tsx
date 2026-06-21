@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import { ButtonHTMLAttributes, ReactNode, MouseEventHandler } from "react";
 import { motion } from "motion/react";
 import { cn } from "@/src/lib/utils";

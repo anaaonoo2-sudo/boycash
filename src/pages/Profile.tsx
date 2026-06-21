@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import GlassCard from "@/src/components/ui/GlassCard";
@@ -190,7 +190,7 @@ export default function Profile() {
             </div>
             <div className="flex-1">
               <p className="text-xs text-gray-400">{t("contact")}</p>
-              <p className="text-sm font-bold">anaaonoo2@gmail.com</p>
+              <p className="text-sm font-bold">bouchibattauomi@gmail.com</p>
             </div>
           </div>
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => setShowLanguageModal(true)}>

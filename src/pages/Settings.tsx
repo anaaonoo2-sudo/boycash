@@ -1,4 +1,4 @@
-/* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
+/* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import { useTranslation } from "react-i18next";
 import GlassCard from "@/src/components/ui/GlassCard";
 import Button from "@/src/components/ui/Button";
@@ -139,7 +139,7 @@ export default function Settings() {
           <div className="space-y-1">
             <p className="text-[8px] font-black uppercase tracking-[0.4em]">BoyCash v1.0.4</p>
             <p className="text-[10px] font-bold">{t("copyright")}</p>
-            <p className="text-[8px] italic">anaaonoo2@gmail.com</p>
+            <p className="text-[8px] italic">bouchibattauomi@gmail.com</p>
           </div>
         </div>
       </div>
