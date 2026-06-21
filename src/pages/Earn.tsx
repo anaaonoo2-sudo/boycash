@@ -228,14 +228,29 @@ export default function Earn() {
     setActiveGame(null);
   };
 
-  const doubleReward = () => {
+  const doubleReward = async () => {
+    const AD_UNIT_ID = import.meta.env.VITE_ADMOB_REWARDED_ID || "ca-app-pub-2691032504478251/3649519865";
+    setShowAd(false);
     setActiveGame("admob_loading");
-    setTimeout(() => {
-      addCoins(lastWin);
-      confetti({ particleCount: 70, spread: 100, gravity: 1.4, decay: 0.92, startVelocity: 35 });
-      setShowAd(false);
+    try {
+      await AdMob.prepareRewardVideoAd({ adId: AD_UNIT_ID });
+      const rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, () => {
+        addCoins(lastWin);
+        confetti({ particleCount: 70, spread: 100, gravity: 1.4, decay: 0.92, startVelocity: 35 });
+        rewardListener.remove();
+      });
+      const dismissListener = await AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
+        setActiveGame(null);
+        dismissListener.remove();
+      });
+      const failListener = await AdMob.addListener(RewardAdPluginEvents.FailedToShow, () => {
+        setActiveGame(null);
+        failListener.remove();
+      });
+      await AdMob.showRewardVideoAd();
+    } catch (error) {
       setActiveGame(null);
-    }, 5000);
+    }
   };
 
   return (
