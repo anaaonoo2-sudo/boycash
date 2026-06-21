@@ -266,7 +266,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signInWithDevice,
       signOut 
     }}>
-      {loading ? (
+      {loading && false ? (
         <div className="min-h-screen bg-dark-bg flex items-center justify-center p-8">
            <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
