@@ -23,6 +23,14 @@ export default function Assistant() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [kbHeight, setKbHeight] = useState(0);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => setKbHeight(window.innerHeight - vv.height);
+    vv.addEventListener("resize", update);
+    return () => vv.removeEventListener("resize", update);
+  }, []);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -127,9 +135,7 @@ export default function Assistant() {
           )}
         </div>
 
-        <div className={cn(
-          "fixed bottom-16 left-4 right-4 z-50 space-y-3 transition-all duration-300 ease-out"
-        )}>
+        <div style={{bottom: `${kbHeight + 16}px`, position: "fixed", left: "16px", right: "16px", zIndex: 50}} className="space-y-3 transition-all duration-300 ease-out">
           <div className={cn(
             "flex gap-2 overflow-x-auto pb-1 scrollbar-hide transition-opacity",
             isFocused ? "opacity-100" : "opacity-0 h-0 pointer-events-none"
@@ -195,3 +201,4 @@ export default function Assistant() {
   );
         }
                 
+// keyboard fix - this line will be removed
