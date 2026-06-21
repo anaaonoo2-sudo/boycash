@@ -55,7 +55,7 @@ export default function Wallet() {
     },
     { 
       id: "sepa",
-      logo: "/regenerated_image_1777314282849.png", 
+      logo: "https://img.icons8.com/fluency/144/bank-building.png", 
       name: t("payout_sepa"), 
       type: t("international_bank"),
       color: "from-blue-900 via-indigo-950 to-blue-950",
@@ -66,7 +66,7 @@ export default function Wallet() {
     },
     { 
       id: "cih",
-      logo: "/regenerated_image_1777315389525.png", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/CIH_Bank_logo.svg/200px-CIH_Bank_logo.svg.png", 
       name: t("payout_cih"), 
       type: t("local_bank"),
       color: "from-[#004B9B] via-[#00346b] to-black",
@@ -77,7 +77,7 @@ export default function Wallet() {
     },
     { 
       id: "cashplus",
-      logo: "/regenerated_image_1777315583984.png", 
+      logo: "https://img.icons8.com/fluency/144/cash.png", 
       name: t("payout_cashplus"), 
       type: t("money_transfer"),
       color: "from-orange-500 via-orange-800 to-red-900",
