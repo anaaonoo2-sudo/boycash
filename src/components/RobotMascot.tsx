@@ -1,16 +1,11 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { askAssistant } from "@/src/services/aiService";
 import { X, Send, Loader2 } from "lucide-react";
 
-import headImg from "@/src/assets/robot/head.png";
-import bodyImg from "@/src/assets/robot/body.png";
-import armLeftImg from "@/src/assets/robot/arm_left.png";
-import armRightImg from "@/src/assets/robot/arm_right.png";
-import legLeftImg from "@/src/assets/robot/leg_left.png";
-import legRightImg from "@/src/assets/robot/leg_right.png";
+import robotImg from "@/src/assets/robot/robot_full.png";
 
 const PAGE_TIPS: Record<string, string> = {
   "/": "اضغط على CLAIM يومياً عشان توصل لـ 100 نقطة في اليوم السابع! 🔥",
@@ -26,10 +21,8 @@ function getTipForPath(path: string): string {
 
 export default function RobotMascot() {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const [pos, setPos] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const [showBubble, setShowBubble] = useState(false);
   const [bubbleText, setBubbleText] = useState("");
@@ -42,7 +35,7 @@ export default function RobotMascot() {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const robotW = 90;
-    const robotH = 140;
+    const robotH = 135;
     const margin = 20;
     const navBarSafe = 140;
     const headerSafe = 90;
@@ -99,9 +92,8 @@ export default function RobotMascot() {
   return (
     <>
       <motion.div
-        ref={containerRef}
         className="fixed z-[65] pointer-events-none"
-        style={{ width: 90, height: 140, left: 0, top: 0 }}
+        style={{ width: 90, height: 135, left: 0, top: 0 }}
         initial={{ x: pos.x, y: pos.y }}
         animate={{ x: pos.x, y: pos.y }}
         transition={{ type: "spring", stiffness: 40, damping: 15, duration: 2 }}
@@ -128,67 +120,18 @@ export default function RobotMascot() {
         <motion.div
           className="relative w-full h-full pointer-events-auto cursor-pointer"
           onClick={handleRobotClick}
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          animate={{
+            y: [0, -10, 0],
+            rotate: [-4, 4, -4],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         >
-          <motion.img
-            src={headImg}
-            alt="robot head"
-            className="absolute left-1/2 -translate-x-1/2 top-0 w-[70px] drop-shadow-lg select-none"
-            animate={{ rotate: [-6, 6, -6] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "50% 90%" }}
-            draggable={false}
-          />
-
           <img
-            src={bodyImg}
-            alt="robot body"
-            className="absolute left-1/2 -translate-x-1/2 top-[58px] w-[58px] drop-shadow-lg select-none"
+            src={robotImg}
+            alt="BoyCash Robot"
+            className="w-full h-full object-contain drop-shadow-[0_8px_20px_rgba(168,85,247,0.5)] select-none"
             draggable={false}
           />
-
-          <motion.img
-            src={armLeftImg}
-            alt="robot arm left"
-            className="absolute top-[68px] left-[2px] w-[34px] drop-shadow-md select-none"
-            animate={{ rotate: [0, -25, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
-            style={{ transformOrigin: "80% 10%" }}
-            draggable={false}
-          />
-
-          <motion.img
-            src={armRightImg}
-            alt="robot arm right"
-            className="absolute top-[68px] right-[2px] w-[34px] drop-shadow-md select-none"
-            animate={{ rotate: [0, 10, 0] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "20% 10%" }}
-            draggable={false}
-          />
-
-          <motion.img
-            src={legLeftImg}
-            alt="robot leg left"
-            className="absolute top-[112px] left-[14px] w-[26px] drop-shadow-md select-none"
-            animate={{ rotate: [-4, 4, -4] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "50% 0%" }}
-            draggable={false}
-          />
-
-          <motion.img
-            src={legRightImg}
-            alt="robot leg right"
-            className="absolute top-[112px] right-[14px] w-[26px] drop-shadow-md select-none"
-            animate={{ rotate: [4, -4, 4] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "50% 0%" }}
-            draggable={false}
-          />
-
-          <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-12 h-3 bg-purple-500/40 rounded-full blur-md" />
         </motion.div>
       </motion.div>
 
