@@ -101,8 +101,9 @@ export default function RobotMascot() {
       <motion.div
         ref={containerRef}
         className="fixed z-[65] pointer-events-none"
-        style={{ width: 90, height: 140 }}
-        animate={{ left: pos.x, top: pos.y }}
+        style={{ width: 90, height: 140, left: 0, top: 0 }}
+        initial={{ x: pos.x, y: pos.y }}
+        animate={{ x: pos.x, y: pos.y }}
         transition={{ type: "spring", stiffness: 40, damping: 15, duration: 2 }}
       >
         <AnimatePresence>
