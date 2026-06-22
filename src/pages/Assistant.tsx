@@ -135,7 +135,7 @@ export default function Assistant() {
           )}
         </div>
 
-        <div style={{bottom: `${kbHeight + 72}px`, position: "fixed", left: "16px", right: "16px", zIndex: 50}} className="space-y-3 transition-all duration-300 ease-out">
+        <div style={{bottom: `${kbHeight + 100}px`, position: "fixed", left: "16px", right: "16px", zIndex: 70}} className="space-y-3 transition-all duration-300 ease-out">
           <div className={cn(
             "flex gap-2 overflow-x-auto pb-1 scrollbar-hide transition-opacity",
             isFocused ? "opacity-100" : "opacity-0 h-0 pointer-events-none"
