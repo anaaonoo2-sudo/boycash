@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { cn } from "@/src/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import CoinIcon from "./ui/CoinIcon";
+import RobotMascot from "./RobotMascot";
 
 interface LayoutProps {
   children: ReactNode;
@@ -135,6 +136,8 @@ export default function Layout({ children }: LayoutProps) {
           <p className="lowercase tracking-normal italic">Contact: bouchibattauomi@gmail.com</p>
         </div>
       </footer>
+
+      <RobotMascot />
     </div>
   );
 }
