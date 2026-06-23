@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import bodyImg from '../assets/robot-parts/robot_body_left3q.png';
 import headImg from '../assets/robot-parts/robot_head_front.png';
 import armLeftImg from '../assets/robot-parts/robot_arm_left.png';
@@ -45,12 +45,15 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
     <div
       onClick={handleTap}
       style={{
-        position: 'relative',
-        width: 140,
-        height: 230,
+        position: 'fixed',
+        right: 12,
+        bottom: 90, // فوق شريط التنقل السفلي
+        width: 70,
+        height: 115,
         cursor: 'pointer',
         userSelect: 'none',
         touchAction: 'manipulation',
+        zIndex: 50,
       }}
     >
       {/* فقاعة المحادثة */}
