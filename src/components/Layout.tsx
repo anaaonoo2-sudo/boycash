@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { cn } from "@/src/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import CoinIcon from "./ui/CoinIcon";
+import RobotMascot from "./RobotMascot";
 
 interface LayoutProps {
   children: ReactNode;
@@ -38,16 +39,17 @@ export default function Layout({ children }: LayoutProps) {
         <div className="blob top-[-10%] left-[-10%] bg-purple-600/30" />
         <div className="blob top-[40%] right-[-10%] bg-blue-600/20 animation-delay-2000" />
         <div className="blob bottom-[-10%] left-[20%] bg-pink-600/20 animation-delay-4000" />
-      </div>
+  <RobotMascot />
+</div>
 
       {/* Top Bar */}
       <header className="fixed top-0 left-0 right-0 z-[60] bg-transparent pt-8 backdrop-blur-[40px] px-6 py-4 flex items-center justify-between border-b border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4">
            <div className="p-2 rounded-2xl bg-gradient-to-br from-primary to-secondary shadow-[0_0_20px_rgba(168,85,247,0.3)]">
              <CoinIcon size={24} />
-           </div>
+</div>
            <span className="text-[11px] font-black uppercase tracking-[0.4em] text-white/90 drop-shadow-sm">{t("app_name")}</span>
-        </div>
+</div>
         
         <div className="flex items-center gap-3">
           {user && (
@@ -64,7 +66,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="relative">
                   <MessageCircleCode size={20} />
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full shadow-[0_0_8px_#10b981] animate-pulse" />
-                </div>
+</div>
               </button>
               <button 
                 onClick={() => navigate('/settings')}
@@ -79,7 +81,7 @@ export default function Layout({ children }: LayoutProps) {
               </button>
             </>
           )}
-        </div>
+</div>
       </header>
 
       <main className={cn(
@@ -110,14 +112,14 @@ export default function Layout({ children }: LayoutProps) {
                     isActive ? "bg-primary/15 shadow-[inset_0_0_15px_rgba(168,85,247,0.3)]" : "transparent"
                   )}>
                     <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} className={cn(isActive && "drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]")} />
-                  </div>
+</div>
                   {isActive && (
                     <motion.div 
                       layoutId="nav-indicator"
                       className="absolute -bottom-1 w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_#a855f7]"
                     />
                   )}
-                </div>
+</div>
               )}
             </NavLink> 
           ))}
@@ -129,13 +131,14 @@ export default function Layout({ children }: LayoutProps) {
           <NavLink to="/privacy" className="hover:text-primary transition-all hover:tracking-[0.3em]">{t("privacy_policy")}</NavLink>
           <span className="opacity-10 scale-150">•</span>
           <NavLink to="/terms" className="hover:text-primary transition-all hover:tracking-[0.3em]">{t("terms_of_service")}</NavLink>
-        </div>
+</div>
         <div className="flex flex-col gap-1 opacity-30 font-bold uppercase tracking-widest">
           <p>{t("copyright")}</p>
           <p className="lowercase tracking-normal italic">Contact: bouchibattauomi@gmail.com</p>
-        </div>
+</div>
       </footer>
 
-    </div>
+  <RobotMascot />
+</div>
   );
 }
