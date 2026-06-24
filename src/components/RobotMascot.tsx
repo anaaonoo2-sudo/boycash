@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import bodyImg from '../assets/robot-parts/robot_body_left3q.png';
 import headImg from '../assets/robot-parts/robot_head_front.png';
@@ -6,19 +6,17 @@ import armLeftImg from '../assets/robot-parts/robot_arm_left.png';
 import armRightImg from '../assets/robot-parts/robot_arm_right.png';
 import { askAssistant } from '../services/aiService';
 
-// نسب الأبعاد الحقيقية للصور المصدر (عرض × ارتفاع بالبكسل الأصلي)
-// body_left3q: 107x356  |  head_front: 338x431  |  arm: 297x121
-const STAGE_W = 64;
-const STAGE_H = 110;
+const STAGE_W = 70;
+const STAGE_H = 120;
 
-const BODY_W = 36;
-const BODY_H = Math.round(BODY_W * (356 / 107)); // ≈ 120
+const BODY_W = 38;
+const BODY_H = Math.round(BODY_W * (356 / 107));
 
-const HEAD_W = 38;
-const HEAD_H = Math.round(HEAD_W * (431 / 338)); // ≈ 48
+const HEAD_W = 40;
+const HEAD_H = Math.round(HEAD_W * (431 / 338));
 
-const ARM_W = 30;
-const ARM_H = Math.round(ARM_W * (121 / 297)); // ≈ 12
+const ARM_W = 32;
+const ARM_H = Math.round(ARM_W * (121 / 297));
 
 interface RobotMascotProps {
   initialMessage?: string;
@@ -29,16 +27,20 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
   const [bubbleText, setBubbleText] = useState<string | null>(initialMessage ?? null);
   const [isExcited, setIsExcited] = useState(false);
 
+  // Position state - robot starts at bottom right and can be dragged
+  const [pos, setPos] = useState({ x: -10, y: -100 });
+  const dragging = useRef(false);
+  const startTouch = useRef({ x: 0, y: 0, px: 0, py: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const t = setTimeout(() => setIsExcited(true), 600);
     const t2 = setTimeout(() => setIsExcited(false), 1800);
-    return () => {
-      clearTimeout(t);
-      clearTimeout(t2);
-    };
+    return () => { clearTimeout(t); clearTimeout(t2); };
   }, []);
 
   const handleTap = useCallback(async () => {
+    if (dragging.current) return;
     setIsExcited(true);
     setIsThinking(true);
     setBubbleText(null);
@@ -50,32 +52,61 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
     } finally {
       setIsThinking(false);
       setTimeout(() => setIsExcited(false), 1200);
+      // Auto hide bubble after 4s
+      setTimeout(() => setBubbleText(null), 4000);
     }
   }, []);
 
+  // Touch drag handlers
+  const onTouchStart = (e: React.TouchEvent) => {
+    dragging.current = false;
+    const t = e.touches[0];
+    startTouch.current = { x: t.clientX, y: t.clientY, px: pos.x, py: pos.y };
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    const dx = t.clientX - startTouch.current.x;
+    const dy = t.clientY - startTouch.current.y;
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+      dragging.current = true;
+    }
+    if (dragging.current) {
+      setPos({ x: startTouch.current.px + dx, y: startTouch.current.py + dy });
+    }
+  };
+
+  const onTouchEnd = () => {
+    if (!dragging.current) handleTap();
+    setTimeout(() => { dragging.current = false; }, 100);
+  };
+
   return (
     <div
+      ref={containerRef}
       style={{
         position: 'fixed',
-        right: 10,
-        bottom: 100,
-        zIndex: 50,
-        pointerEvents: 'none',
+        right: -pos.x,
+        bottom: -pos.y,
+        zIndex: 999,
+        touchAction: 'none',
+        userSelect: 'none',
       }}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      onClick={!('ontouchstart' in window) ? handleTap : undefined}
     >
       <div
-        onClick={handleTap}
         style={{
           position: 'relative',
           width: STAGE_W,
           height: STAGE_H,
           overflow: 'visible',
-          cursor: 'pointer',
-          userSelect: 'none',
-          touchAction: 'manipulation',
-          pointerEvents: 'auto',
+          cursor: 'grab',
         }}
       >
+        {/* Speech bubble */}
         <AnimatePresence>
           {(bubbleText || isThinking) && (
             <motion.div
@@ -88,33 +119,42 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
                 bottom: '100%',
                 right: 0,
                 marginBottom: 10,
-                background: '#ffffff',
+                background: 'linear-gradient(135deg, #1e1b4b, #2d1b69)',
+                border: '1px solid rgba(168,85,247,0.4)',
                 borderRadius: 14,
                 padding: '8px 12px',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
-                minWidth: 140,
-                maxWidth: 200,
-                fontSize: 13,
-                lineHeight: 1.4,
-                color: '#222',
+                boxShadow: '0 4px 20px rgba(168,85,247,0.3)',
+                minWidth: 150,
+                maxWidth: 220,
+                fontSize: 12,
+                lineHeight: 1.5,
+                color: '#e2e8f0',
                 zIndex: 10,
                 whiteSpace: 'normal',
                 textAlign: 'right',
               }}
             >
+              {/* Triangle pointer */}
+              <div style={{
+                position: 'absolute',
+                bottom: -8,
+                right: 20,
+                width: 0,
+                height: 0,
+                borderLeft: '8px solid transparent',
+                borderRight: '8px solid transparent',
+                borderTop: '8px solid rgba(168,85,247,0.4)',
+              }} />
               {isThinking ? (
                 <span style={{ display: 'inline-flex', gap: 4 }}>
-                  <Dot delay={0} />
-                  <Dot delay={0.15} />
-                  <Dot delay={0.3} />
+                  <Dot delay={0} /><Dot delay={0.15} /><Dot delay={0.3} />
                 </span>
-              ) : (
-                bubbleText
-              )}
+              ) : bubbleText}
             </motion.div>
           )}
         </AnimatePresence>
 
+        {/* Body */}
         <motion.img
           src={bodyImg}
           alt=""
@@ -127,14 +167,14 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
             bottom: 0,
             width: BODY_W,
             height: BODY_H,
-            maxWidth: BODY_W,
-            maxHeight: BODY_H,
             transform: 'translateX(-50%)',
             zIndex: 1,
             pointerEvents: 'none',
+            filter: 'drop-shadow(0 10px 20px rgba(168,85,247,0.4))',
           }}
         />
 
+        {/* Head */}
         <motion.img
           src={headImg}
           alt=""
@@ -157,15 +197,15 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
             top: 0,
             width: HEAD_W,
             height: HEAD_H,
-            maxWidth: HEAD_W,
-            maxHeight: HEAD_H,
             transform: 'translateX(-50%)',
             transformOrigin: '50% 100%',
             zIndex: 3,
             pointerEvents: 'none',
+            filter: 'drop-shadow(0 0 10px rgba(168,85,247,0.5))',
           }}
         />
 
+        {/* Right arm */}
         <motion.img
           src={armRightImg}
           alt=""
@@ -181,18 +221,17 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
           }}
           style={{
             position: 'absolute',
-            right: -10,
+            right: -12,
             top: HEAD_H + 8,
             width: ARM_W,
             height: ARM_H,
-            maxWidth: ARM_W,
-            maxHeight: ARM_H,
             transformOrigin: '80% 40%',
             zIndex: 2,
             pointerEvents: 'none',
           }}
         />
 
+        {/* Left arm */}
         <motion.img
           src={armLeftImg}
           alt=""
@@ -207,12 +246,10 @@ const RobotMascot: React.FC<RobotMascotProps> = ({ initialMessage }) => {
           }}
           style={{
             position: 'absolute',
-            left: -10,
+            left: -12,
             top: HEAD_H + 8,
             width: ARM_W,
             height: ARM_H,
-            maxWidth: ARM_W,
-            maxHeight: ARM_H,
             transformOrigin: '20% 40%',
             zIndex: 2,
             pointerEvents: 'none',
@@ -231,7 +268,7 @@ const Dot: React.FC<{ delay: number }> = ({ delay }) => (
       width: 5,
       height: 5,
       borderRadius: '50%',
-      background: '#999',
+      background: '#a855f7',
       display: 'inline-block',
     }}
   />
