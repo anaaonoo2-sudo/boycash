@@ -41,9 +41,9 @@ export default function RobotMascot() {
   const roam = useCallback(() => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const robotW = 90;
-    const robotH = 140;
-    const margin = 20;
+    const robotW = 56;
+    const robotH = 88;
+    const margin = 16;
     const navBarSafe = 140;
     const headerSafe = 90;
 
@@ -101,7 +101,7 @@ export default function RobotMascot() {
       <motion.div
         ref={containerRef}
         className="fixed z-[65] pointer-events-none"
-        style={{ width: 90, height: 140, left: 0, top: 0 }}
+        style={{ width: 56, height: 88, left: 0, top: 0 }}
         initial={{ x: pos.x, y: pos.y }}
         animate={{ x: pos.x, y: pos.y }}
         transition={{ type: "spring", stiffness: 40, damping: 15, duration: 2 }}
@@ -112,7 +112,7 @@ export default function RobotMascot() {
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 10 }}
-              className="absolute -top-20 left-1/2 -translate-x-1/2 w-44 pointer-events-auto"
+              className="absolute -top-16 left-1/2 -translate-x-1/2 w-40 pointer-events-auto"
             >
               <div
                 onClick={handleOpenChat}
@@ -134,7 +134,7 @@ export default function RobotMascot() {
           <motion.img
             src={headImg}
             alt="robot head"
-            className="absolute left-1/2 -translate-x-1/2 top-0 w-[70px] drop-shadow-lg select-none"
+            className="absolute left-1/2 -translate-x-1/2 top-0 w-[34px] drop-shadow-lg select-none"
             animate={{ rotate: [-6, 6, -6] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "50% 90%" }}
@@ -144,14 +144,14 @@ export default function RobotMascot() {
           <img
             src={bodyImg}
             alt="robot body"
-            className="absolute left-1/2 -translate-x-1/2 top-[58px] w-[58px] drop-shadow-lg select-none"
+            className="absolute left-1/2 -translate-x-1/2 top-[32px] w-[40px] drop-shadow-lg select-none"
             draggable={false}
           />
 
           <motion.img
             src={armLeftImg}
             alt="robot arm left"
-            className="absolute top-[68px] left-[2px] w-[34px] drop-shadow-md select-none"
+            className="absolute top-[38px] left-[-2px] w-[20px] drop-shadow-md select-none"
             animate={{ rotate: [0, -25, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
             style={{ transformOrigin: "80% 10%" }}
@@ -161,7 +161,7 @@ export default function RobotMascot() {
           <motion.img
             src={armRightImg}
             alt="robot arm right"
-            className="absolute top-[68px] right-[2px] w-[34px] drop-shadow-md select-none"
+            className="absolute top-[38px] right-[-2px] w-[20px] drop-shadow-md select-none"
             animate={{ rotate: [0, 10, 0] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "20% 10%" }}
@@ -171,7 +171,7 @@ export default function RobotMascot() {
           <motion.img
             src={legLeftImg}
             alt="robot leg left"
-            className="absolute top-[112px] left-[14px] w-[26px] drop-shadow-md select-none"
+            className="absolute top-[68px] left-[10px] w-[16px] drop-shadow-md select-none"
             animate={{ rotate: [-4, 4, -4] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "50% 0%" }}
@@ -181,14 +181,14 @@ export default function RobotMascot() {
           <motion.img
             src={legRightImg}
             alt="robot leg right"
-            className="absolute top-[112px] right-[14px] w-[26px] drop-shadow-md select-none"
+            className="absolute top-[68px] right-[10px] w-[16px] drop-shadow-md select-none"
             animate={{ rotate: [4, -4, 4] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "50% 0%" }}
             draggable={false}
           />
 
-          <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-12 h-3 bg-purple-500/40 rounded-full blur-md" />
+          <div className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-8 h-2 bg-purple-500/40 rounded-full blur-md" />
         </motion.div>
       </motion.div>
 
