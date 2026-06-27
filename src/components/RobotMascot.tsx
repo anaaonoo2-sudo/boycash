@@ -171,7 +171,7 @@ export default function RobotMascot() {
           <motion.img
             src={legLeftImg}
             alt="robot leg left"
-            className="absolute top-[72px] left-[22px] w-[15px] drop-shadow-md select-none"
+            className="absolute top-[64px] left-[22px] w-[15px] drop-shadow-md select-none"
             animate={{ rotate: [-4, 4, -4] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "50% 0%" }}
@@ -181,7 +181,7 @@ export default function RobotMascot() {
           <motion.img
             src={legRightImg}
             alt="robot leg right"
-            className="absolute top-[72px] right-[22px] w-[15px] drop-shadow-md select-none"
+            className="absolute top-[64px] right-[22px] w-[15px] drop-shadow-md select-none"
             animate={{ rotate: [4, -4, 4] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "50% 0%" }}
