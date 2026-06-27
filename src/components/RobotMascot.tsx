@@ -209,7 +209,7 @@ export default function RobotMascot() {
             style={{
               position:"absolute",
               left:CX-BEW/2,
-              top:HH,
+              top:HH-6,
               width:BEW, height:BEH,
               objectFit:"contain",
               zIndex:3,
@@ -222,7 +222,7 @@ export default function RobotMascot() {
             style={{
               position:"absolute",
               left:CX-BEW/2-AW+4,
-              top:HH+6,
+              top:HH-2,
               width:AW, height:AH,
               transformOrigin:"90% 40%",
               objectFit:"contain",
@@ -236,7 +236,7 @@ export default function RobotMascot() {
             style={{
               position:"absolute",
               left:CX+BEW/2-4,
-              top:HH+6,
+              top:HH-2,
               width:AW, height:AH,
               transformOrigin:"10% 40%",
               objectFit:"contain",
@@ -249,7 +249,7 @@ export default function RobotMascot() {
             style={{
               position:"absolute",
               left:CX-LW,
-              top:HH+BEH-4,
+              top:HH+BEH-10,
               width:LW, height:LH,
               objectFit:"contain",
               zIndex:2,
@@ -261,7 +261,7 @@ export default function RobotMascot() {
             style={{
               position:"absolute",
               left:CX,
-              top:HH+BEH-4,
+              top:HH+BEH-10,
               width:LW, height:LH,
               objectFit:"contain",
               zIndex:2,
@@ -273,7 +273,7 @@ export default function RobotMascot() {
             animate={{scale:[1,1.5,1],opacity:[0.1,0.3,0.1]}}
             transition={{repeat:Infinity,duration:3}}
             style={{
-              position:"absolute",left:CX-20,top:HH,
+              position:"absolute",left:CX-20,top:HH-6,
               width:40,height:40,borderRadius:"50%",
               background:"rgba(168,85,247,.2)",filter:"blur(12px)",
               pointerEvents:"none",zIndex:1,
