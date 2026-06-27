@@ -141,37 +141,37 @@ export default function RobotMascot() {
             draggable={false}
           />
 
-          <img
-            src={bodyImg}
-            alt="robot body"
-            className="absolute left-1/2 -translate-x-1/2 top-[48px] w-[40px] drop-shadow-lg select-none"
-            draggable={false}
-          />
-
           <motion.img
             src={armLeftImg}
             alt="robot arm left"
-            className="absolute top-[54px] left-[14px] w-[13px] drop-shadow-md select-none"
-            animate={{ rotate: [0, -25, 0] }}
+            className="absolute top-[52px] left-[16px] w-[15px] drop-shadow-md select-none z-0"
+            animate={{ rotate: [0, -20, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
-            style={{ transformOrigin: "50% 5%" }}
+            style={{ transformOrigin: "50% 0%" }}
             draggable={false}
           />
 
           <motion.img
             src={armRightImg}
             alt="robot arm right"
-            className="absolute top-[54px] right-[14px] w-[13px] drop-shadow-md select-none"
-            animate={{ rotate: [0, 10, 0] }}
+            className="absolute top-[52px] right-[16px] w-[15px] drop-shadow-md select-none z-0"
+            animate={{ rotate: [0, 8, 0] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "50% 5%" }}
+            style={{ transformOrigin: "50% 0%" }}
+            draggable={false}
+          />
+
+          <img
+            src={bodyImg}
+            alt="robot body"
+            className="absolute left-1/2 -translate-x-1/2 top-[48px] w-[40px] drop-shadow-lg select-none z-10"
             draggable={false}
           />
 
           <motion.img
             src={legLeftImg}
             alt="robot leg left"
-            className="absolute top-[64px] left-[22px] w-[15px] drop-shadow-md select-none"
+            className="absolute top-[69px] left-[22px] w-[15px] drop-shadow-md select-none"
             animate={{ rotate: [-4, 4, -4] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "50% 0%" }}
@@ -181,7 +181,7 @@ export default function RobotMascot() {
           <motion.img
             src={legRightImg}
             alt="robot leg right"
-            className="absolute top-[64px] right-[22px] w-[15px] drop-shadow-md select-none"
+            className="absolute top-[69px] right-[22px] w-[15px] drop-shadow-md select-none"
             animate={{ rotate: [4, -4, 4] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             style={{ transformOrigin: "50% 0%" }}
