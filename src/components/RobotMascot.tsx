@@ -6,6 +6,7 @@ import { Send, Loader2, ChevronDown } from "lucide-react";
 import { askAssistant } from "@/src/services/aiService";
 import { useTranslation } from "react-i18next";
 import headImg  from "@/src/assets/robot-parts/robot_head_front.png";
+import bellyImg from "@/src/assets/robot-parts/robot_head_back.png";
 import bodyLImg from "@/src/assets/robot-parts/robot_body_left3q.png";
 import bodyRImg from "@/src/assets/robot-parts/robot_body_right3q.png";
 import armLImg  from "@/src/assets/robot-parts/robot_arm_left.png";
@@ -13,17 +14,16 @@ import armRImg  from "@/src/assets/robot-parts/robot_arm_right.png";
 
 interface Message { role: "user" | "model"; text: string; }
 
-// head:338x431 body:107x356 arm:297x121
-// مقياس الروبوت النهائي
+// أبعاد كل جزء
 const HW=30, HH=38;   // رأس
-const BW=15, BH=50;   // نصف جسم
+const BEW=28, BEH=29; // بطن (robot_head_back)
+const LW=13, LH=43;   // ساق (نصف)
 const AW=22, AH=9;    // ذراع
-// الروبوت الكامل: عرض=74 ارتفاع=88
-const RW=74, RH=88;
+const RW=72, RH=110;  // الروبوت الكامل
+const CX=RW/2;        // المنتصف
 
-const WANDER = [
-  {x:14,y:100},{x:14,y:280},{x:14,y:460},
-  {x:14,y:180},{x:14,y:380},
+const WANDER=[
+  {x:14,y:160},{x:14,y:320},{x:14,y:480},{x:14,y:240},{x:14,y:400},
 ];
 
 const MOODS: Record<string,{mood:string;tip:string}> = {
@@ -36,41 +36,41 @@ const MOODS: Record<string,{mood:string;tip:string}> = {
 };
 
 const BODY_A: Record<string,any> = {
-  idle:     {y:[0,-5,0],                              transition:{repeat:Infinity,duration:2.8,ease:"easeInOut"}},
-  excited:  {y:[0,-9,0],  rotate:[-3,3,-3],           transition:{repeat:Infinity,duration:1.1}},
-  dancing:  {y:[0,-12,0], rotate:[-6,6,-6],x:[-5,5,-5],transition:{repeat:Infinity,duration:0.7}},
-  thinking: {y:[0,-4,0],  rotate:[0,4,0],             transition:{repeat:Infinity,duration:2}},
-  proud:    {y:[0,-7,0],  scale:[1,1.07,1],           transition:{repeat:Infinity,duration:1.4}},
-  waving:   {y:[0,-6,0],                              transition:{repeat:Infinity,duration:1.9}},
+  idle:     {y:[0,-5,0],transition:{repeat:Infinity,duration:2.8,ease:"easeInOut"}},
+  excited:  {y:[0,-9,0],rotate:[-3,3,-3],transition:{repeat:Infinity,duration:1.1}},
+  dancing:  {y:[0,-12,0],rotate:[-6,6,-6],x:[-5,5,-5],transition:{repeat:Infinity,duration:0.7}},
+  thinking: {y:[0,-4,0],rotate:[0,4,0],transition:{repeat:Infinity,duration:2}},
+  proud:    {y:[0,-7,0],scale:[1,1.07,1],transition:{repeat:Infinity,duration:1.4}},
+  waving:   {y:[0,-6,0],transition:{repeat:Infinity,duration:1.9}},
 };
 const ARM_LA: Record<string,any> = {
-  idle:     {rotate:[0,10,0],      transition:{repeat:Infinity,duration:2.4}},
-  dancing:  {rotate:[-28,28,-28],  transition:{repeat:Infinity,duration:0.5}},
-  excited:  {rotate:[-15,15,-15],  transition:{repeat:Infinity,duration:0.7}},
-  thinking: {rotate:[0,40,0],      transition:{repeat:Infinity,duration:1.8}},
-  proud:    {rotate:[-20,0,-20],   transition:{repeat:Infinity,duration:1.4}},
-  waving:   {rotate:[-40,40,-40],  transition:{repeat:Infinity,duration:0.4}},
+  idle:     {rotate:[0,10,0],transition:{repeat:Infinity,duration:2.4}},
+  dancing:  {rotate:[-28,28,-28],transition:{repeat:Infinity,duration:0.5}},
+  excited:  {rotate:[-15,15,-15],transition:{repeat:Infinity,duration:0.7}},
+  thinking: {rotate:[0,40,0],transition:{repeat:Infinity,duration:1.8}},
+  proud:    {rotate:[-20,0,-20],transition:{repeat:Infinity,duration:1.4}},
+  waving:   {rotate:[-40,40,-40],transition:{repeat:Infinity,duration:0.4}},
 };
 const ARM_RA: Record<string,any> = {
-  idle:     {rotate:[0,-10,0],     transition:{repeat:Infinity,duration:2.4,delay:0.3}},
-  dancing:  {rotate:[28,-28,28],   transition:{repeat:Infinity,duration:0.5}},
-  excited:  {rotate:[15,-15,15],   transition:{repeat:Infinity,duration:0.7,delay:0.15}},
-  thinking: {rotate:[0,20,0],      transition:{repeat:Infinity,duration:2.8}},
-  proud:    {rotate:[20,0,20],     transition:{repeat:Infinity,duration:1.4}},
-  waving:   {rotate:[6,-6,6],      transition:{repeat:Infinity,duration:1.9}},
+  idle:     {rotate:[0,-10,0],transition:{repeat:Infinity,duration:2.4,delay:0.3}},
+  dancing:  {rotate:[28,-28,28],transition:{repeat:Infinity,duration:0.5}},
+  excited:  {rotate:[15,-15,15],transition:{repeat:Infinity,duration:0.7,delay:0.15}},
+  thinking: {rotate:[0,20,0],transition:{repeat:Infinity,duration:2.8}},
+  proud:    {rotate:[20,0,20],transition:{repeat:Infinity,duration:1.4}},
+  waving:   {rotate:[6,-6,6],transition:{repeat:Infinity,duration:1.9}},
 };
 const HEAD_A: Record<string,any> = {
-  idle:     {rotate:[0,4,-4,0],   transition:{repeat:Infinity,duration:3.8}},
-  dancing:  {rotate:[-10,10,-10], transition:{repeat:Infinity,duration:0.6}},
-  excited:  {rotate:[-7,7,-7],    transition:{repeat:Infinity,duration:0.8}},
-  thinking: {rotate:[8,14,8],     transition:{repeat:Infinity,duration:2.3}},
-  proud:    {scale:[1,1.1,1],     transition:{repeat:Infinity,duration:1.8}},
-  waving:   {rotate:[-7,7,-7],    transition:{repeat:Infinity,duration:0.9}},
+  idle:     {rotate:[0,4,-4,0],transition:{repeat:Infinity,duration:3.8}},
+  dancing:  {rotate:[-10,10,-10],transition:{repeat:Infinity,duration:0.6}},
+  excited:  {rotate:[-7,7,-7],transition:{repeat:Infinity,duration:0.8}},
+  thinking: {rotate:[8,14,8],transition:{repeat:Infinity,duration:2.3}},
+  proud:    {scale:[1,1.1,1],transition:{repeat:Infinity,duration:1.8}},
+  waving:   {rotate:[-7,7,-7],transition:{repeat:Infinity,duration:0.9}},
 };
 
 export default function RobotMascot() {
   const {t,i18n} = useTranslation();
-  const isRtl = i18n.language === "ar";
+  const isRtl = i18n.language==="ar";
   const location = useLocation();
   const [chatOpen,  setChatOpen]  = useState(false);
   const [messages,  setMessages]  = useState<Message[]>([]);
@@ -83,82 +83,76 @@ export default function RobotMascot() {
   const inputRef  = useRef<HTMLInputElement>(null);
   const timerRef  = useRef<ReturnType<typeof setInterval>|null>(null);
 
-  const pg   = MOODS[location.pathname] || MOODS["/"];
+  const pg   = MOODS[location.pathname]||MOODS["/"];
   const mood = pg.mood;
 
-  // تجوال تلقائي كل 3 ثواني
-  useEffect(() => {
-    if (chatOpen) { if(timerRef.current) clearInterval(timerRef.current); return; }
-    timerRef.current = setInterval(()=>setWanderIdx(i=>(i+1)%WANDER.length), 3000);
-    return ()=>{ if(timerRef.current) clearInterval(timerRef.current); };
+  useEffect(()=>{
+    if(chatOpen){if(timerRef.current)clearInterval(timerRef.current);return;}
+    timerRef.current=setInterval(()=>setWanderIdx(i=>(i+1)%WANDER.length),3500);
+    return()=>{if(timerRef.current)clearInterval(timerRef.current);};
   },[chatOpen]);
 
-  // كشف الكيبورد
   useEffect(()=>{
-    const vv = window.visualViewport;
-    if(!vv) return;
-    const fn = ()=>{ const d=window.innerHeight-vv.height; setKbH(d>80?d:0); };
+    const vv=window.visualViewport;if(!vv)return;
+    const fn=()=>{const d=window.innerHeight-vv.height;setKbH(d>80?d:0);};
     vv.addEventListener("resize",fn);
-    return ()=>vv.removeEventListener("resize",fn);
+    return()=>vv.removeEventListener("resize",fn);
   },[]);
 
-  // فقاعة عند تغيير الصفحة
   useEffect(()=>{
     setShowTip(true);
     const t=setTimeout(()=>setShowTip(false),4000);
-    return ()=>clearTimeout(t);
+    return()=>clearTimeout(t);
   },[location.pathname]);
 
   useEffect(()=>{
-    if(chatOpen && messages.length===0)
+    if(chatOpen&&messages.length===0)
       setMessages([{role:"model",text:t("assistant_welcome")}]);
   },[chatOpen,messages.length,t]);
 
   useEffect(()=>{
-    if(scrollRef.current) scrollRef.current.scrollTop=scrollRef.current.scrollHeight;
+    if(scrollRef.current)scrollRef.current.scrollTop=scrollRef.current.scrollHeight;
   },[messages,isLoading]);
 
   useEffect(()=>{
-    if(chatOpen) setTimeout(()=>inputRef.current?.focus(),350);
+    if(chatOpen)setTimeout(()=>inputRef.current?.focus(),350);
   },[chatOpen]);
 
-  const handleSend = useCallback(async(custom?:string)=>{
+  const handleSend=useCallback(async(custom?:string)=>{
     const text=custom||input.trim();
-    if(!text||isLoading) return;
-    if(!custom) setInput("");
+    if(!text||isLoading)return;
+    if(!custom)setInput("");
     const updated=[...messages,{role:"user",text} as Message];
     setMessages(updated);
     setIsLoading(true);
-    try {
+    try{
       const res=await askAssistant(text,updated.map(m=>({role:m.role,text:m.text})));
       setMessages(prev=>[...prev,{role:"model",text:res}]);
-    } catch {
+    }catch{
       setMessages(prev=>[...prev,{role:"model",text:t("error_occurred")}]);
-    } finally { setIsLoading(false); }
+    }finally{setIsLoading(false);}
   },[input,isLoading,messages,t]);
 
-  if(location.pathname==="/assistant") return null;
+  if(location.pathname==="/assistant")return null;
 
-  const pos = WANDER[wanderIdx];
-  // منتصف الروبوت أفقياً
-  const centerX = RW/2;
+  const pos=WANDER[wanderIdx];
 
   return (
     <>
       {/* ══ الروبوت ══ */}
       <motion.div
         animate={{
-          bottom: pos.y,
-          right:  isRtl ? "auto" : pos.x,
-          left:   isRtl ? pos.x  : "auto",
+          bottom:pos.y,
+          right:isRtl?"auto":pos.x,
+          left:isRtl?pos.x:"auto",
         }}
         transition={{type:"spring",stiffness:55,damping:13}}
-        style={{position:"fixed",zIndex:40,width:RW,height:RH+30}}
+        style={{position:"fixed",zIndex:40,width:RW,height:RH+20}}
         className="select-none"
       >
         {/* فقاعة */}
         <AnimatePresence>
-          {showTip && !chatOpen && (
+          {showTip&&!chatOpen&&(
             <motion.div
               initial={{opacity:0,scale:0.7,y:10}}
               animate={{opacity:1,scale:1,y:0}}
@@ -166,7 +160,6 @@ export default function RobotMascot() {
               style={{
                 position:"absolute",bottom:"108%",
                 right:isRtl?"auto":0,left:isRtl?0:"auto",
-                marginBottom:4,
                 background:"linear-gradient(135deg,#1a0533dd,#2d1060dd)",
                 border:"1.5px solid rgba(168,85,247,.55)",
                 borderRadius:13,padding:"8px 11px",
@@ -193,71 +186,44 @@ export default function RobotMascot() {
         {/* جسم الروبوت */}
         <motion.div
           animate={BODY_A[mood]}
-          style={{
-            position:"relative",
-            width:RW,
-            height:RH,
-            cursor:"pointer",
-            overflow:"visible",
-          }}
+          style={{position:"relative",width:RW,height:RH,cursor:"pointer",overflow:"visible"}}
           whileTap={{scale:0.85}}
           onClick={()=>{setChatOpen(true);setShowTip(false);}}
         >
-          {/* ═══ الرأس ═══ */}
-          <motion.img
-            src={headImg} alt="" draggable={false}
+          {/* ═══ رأس ═══ */}
+          <motion.img src={headImg} alt="" draggable={false}
             animate={HEAD_A[mood]}
             style={{
               position:"absolute",
-              left: centerX - HW/2,
-              top: 0,
-              width: HW,
-              height: HH,
+              left:CX-HW/2, top:0,
+              width:HW, height:HH,
               transformOrigin:"50% 100%",
               objectFit:"contain",
               filter:"drop-shadow(0 0 8px rgba(168,85,247,.8))",
+              zIndex:4,
+            }}
+          />
+
+          {/* ═══ بطن (robot_head_back) ═══ */}
+          <img src={bellyImg} alt="" draggable={false}
+            style={{
+              position:"absolute",
+              left:CX-BEW/2,
+              top:HH,
+              width:BEW, height:BEH,
+              objectFit:"contain",
               zIndex:3,
             }}
           />
 
-          {/* ═══ البطن (نصف يسار) ═══ */}
-          <img
-            src={bodyLImg} alt="" draggable={false}
-            style={{
-              position:"absolute",
-              left: centerX - BW,
-              top: HH,          // يبدأ مباشرة أسفل الرأس
-              width: BW,
-              height: BH,
-              objectFit:"contain",
-              zIndex:2,
-            }}
-          />
-
-          {/* ═══ البطن (نصف يمين) ═══ */}
-          <img
-            src={bodyRImg} alt="" draggable={false}
-            style={{
-              position:"absolute",
-              left: centerX,
-              top: HH,          // يبدأ مباشرة أسفل الرأس
-              width: BW,
-              height: BH,
-              objectFit:"contain",
-              zIndex:2,
-            }}
-          />
-
           {/* ═══ ذراع يسار ═══ */}
-          <motion.img
-            src={armLImg} alt="" draggable={false}
+          <motion.img src={armLImg} alt="" draggable={false}
             animate={ARM_LA[mood]}
             style={{
               position:"absolute",
-              left: 0,
-              top: HH + 8,
-              width: AW,
-              height: AH,
+              left:CX-BEW/2-AW+4,
+              top:HH+6,
+              width:AW, height:AH,
               transformOrigin:"90% 40%",
               objectFit:"contain",
               zIndex:4,
@@ -265,53 +231,69 @@ export default function RobotMascot() {
           />
 
           {/* ═══ ذراع يمين ═══ */}
-          <motion.img
-            src={armRImg} alt="" draggable={false}
+          <motion.img src={armRImg} alt="" draggable={false}
             animate={ARM_RA[mood]}
             style={{
               position:"absolute",
-              right: 0,
-              top: HH + 8,
-              width: AW,
-              height: AH,
+              left:CX+BEW/2-4,
+              top:HH+6,
+              width:AW, height:AH,
               transformOrigin:"10% 40%",
               objectFit:"contain",
               zIndex:4,
             }}
           />
 
-          {/* توهج */}
-          <motion.div
-            animate={{scale:[1,1.6,1],opacity:[0.1,0.3,0.1]}}
-            transition={{repeat:Infinity,duration:3}}
+          {/* ═══ ساق يسار ═══ */}
+          <img src={bodyLImg} alt="" draggable={false}
             style={{
               position:"absolute",
-              left:centerX-20,top:HH-10,
-              width:40,height:40,
-              borderRadius:"50%",
-              background:"rgba(168,85,247,.2)",
-              filter:"blur(12px)",
-              pointerEvents:"none",zIndex:1,
+              left:CX-LW,
+              top:HH+BEH-4,
+              width:LW, height:LH,
+              objectFit:"contain",
+              zIndex:2,
             }}
           />
 
+          {/* ═══ ساق يمين ═══ */}
+          <img src={bodyRImg} alt="" draggable={false}
+            style={{
+              position:"absolute",
+              left:CX,
+              top:HH+BEH-4,
+              width:LW, height:LH,
+              objectFit:"contain",
+              zIndex:2,
+            }}
+          />
+
+          {/* توهج */}
+          <motion.div
+            animate={{scale:[1,1.5,1],opacity:[0.1,0.3,0.1]}}
+            transition={{repeat:Infinity,duration:3}}
+            style={{
+              position:"absolute",left:CX-20,top:HH,
+              width:40,height:40,borderRadius:"50%",
+              background:"rgba(168,85,247,.2)",filter:"blur(12px)",
+              pointerEvents:"none",zIndex:1,
+            }}
+          />
           {/* نقطة خضراء */}
           <div style={{
             position:"absolute",top:-2,right:-2,
-            width:9,height:9,
-            background:"#4ade80",borderRadius:"50%",
-            border:"1.5px solid #000",
-            boxShadow:"0 0 7px #4ade80",
-            zIndex:5,
+            width:9,height:9,background:"#4ade80",
+            borderRadius:"50%",border:"1.5px solid #000",
+            boxShadow:"0 0 7px #4ade80",zIndex:5,
           }}/>
         </motion.div>
       </motion.div>
 
       {/* ══ Backdrop ══ */}
       <AnimatePresence>
-        {chatOpen && (
+        {chatOpen&&(
           <motion.div
-            initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}
+            initial={{opacity:0}}animate={{opacity:1}}exit={{opacity:0}}
             onClick={()=>setChatOpen(false)}
             style={{position:"fixed",inset:0,zIndex:48,
               background:"rgba(0,0,0,.6)",backdropFilter:"blur(5px)"}}
@@ -321,16 +303,15 @@ export default function RobotMascot() {
 
       {/* ══ Chat Drawer ══ */}
       <AnimatePresence>
-        {chatOpen && (
+        {chatOpen&&(
           <motion.div
-            initial={{y:"100%"}} animate={{y:0}} exit={{y:"100%"}}
+            initial={{y:"100%"}}animate={{y:0}}exit={{y:"100%"}}
             transition={{type:"spring",damping:28,stiffness:340}}
             style={{
               position:"fixed",left:0,right:0,
               bottom:kbH,
               height:kbH>0?`calc(82vh - ${kbH}px)`:"72vh",
-              zIndex:50,
-              background:"#0d0d14",
+              zIndex:50,background:"#0d0d14",
               borderTop:"1px solid rgba(255,255,255,.09)",
               borderRadius:"26px 26px 0 0",
               display:"flex",flexDirection:"column",
@@ -369,7 +350,7 @@ export default function RobotMascot() {
                 <motion.div key={i} initial={{opacity:0,y:6}} animate={{opacity:1,y:0}}
                   style={{display:"flex",gap:8,alignItems:"flex-end",
                     flexDirection:m.role==="user"?"row-reverse":"row"}}>
-                  {m.role==="model" && (
+                  {m.role==="model"&&(
                     <img src={headImg} alt="" style={{width:22,height:22,objectFit:"contain",flexShrink:0}}/>
                   )}
                   <div style={{
@@ -384,7 +365,7 @@ export default function RobotMascot() {
                   }}>{m.text}</div>
                 </motion.div>
               ))}
-              {isLoading && (
+              {isLoading&&(
                 <div style={{display:"flex",gap:8,alignItems:"flex-end"}}>
                   <img src={headImg} alt="" style={{width:22,height:22,objectFit:"contain",opacity:0.6}}/>
                   <div style={{padding:"9px 13px",borderRadius:"18px 18px 18px 4px",
@@ -412,7 +393,8 @@ export default function RobotMascot() {
             {/* Input */}
             <div dir={isRtl?"rtl":"ltr"} style={{padding:"10px 16px 22px",flexShrink:0}}>
               <div style={{display:"flex",gap:8,alignItems:"center",background:"#fff",
-                borderRadius:20,padding:"5px 5px 5px 14px",boxShadow:"0 2px 16px rgba(0,0,0,.3)"}}>
+                borderRadius:20,padding:"5px 5px 5px 14px",
+                boxShadow:"0 2px 16px rgba(0,0,0,.3)"}}>
                 <input ref={inputRef} type="text" value={input}
                   onChange={e=>setInput(e.target.value)}
                   onKeyDown={e=>e.key==="Enter"&&handleSend()}
