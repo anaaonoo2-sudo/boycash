@@ -69,9 +69,9 @@ export default function RobotMascot() {
   }, [location.pathname]);
 
   const handleRobotClick = () => {
-    if (chatOpen) return;
     setBubbleText(getTipForPath(location.pathname));
-    setShowBubble(true);
+    setShowBubble(false);
+    setChatOpen(true);
   };
 
   const handleOpenChat = () => {
