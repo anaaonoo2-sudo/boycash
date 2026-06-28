@@ -162,13 +162,18 @@ const ChatWindow = memo(function ChatWindow({
 
   useEffect(() => {
     const update = () => {
-      if (!window.visualViewport) return;
-      const kbHeight = window.innerHeight - window.visualViewport.height;
+      const vv = window.visualViewport;
+      if (!vv) return;
+      const kbHeight = window.innerHeight - vv.offsetTop - vv.height;
       setBottomOffset(Math.max(kbHeight, 0) + 8);
     };
     window.visualViewport?.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("scroll", update);
     update();
-    return () => window.visualViewport?.removeEventListener("resize", update);
+    return () => {
+      window.visualViewport?.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("scroll", update);
+    };
   }, []);
 
   useEffect(() => {
