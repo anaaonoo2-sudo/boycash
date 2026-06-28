@@ -25,13 +25,9 @@ function getTipForPath(path: string): string {
   return PAGE_TIPS[path] || "احتاج مساعدة؟ اضغط علي وأنا أساعدك!";
 }
 
-// ─── الروبوت البصري — memo يمنع إعادة الرسم عند فتح الشات ───
+// ─── الروبوت البصري ───
 const RobotVisual = memo(function RobotVisual({
-  pos,
-  showBubble,
-  bubbleText,
-  onRobotClick,
-  onBubbleClick,
+  pos, showBubble, bubbleText, onRobotClick, onBubbleClick,
 }: {
   pos: { x: number; y: number };
   showBubble: boolean;
@@ -43,16 +39,12 @@ const RobotVisual = memo(function RobotVisual({
     <div
       className="fixed z-[65] pointer-events-none"
       style={{
-        width: 80,
-        height: 110,
-        left: pos.x,
-        top: pos.y,
-        // transition سلس بدون spring حتى لا يومض
+        width: 80, height: 110,
+        left: pos.x, top: pos.y,
         transition: "left 2s cubic-bezier(0.4,0,0.2,1), top 2s cubic-bezier(0.4,0,0.2,1)",
         willChange: "left, top",
       }}
     >
-      {/* فقاعة الكلام */}
       <AnimatePresence mode="wait">
         {showBubble && (
           <motion.div
@@ -62,12 +54,10 @@ const RobotVisual = memo(function RobotVisual({
             exit={{ opacity: 0, scale: 0.8, y: 6 }}
             transition={{ duration: 0.3 }}
             className="absolute -top-16 left-1/2 -translate-x-1/2 w-44 pointer-events-auto"
-            style={{ willChange: "opacity, transform" }}
           >
             <div
               onClick={onBubbleClick}
               className="bg-white/95 text-gray-900 text-[11px] font-semibold rounded-2xl px-3 py-2 shadow-xl cursor-pointer text-center leading-snug"
-              style={{ unicodeBidi: "plaintext" }}
             >
               {bubbleText}
             </div>
@@ -76,64 +66,44 @@ const RobotVisual = memo(function RobotVisual({
         )}
       </AnimatePresence>
 
-      {/* جسم الروبوت */}
       <motion.div
         className="relative w-full h-full pointer-events-auto cursor-pointer"
         onClick={onRobotClick}
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-        style={{ willChange: "transform" }}
       >
-        <motion.img
-          src={headImg}
-          alt=""
-          draggable={false}
+        <motion.img src={headImg} alt="" draggable={false}
           className="absolute left-1/2 -translate-x-1/2 top-0 w-[60px] drop-shadow-lg select-none"
           animate={{ rotate: [-6, 6, -6] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 90%", willChange: "transform" }}
+          style={{ transformOrigin: "50% 90%" }}
         />
-        <motion.img
-          src={armLeftImg}
-          alt=""
-          draggable={false}
+        <motion.img src={armLeftImg} alt="" draggable={false}
           className="absolute top-[52px] left-[16px] w-[15px] drop-shadow-md select-none z-0"
           animate={{ rotate: [0, -20, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
-          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
+          style={{ transformOrigin: "50% 0%" }}
         />
-        <motion.img
-          src={armRightImg}
-          alt=""
-          draggable={false}
+        <motion.img src={armRightImg} alt="" draggable={false}
           className="absolute top-[52px] right-[16px] w-[15px] drop-shadow-md select-none z-0"
           animate={{ rotate: [0, 8, 0] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
+          style={{ transformOrigin: "50% 0%" }}
         />
-        <img
-          src={bodyImg}
-          alt=""
-          draggable={false}
+        <img src={bodyImg} alt="" draggable={false}
           className="absolute left-1/2 -translate-x-1/2 top-[48px] w-[40px] drop-shadow-lg select-none z-10"
         />
-        <motion.img
-          src={legLeftImg}
-          alt=""
-          draggable={false}
+        <motion.img src={legLeftImg} alt="" draggable={false}
           className="absolute top-[69px] left-[22px] w-[15px] drop-shadow-md select-none"
           animate={{ rotate: [-4, 4, -4] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
+          style={{ transformOrigin: "50% 0%" }}
         />
-        <motion.img
-          src={legRightImg}
-          alt=""
-          draggable={false}
+        <motion.img src={legRightImg} alt="" draggable={false}
           className="absolute top-[69px] right-[22px] w-[15px] drop-shadow-md select-none"
           animate={{ rotate: [4, -4, 4] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
+          style={{ transformOrigin: "50% 0%" }}
         />
         <div className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-8 h-2 bg-purple-500/40 rounded-full blur-md" />
       </motion.div>
@@ -141,14 +111,9 @@ const RobotVisual = memo(function RobotVisual({
   );
 });
 
-// ─── نافذة المحادثة — معزولة تماماً، لا تؤثر على التطبيق ───
+// ─── نافذة المحادثة ───
 const ChatWindow = memo(function ChatWindow({
-  chatHistory,
-  chatInput,
-  chatLoading,
-  onInputChange,
-  onSend,
-  onClose,
+  chatHistory, chatInput, chatLoading, onInputChange, onSend, onClose,
 }: {
   chatHistory: { role: "user" | "model"; text: string }[];
   chatInput: string;
@@ -157,88 +122,134 @@ const ChatWindow = memo(function ChatWindow({
   onSend: () => void;
   onClose: () => void;
 }) {
-  const [bottomOffset, setBottomOffset] = useState(8);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
+  // scroll للأسفل عند كل رسالة جديدة
   useEffect(() => {
-    const update = () => {
-      const vv = window.visualViewport;
-      if (!vv) return;
-      const kbHeight = window.innerHeight - vv.offsetTop - vv.height;
-      setBottomOffset(Math.max(kbHeight, 0) + 8);
-    };
-    window.visualViewport?.addEventListener("resize", update);
-    window.visualViewport?.addEventListener("scroll", update);
-    update();
-    return () => {
-      window.visualViewport?.removeEventListener("resize", update);
-      window.visualViewport?.removeEventListener("scroll", update);
-    };
-  }, []);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }
   }, [chatHistory, chatLoading]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 40 }}
-      // fixed = منفصل تماماً عن باقي التطبيق، لا يرفعه أبداً
-      style={{ position: "fixed", top: "50%", transform: "translateY(-50%)" }}
-      className="left-4 right-4 z-[90] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[60vh] flex flex-col overflow-hidden"
+    // Overlay خلف النافذة
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-        <span className="text-white font-bold text-sm">مساعد BoyCash</span>
-        <button onClick={onClose} className="text-white/60 hover:text-white">
-          <X size={18} />
-        </button>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.92, y: 20 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        style={{
+          width: "100%",
+          maxWidth: 480,
+          maxHeight: "70vh",
+          display: "flex",
+          flexDirection: "column",
+          background: "rgba(10,10,20,0.97)",
+          border: "1px solid rgba(168,85,247,0.3)",
+          borderRadius: 20,
+          overflow: "hidden",
+          boxShadow: "0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(168,85,247,0.15)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.08)",
+          flexShrink: 0,
+        }}>
+          <span style={{ color: "white", fontWeight: 700, fontSize: 14 }}>مساعد BoyCash 🤖</span>
+          <button onClick={onClose} style={{ color: "rgba(255,255,255,0.5)", background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+            <X size={18} />
+          </button>
+        </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
-        {chatHistory.length === 0 && (
-          <p className="text-white/50 text-xs">اسألني أي شيء عن التطبيق 👋</p>
-        )}
-        {chatHistory.map((m, i) => (
-          <div
-            key={i}
-            className={`text-xs px-3 py-2 rounded-xl max-w-[85%] ${
-              m.role === "user"
-                ? "bg-primary text-white ml-auto"
-                : "bg-white/10 text-gray-100"
-            }`}
-            style={{ unicodeBidi: "plaintext" }}
-          >
-            {m.text}
-          </div>
-        ))}
-        {chatLoading && (
-          <div className="flex items-center gap-2 text-white/50 text-xs">
-            <Loader2 size={12} className="animate-spin" /> جاري الكتابة...
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      <div className="flex items-center gap-2 p-3 border-t border-white/10">
-        <input
-          value={chatInput}
-          onChange={(e) => onInputChange(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); onSend(); } }}
-          placeholder="اكتب سؤالك..."
-          enterKeyHint="send"
-          className="flex-1 bg-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none"
-        />
-        <button
-          onClick={onSend}
-          disabled={chatLoading || !chatInput.trim()}
-          className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white disabled:opacity-50"
+        {/* Messages */}
+        <div
+          ref={messagesRef}
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "12px 16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            minHeight: 0,
+          }}
         >
-          <Send size={16} />
-        </button>
-      </div>
-    </motion.div>
+          {chatHistory.length === 0 && (
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, textAlign: "center", marginTop: 20 }}>
+              اسألني أي شيء عن التطبيق 👋
+            </p>
+          )}
+          {chatHistory.map((m, i) => (
+            <div key={i} style={{
+              alignSelf: m.role === "user" ? "flex-end" : "flex-start",
+              maxWidth: "85%",
+              background: m.role === "user" ? "#a855f7" : "rgba(255,255,255,0.08)",
+              color: "white",
+              borderRadius: m.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
+              padding: "8px 12px",
+              fontSize: 12,
+              lineHeight: 1.5,
+              wordBreak: "break-word",
+            }}>
+              {m.text}
+            </div>
+          ))}
+          {chatLoading && (
+            <div style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.4)", fontSize: 12 }}>
+              <Loader2 size={12} style={{ animation: "spin 1s linear infinite" }} /> جاري الكتابة...
+            </div>
+          )}
+        </div>
+
+        {/* Input */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "10px 12px", borderTop: "1px solid rgba(255,255,255,0.08)",
+          flexShrink: 0, background: "rgba(0,0,0,0.3)",
+        }}>
+          <input
+            ref={inputRef}
+            value={chatInput}
+            onChange={(e) => onInputChange(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); onSend(); } }}
+            placeholder="اكتب سؤالك..."
+            enterKeyHint="send"
+            style={{
+              flex: 1,
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 12,
+              padding: "8px 12px",
+              color: "white",
+              fontSize: 13,
+              outline: "none",
+            }}
+          />
+          <button
+            onClick={onSend}
+            disabled={chatLoading || !chatInput.trim()}
+            style={{
+              width: 36, height: 36, borderRadius: 10,
+              background: chatLoading || !chatInput.trim() ? "rgba(168,85,247,0.3)" : "#a855f7",
+              border: "none", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "white", flexShrink: 0,
+            }}
+          >
+            <Send size={15} />
+          </button>
+        </div>
+      </motion.div>
+    </div>
   );
 });
 
