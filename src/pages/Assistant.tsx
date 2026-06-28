@@ -108,12 +108,15 @@ export default function Assistant() {
               )}>
                 {m.role === 'user' ? <User size={18} /> : <img src="/bot-avatar.jpg" style={{width:"18px",height:"18px",borderRadius:"50%",objectFit:"cover"}} />}
               </div>
-              <div className={cn(
-                "px-4 py-3 rounded-2xl text-[13px] max-w-[85%] leading-relaxed shadow-lg",
-                m.role === 'user'
-                  ? "bg-primary text-white font-medium shadow-primary/20"
-                  : "bg-white/10 text-gray-100 border border-white/5 backdrop-blur-md"
-              )}>
+              <div
+                className={cn(
+                  "px-4 py-3 rounded-2xl text-[13px] max-w-[85%] leading-relaxed shadow-lg",
+                  m.role === 'user'
+                    ? "bg-primary text-white font-medium shadow-primary/20"
+                    : "bg-white/10 text-gray-100 border border-white/5 backdrop-blur-md"
+                )}
+                style={{ unicodeBidi: "plaintext" }}
+              >
                 {m.text}
               </div>
             </motion.div>

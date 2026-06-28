@@ -117,6 +117,7 @@ export default function RobotMascot() {
               <div
                 onClick={handleOpenChat}
                 className="bg-white/95 text-gray-900 text-[11px] font-semibold rounded-2xl px-3 py-2 shadow-xl cursor-pointer text-center leading-snug"
+                style={{ unicodeBidi: "plaintext" }}
               >
                 {bubbleText}
               </div>
