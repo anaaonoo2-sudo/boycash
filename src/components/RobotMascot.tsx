@@ -186,8 +186,8 @@ const ChatWindow = memo(function ChatWindow({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 40 }}
       // fixed = منفصل تماماً عن باقي التطبيق، لا يرفعه أبداً
-      style={{ bottom: bottomOffset, position: "fixed" }}
-      className="left-4 right-4 z-[90] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[45dvh] flex flex-col overflow-hidden"
+      style={{ position: "fixed", top: "50%", transform: "translateY(-50%)" }}
+      className="left-4 right-4 z-[90] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[60vh] flex flex-col overflow-hidden"
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
         <span className="text-white font-bold text-sm">مساعد BoyCash</span>
