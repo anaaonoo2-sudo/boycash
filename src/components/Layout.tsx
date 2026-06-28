@@ -8,6 +8,7 @@ import { cn } from "@/src/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import CoinIcon from "./ui/CoinIcon";
 import RobotMascot from "./RobotMascot";
+import BackButtonHandler from "./BackButtonHandler";
 
 interface LayoutProps {
   children: ReactNode;
@@ -45,6 +46,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Robot - only once, not on assistant page */}
       {!isAssistant && <RobotMascot />}
+      <BackButtonHandler />
 
       {/* Top Bar */}
       <header className="fixed top-0 left-0 right-0 z-[60] bg-transparent backdrop-blur-[40px] px-6 py-4 flex items-center justify-between border-b border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
