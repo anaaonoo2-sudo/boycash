@@ -160,19 +160,31 @@ const ChatWindow = memo(function ChatWindow({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!window.visualViewport) return;
+    // نمنع scroll الـ body تماماً عند فتح الشات
+    const originalScrollY = window.scrollY;
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${originalScrollY}px`;
+    document.body.style.width = "100%";
+
     const update = () => {
-      const vv = window.visualViewport!;
-      // المسافة بين أسفل الـ viewport المرئي وأسفل الشاشة الحقيقية
-      const kbHeight = window.innerHeight - vv.height - vv.offsetTop;
+      if (!window.visualViewport) return;
+      const vv = window.visualViewport;
+      const kbHeight = window.innerHeight - vv.height;
       setBottomOffset(Math.max(kbHeight, 0) + 8);
     };
-    window.visualViewport.addEventListener("resize", update);
-    window.visualViewport.addEventListener("scroll", update);
+
+    window.visualViewport?.addEventListener("resize", update);
     update();
+
     return () => {
-      window.visualViewport!.removeEventListener("resize", update);
-      window.visualViewport!.removeEventListener("scroll", update);
+      window.visualViewport?.removeEventListener("resize", update);
+      // نعيد الـ body لحالته الطبيعية عند إغلاق الشات
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo(0, originalScrollY);
     };
   }, []);
 
