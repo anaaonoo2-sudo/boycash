@@ -1,8 +1,7 @@
 /* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
-import { HashRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { App as CapApp } from "@capacitor/app";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Earn from "./pages/Earn";
@@ -25,26 +24,6 @@ StatusBar.setStyle({ style: Style.Dark });
 StatusBar.setBackgroundColor({ color: "#00000000" });
 StatusBar.setOverlaysWebView({ overlay: true });
 
-// مكوّن منفصل لمعالجة زر الرجوع
-function BackButtonHandler() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const handler = CapApp.addListener("backButton", () => {
-      // إذا في الصفحة الرئيسية - لا تفعل شيئاً (لا تغلق التطبيق)
-      if (location.pathname === "/") {
-        return;
-      }
-      // غير ذلك ارجع للخلف
-      navigate(-1);
-    });
-    return () => { handler.then(h => h.remove()); };
-  }, [location.pathname, navigate]);
-
-  return null;
-}
-
 export default function App() {
   const [splash, setSplash] = useState(true);
   // احتياطي: أخفِ splash بعد 5 ثواني مهما حدث
@@ -55,7 +34,6 @@ export default function App() {
       <AuthProvider>
         <AppProvider>
           <Router>
-            <BackButtonHandler />
             <Toaster position="top-center" reverseOrder={false} />
             <Layout>
               <Routes>
