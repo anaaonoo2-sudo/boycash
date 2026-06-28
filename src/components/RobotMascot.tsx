@@ -1,7 +1,7 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { askAssistant } from "@/src/services/aiService";
 import { X, Send, Loader2 } from "lucide-react";
 
@@ -24,8 +24,7 @@ function getTipForPath(path: string): string {
   return PAGE_TIPS[path] || "احتاج مساعدة؟ اضغط علي وأنا أساعدك!";
 }
 
-/* الجزء البصري للروبوت فقط — معزول بـ memo بحيث فتح/قفل الشات
-   أو الكتابة فيه لا يسبب أي إعادة رسم لهذا الجزء أبداً */
+// ─── الروبوت البصري — memo يمنع إعادة الرسم عند فتح الشات ───
 const RobotVisual = memo(function RobotVisual({
   pos,
   showBubble,
@@ -40,19 +39,29 @@ const RobotVisual = memo(function RobotVisual({
   onBubbleClick: () => void;
 }) {
   return (
-    <motion.div
+    <div
       className="fixed z-[65] pointer-events-none"
-      style={{ width: 80, height: 110, left: 0, top: 0 }}
-      animate={{ x: pos.x, y: pos.y }}
-      transition={{ type: "spring", stiffness: 40, damping: 15, duration: 2 }}
+      style={{
+        width: 80,
+        height: 110,
+        left: pos.x,
+        top: pos.y,
+        // transition سلس بدون spring حتى لا يومض
+        transition: "left 2s cubic-bezier(0.4,0,0.2,1), top 2s cubic-bezier(0.4,0,0.2,1)",
+        willChange: "left, top",
+      }}
     >
-      <AnimatePresence>
+      {/* فقاعة الكلام */}
+      <AnimatePresence mode="wait">
         {showBubble && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            key="bubble"
+            initial={{ opacity: 0, scale: 0.8, y: 6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 10 }}
-            className="absolute -top-16 left-1/2 -translate-x-1/2 w-40 pointer-events-auto"
+            exit={{ opacity: 0, scale: 0.8, y: 6 }}
+            transition={{ duration: 0.3 }}
+            className="absolute -top-16 left-1/2 -translate-x-1/2 w-44 pointer-events-auto"
+            style={{ willChange: "opacity, transform" }}
           >
             <div
               onClick={onBubbleClick}
@@ -66,75 +75,72 @@ const RobotVisual = memo(function RobotVisual({
         )}
       </AnimatePresence>
 
+      {/* جسم الروبوت */}
       <motion.div
         className="relative w-full h-full pointer-events-auto cursor-pointer"
         onClick={onRobotClick}
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: "transform" }}
       >
         <motion.img
           src={headImg}
-          alt="robot head"
+          alt=""
+          draggable={false}
           className="absolute left-1/2 -translate-x-1/2 top-0 w-[60px] drop-shadow-lg select-none"
           animate={{ rotate: [-6, 6, -6] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 90%" }}
-          draggable={false}
+          style={{ transformOrigin: "50% 90%", willChange: "transform" }}
         />
-
         <motion.img
           src={armLeftImg}
-          alt="robot arm left"
+          alt=""
+          draggable={false}
           className="absolute top-[52px] left-[16px] w-[15px] drop-shadow-md select-none z-0"
           animate={{ rotate: [0, -20, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.2 }}
-          style={{ transformOrigin: "50% 0%" }}
-          draggable={false}
+          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
         />
-
         <motion.img
           src={armRightImg}
-          alt="robot arm right"
+          alt=""
+          draggable={false}
           className="absolute top-[52px] right-[16px] w-[15px] drop-shadow-md select-none z-0"
           animate={{ rotate: [0, 8, 0] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 0%" }}
-          draggable={false}
+          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
         />
-
         <img
           src={bodyImg}
-          alt="robot body"
-          className="absolute left-1/2 -translate-x-1/2 top-[48px] w-[40px] drop-shadow-lg select-none z-10"
+          alt=""
           draggable={false}
+          className="absolute left-1/2 -translate-x-1/2 top-[48px] w-[40px] drop-shadow-lg select-none z-10"
         />
-
         <motion.img
           src={legLeftImg}
-          alt="robot leg left"
+          alt=""
+          draggable={false}
           className="absolute top-[69px] left-[22px] w-[15px] drop-shadow-md select-none"
           animate={{ rotate: [-4, 4, -4] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 0%" }}
-          draggable={false}
+          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
         />
-
         <motion.img
           src={legRightImg}
-          alt="robot leg right"
+          alt=""
+          draggable={false}
           className="absolute top-[69px] right-[22px] w-[15px] drop-shadow-md select-none"
           animate={{ rotate: [4, -4, 4] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% 0%" }}
-          draggable={false}
+          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
         />
-
         <div className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-8 h-2 bg-purple-500/40 rounded-full blur-md" />
       </motion.div>
-    </motion.div>
+    </div>
   );
 });
 
+// ─── نافذة المحادثة — معزولة تماماً، لا تؤثر على التطبيق ───
 const ChatWindow = memo(function ChatWindow({
   chatHistory,
   chatInput,
@@ -150,22 +156,23 @@ const ChatWindow = memo(function ChatWindow({
   onSend: () => void;
   onClose: () => void;
 }) {
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [bottomOffset, setBottomOffset] = useState(8);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onResize = () => {
-      // visualViewport يعطينا ارتفاع الشاشة المرئية بعد ظهور الكيبورد
-      if (window.visualViewport) {
-        const kbHeight = window.innerHeight - window.visualViewport.height;
-        setKeyboardHeight(kbHeight > 0 ? kbHeight : 0);
-      }
+    if (!window.visualViewport) return;
+    const update = () => {
+      const vv = window.visualViewport!;
+      // المسافة بين أسفل الـ viewport المرئي وأسفل الشاشة الحقيقية
+      const kbHeight = window.innerHeight - vv.height - vv.offsetTop;
+      setBottomOffset(Math.max(kbHeight, 0) + 8);
     };
-    window.visualViewport?.addEventListener("resize", onResize);
-    window.visualViewport?.addEventListener("scroll", onResize);
+    window.visualViewport.addEventListener("resize", update);
+    window.visualViewport.addEventListener("scroll", update);
+    update();
     return () => {
-      window.visualViewport?.removeEventListener("resize", onResize);
-      window.visualViewport?.removeEventListener("scroll", onResize);
+      window.visualViewport!.removeEventListener("resize", update);
+      window.visualViewport!.removeEventListener("scroll", update);
     };
   }, []);
 
@@ -178,8 +185,9 @@ const ChatWindow = memo(function ChatWindow({
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 40 }}
-      style={{ bottom: keyboardHeight + 8 }}
-      className="fixed left-4 right-4 z-[80] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[45dvh] flex flex-col overflow-hidden"
+      // fixed = منفصل تماماً عن باقي التطبيق، لا يرفعه أبداً
+      style={{ bottom: bottomOffset, position: "fixed" }}
+      className="left-4 right-4 z-[90] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[45dvh] flex flex-col overflow-hidden"
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
         <span className="text-white font-bold text-sm">مساعد BoyCash</span>
@@ -234,12 +242,11 @@ const ChatWindow = memo(function ChatWindow({
   );
 });
 
+// ─── المكوّن الرئيسي ───
 export default function RobotMascot() {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const [pos, setPos] = useState({ x: 0, y: 0 });
-
   const [showBubble, setShowBubble] = useState(false);
   const [bubbleText, setBubbleText] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
@@ -247,32 +254,22 @@ export default function RobotMascot() {
   const [chatLoading, setChatLoading] = useState(false);
   const [chatHistory, setChatHistory] = useState<{ role: "user" | "model"; text: string }[]>([]);
 
+  const chatOpenRef = useRef(chatOpen);
+  useEffect(() => { chatOpenRef.current = chatOpen; }, [chatOpen]);
+
   const roam = useCallback(() => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const robotW = 80;
-    const robotH = 110;
-    const margin = 16;
-    const navBarSafe = 140;
-    const headerSafe = 90;
-
+    const robotW = 80, robotH = 110, margin = 16;
     const newX = margin + Math.random() * (vw - robotW - margin * 2);
-    const newY = headerSafe + Math.random() * (vh - robotH - navBarSafe - headerSafe);
-
+    const newY = 90 + Math.random() * (vh - robotH - 140 - 90);
     setPos({ x: newX, y: newY });
   }, []);
 
-  const chatOpenRef = useRef(chatOpen);
-  useEffect(() => {
-    chatOpenRef.current = chatOpen;
-  }, [chatOpen]);
-
   useEffect(() => {
     roam();
-    const interval = setInterval(() => {
-      if (!chatOpenRef.current) roam();
-    }, 8000);
-    return () => clearInterval(interval);
+    const id = setInterval(() => { if (!chatOpenRef.current) roam(); }, 8000);
+    return () => clearInterval(id);
   }, [roam]);
 
   useEffect(() => {
@@ -283,11 +280,6 @@ export default function RobotMascot() {
   }, [location.pathname]);
 
   const handleRobotClick = useCallback(() => {
-    setShowBubble(false);
-    setChatOpen(true);
-  }, []);
-
-  const handleOpenChat = useCallback(() => {
     setShowBubble(false);
     setChatOpen(true);
   }, []);
@@ -316,9 +308,8 @@ export default function RobotMascot() {
         showBubble={showBubble && !chatOpen}
         bubbleText={bubbleText}
         onRobotClick={handleRobotClick}
-        onBubbleClick={handleOpenChat}
+        onBubbleClick={handleRobotClick}
       />
-
       <AnimatePresence>
         {chatOpen && (
           <ChatWindow
