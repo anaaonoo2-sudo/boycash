@@ -150,12 +150,36 @@ const ChatWindow = memo(function ChatWindow({
   onSend: () => void;
   onClose: () => void;
 }) {
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onResize = () => {
+      // visualViewport يعطينا ارتفاع الشاشة المرئية بعد ظهور الكيبورد
+      if (window.visualViewport) {
+        const kbHeight = window.innerHeight - window.visualViewport.height;
+        setKeyboardHeight(kbHeight > 0 ? kbHeight : 0);
+      }
+    };
+    window.visualViewport?.addEventListener("resize", onResize);
+    window.visualViewport?.addEventListener("scroll", onResize);
+    return () => {
+      window.visualViewport?.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("scroll", onResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatHistory, chatLoading]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 40 }}
-      className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-4 right-4 z-[80] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[45dvh] flex flex-col overflow-hidden"
+      style={{ bottom: keyboardHeight + 8 }}
+      className="fixed left-4 right-4 z-[80] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[45dvh] flex flex-col overflow-hidden"
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
         <span className="text-white font-bold text-sm">مساعد BoyCash</span>
@@ -186,29 +210,26 @@ const ChatWindow = memo(function ChatWindow({
             <Loader2 size={12} className="animate-spin" /> جاري الكتابة...
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSend();
-        }}
-        className="flex items-center gap-2 p-3 border-t border-white/10"
-      >
+      <div className="flex items-center gap-2 p-3 border-t border-white/10">
         <input
           value={chatInput}
           onChange={(e) => onInputChange(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); onSend(); } }}
           placeholder="اكتب سؤالك..."
+          enterKeyHint="send"
           className="flex-1 bg-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder:text-white/40 focus:outline-none"
         />
         <button
-          type="submit"
+          onClick={onSend}
           disabled={chatLoading || !chatInput.trim()}
           className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white disabled:opacity-50"
         >
           <Send size={16} />
         </button>
-      </form>
+      </div>
     </motion.div>
   );
 });
