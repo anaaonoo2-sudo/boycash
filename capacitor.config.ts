@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: true,
     webContentsDebuggingEnabled: false,
-    adjustResize: true
+    adjustResize: false
   },
   server: {
     androidScheme: 'https',
@@ -22,6 +22,11 @@ const config: CapacitorConfig = {
       scopes: ['profile', 'email'],
       serverClientId: '367328224851-me4jp2lg5bplvc4ko6ajlerqne2agns6.apps.googleusercontent.com',
       forceCodeForRefreshToken: true
+    },
+    Keyboard: {
+      resize: "none",
+      style: "dark",
+      resizeOnFullScreen: false
     }
   }
 };
