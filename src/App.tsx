@@ -26,8 +26,6 @@ StatusBar.setOverlaysWebView({ overlay: true });
 
 export default function App() {
   const [splash, setSplash] = useState(true);
-  // احتياطي: أخفِ splash بعد 5 ثواني مهما حدث
-  useEffect(() => { const t = setTimeout(() => setSplash(false), 5000); return () => clearTimeout(t); }, []);
   return (
     <>
       {splash && <SplashScreen onDone={() => setSplash(false)} />}
