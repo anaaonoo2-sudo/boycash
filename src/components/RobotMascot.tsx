@@ -1,5 +1,6 @@
 /* Developed & Owned by Bouchibat - anaaonoo2@gmail.com - 2026 */
 import { useState, useEffect, useRef, useCallback, memo } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useLocation } from "react-router-dom";
 import { askAssistant } from "@/src/services/aiService";
@@ -304,18 +305,21 @@ export default function RobotMascot() {
         onRobotClick={handleRobotClick}
         onBubbleClick={handleRobotClick}
       />
-      <AnimatePresence>
-        {chatOpen && (
-          <ChatWindow
-            chatHistory={chatHistory}
-            chatInput={chatInput}
-            chatLoading={chatLoading}
-            onInputChange={setChatInput}
-            onSend={handleSendChat}
-            onClose={() => setChatOpen(false)}
-          />
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {chatOpen && (
+            <ChatWindow
+              chatHistory={chatHistory}
+              chatInput={chatInput}
+              chatLoading={chatLoading}
+              onInputChange={setChatInput}
+              onSend={handleSendChat}
+              onClose={() => setChatOpen(false)}
+            />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }
