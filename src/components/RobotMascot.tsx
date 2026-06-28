@@ -150,31 +150,12 @@ const ChatWindow = memo(function ChatWindow({
   onSend: () => void;
   onClose: () => void;
 }) {
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
-
-  useEffect(() => {
-    const vv = window.visualViewport;
-    if (!vv) return;
-    const handleResize = () => {
-      const offset = window.innerHeight - vv.height - vv.offsetTop;
-      setKeyboardOffset(offset > 0 ? offset : 0);
-    };
-    vv.addEventListener("resize", handleResize);
-    vv.addEventListener("scroll", handleResize);
-    handleResize();
-    return () => {
-      vv.removeEventListener("resize", handleResize);
-      vv.removeEventListener("scroll", handleResize);
-    };
-  }, []);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 40 }}
-      style={{ bottom: keyboardOffset > 0 ? keyboardOffset + 12 : 96 }}
-      className="fixed left-4 right-4 z-[80] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[50vh] flex flex-col overflow-hidden"
+      className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-4 right-4 z-[80] bg-black/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-h-[45dvh] flex flex-col overflow-hidden"
     >
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
         <span className="text-white font-bold text-sm">مساعد BoyCash</span>
