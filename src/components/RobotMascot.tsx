@@ -53,13 +53,18 @@ export default function RobotMascot() {
     setPos({ x: newX, y: newY });
   }, []);
 
+  const chatOpenRef = useRef(chatOpen);
+  useEffect(() => {
+    chatOpenRef.current = chatOpen;
+  }, [chatOpen]);
+
   useEffect(() => {
     roam();
     const interval = setInterval(() => {
-      if (!chatOpen) roam();
+      if (!chatOpenRef.current) roam();
     }, 8000);
     return () => clearInterval(interval);
-  }, [roam, chatOpen]);
+  }, [roam]);
 
   useEffect(() => {
     setBubbleText(getTipForPath(location.pathname));
