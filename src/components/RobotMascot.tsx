@@ -175,8 +175,7 @@ const ChatWindow = memo(function ChatWindow({
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "center",
-        padding: "0 12px",
-        paddingBottom: kbHeight + 12,
+        padding: "0 12px 12px",
         background: "rgba(0,0,0,0.6)",
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -189,7 +188,9 @@ const ChatWindow = memo(function ChatWindow({
         style={{
           width: "100%",
           maxWidth: 500,
-          height: kbHeight > 0 ? "55vh" : "60vh",
+          height: "60vh",
+          marginBottom: kbHeight,
+          transition: "margin-bottom 0.25s ease",
           display: "flex",
           flexDirection: "column",
           borderRadius: 24,
