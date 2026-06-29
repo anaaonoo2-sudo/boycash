@@ -79,7 +79,7 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
               position: "fixed",
               inset: 0,
               zIndex: 998,
-              background: "rgba(0,0,0,0.55)",
+              background: "rgba(0,0,0,0.92)",
             }}
           />
 
