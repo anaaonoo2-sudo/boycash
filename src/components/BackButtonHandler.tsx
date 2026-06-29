@@ -7,11 +7,16 @@ export default function BackButtonHandler() {
   const location = useLocation();
 
   useEffect(() => {
-    const handler = CapApp.addListener("backButton", () => {
-      if (location.pathname === "/") return;
-      navigate(-1);
-    });
-    return () => { handler.then(h => h.remove()); };
+    let handler: any;
+    try {
+      handler = CapApp.addListener("backButton", () => {
+        if (location.pathname === "/") return;
+        navigate(-1);
+      });
+    } catch (e) {
+      console.warn("BackButton not available:", e);
+    }
+    return () => { if (handler) handler.then((h: any) => h.remove()); };
   }, [location.pathname, navigate]);
 
   return null;
