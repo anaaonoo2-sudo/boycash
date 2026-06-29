@@ -128,19 +128,31 @@ const ChatWindow = memo(function ChatWindow({
   const inputRef = useRef<HTMLInputElement>(null);
   const [kbHeight, setKbHeight] = useState(0);
 
-  // رصد ارتفاع الكيبورد
+  // رصد ارتفاع الكيبورد عبر Keyboard plugin
   useEffect(() => {
-    const update = () => {
-      const vv = window.visualViewport;
-      if (!vv) return;
-      const h = window.innerHeight - vv.height - vv.offsetTop;
-      setKbHeight(Math.max(h, 0));
-    };
-    window.visualViewport?.addEventListener("resize", update);
-    window.visualViewport?.addEventListener("scroll", update);
+    let showListener: any, hideListener: any;
+    try {
+      const { Keyboard } = require("@capacitor/keyboard");
+      showListener = Keyboard.addListener("keyboardWillShow", (info: any) => {
+        setKbHeight(info.keyboardHeight);
+      });
+      hideListener = Keyboard.addListener("keyboardWillHide", () => {
+        setKbHeight(0);
+      });
+    } catch {
+      // fallback لـ visualViewport
+      const update = () => {
+        const vv = window.visualViewport;
+        if (!vv) return;
+        const h = window.innerHeight - vv.height - vv.offsetTop;
+        setKbHeight(Math.max(h, 0));
+      };
+      window.visualViewport?.addEventListener("resize", update);
+      return () => window.visualViewport?.removeEventListener("resize", update);
+    }
     return () => {
-      window.visualViewport?.removeEventListener("resize", update);
-      window.visualViewport?.removeEventListener("scroll", update);
+      showListener?.then((l: any) => l.remove());
+      hideListener?.then((l: any) => l.remove());
     };
   }, []);
 
@@ -166,8 +178,6 @@ const ChatWindow = memo(function ChatWindow({
         padding: "0 12px",
         paddingBottom: kbHeight + 12,
         background: "rgba(0,0,0,0.6)",
-        backdropFilter: "blur(4px)",
-        WebkitBackdropFilter: "blur(4px)",
       }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
