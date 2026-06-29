@@ -1,5 +1,5 @@
 /* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { House, Zap, Wallet, Trophy, User, Settings as SettingsIcon, MessageCircleCode } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import { cn } from "@/src/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import CoinIcon from "./ui/CoinIcon";
 import RobotMascot from "./RobotMascot";
+import ChatWindow from "./ChatWindow";
 import BackButtonHandler from "./BackButtonHandler";
 
 interface LayoutProps {
@@ -20,6 +21,7 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const isRTL = i18n.language === "ar";
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     document.dir = isRTL ? "rtl" : "ltr";
@@ -45,7 +47,8 @@ export default function Layout({ children }: LayoutProps) {
       </div>
 
       {/* Robot - only once, not on assistant page */}
-      {!isAssistant && <RobotMascot />}
+      {!isAssistant && <RobotMascot onOpenChat={() => setChatOpen(true)} />}
+      <ChatWindow open={chatOpen} onClose={() => setChatOpen(false)} />
       <BackButtonHandler />
 
       {/* Top Bar */}
