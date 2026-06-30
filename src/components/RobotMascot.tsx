@@ -3,15 +3,16 @@ import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useLocation } from "react-router-dom";
+import { askAssistant } from "@/src/services/aiService";
 
-import headImg    from "@/src/assets/robot/head.png";
-import bodyImg    from "@/src/assets/robot/body.png";
-import armLeftImg from "@/src/assets/robot/arm_left.png";
+import headImg     from "@/src/assets/robot/head.png";
+import bodyImg     from "@/src/assets/robot/body.png";
+import armLeftImg  from "@/src/assets/robot/arm_left.png";
 import armRightImg from "@/src/assets/robot/arm_right.png";
-import legLeftImg from "@/src/assets/robot/leg_left.png";
+import legLeftImg  from "@/src/assets/robot/leg_left.png";
 import legRightImg from "@/src/assets/robot/leg_right.png";
 
-// ─── نصوص الفقاعات لكل صفحة (متعددة، يتناوب عليها الروبوت) ───
+// ─── نصوص تلقائية لكل صفحة ───
 const PAGE_SCRIPT: Record<string, string[]> = {
   "/": [
     "اضغط CLAIM كل يوم 🔥 لو تمشي 7 أيام متتالية توصل لـ 100 نقطة في يوم واحد!",
@@ -20,101 +21,136 @@ const PAGE_SCRIPT: Record<string, string[]> = {
   ],
   "/earn": [
     "عجلة الحظ تلفيفة مجانية كل يوم — اضغط عليها دلوقتي! 🎡",
-    "المهام الإعلانية هنا بتكسبك نقاط فورية — كل إعلان = نقاط حقيقية 💰",
-    "كلما شاهدت أكثر، كلما جمعت أسرع — ما في حد للكسب! ⚡",
+    "المهام الإعلانية هنا بتكسبك نقاط فورية 💰",
+    "كلما شاهدت أكثر، كلما جمعت أسرع ⚡",
   ],
   "/wallet": [
     "وصلت لـ $5؟ تقدر تسحب فلوسك من هنا مباشرة! 💸",
     "اختار طريقة الدفع المناسبة ليك — PayPal، Crypto، أو بطاقة هدايا 🎁",
-    "مدة السحب من 1-3 أيام عمل — نضمن وصول فلوسك آمن ✅",
+    "مدة السحب من 1-3 أيام عمل ✅",
   ],
   "/leaderboard": [
-    "شوف مرتبتك بين كل المستخدمين — هل أنت بالـ Top 10؟ 🥇",
-    "كل ما تكمل مهام أكثر كل ما ترتفع — المنافسة حامية! 🔥",
+    "شوف مرتبتك بين كل المستخدمين 🥇",
     "المراكز الأولى بتاخذ مكافآت إضافية كل أسبوع 🏅",
   ],
   "/profile": [
     "وثّق حسابك عشان تفتح مكافآت المستوى الأعلى 📋",
-    "صورة البروفايل والمعلومات هنا — اكملها عشان تبدو احترافي 😎",
-    "تاريخ نشاطك ونقاطك كلها مسجلة هنا — تابع تقدمك! 📈",
+    "تاريخ نشاطك ونقاطك مسجلة هنا — تابع تقدمك! 📈",
   ],
   "/settings": [
     "من هنا تتحكم بإشعاراتك ولغة التطبيق 🌐",
-    "فعّل الإشعارات عشان ما تفوّتك أي مهمة أو مكافأة! 🔔",
+    "فعّل الإشعارات عشان ما تفوّتك أي مكافأة! 🔔",
   ],
 };
 
-function getScriptForPath(path: string): string[] {
+function getScript(path: string): string[] {
   return PAGE_SCRIPT[path] || [
-    "هلا! أنا هنا لو احتجت أي مساعدة 👋",
-    "تفضّل وتجوّل — BoyCash كله مكافآت وفلوس حقيقية 💰",
+    "هلا! اضغط علي واسألني أي شيء 👋",
+    "BoyCash كله مكافآت وفلوس حقيقية 💰",
   ];
 }
 
-// ─── نوع حالة الروبوت ───
-type RobotState = "roaming" | "pointing" | "talking";
+type RobotState = "roaming" | "talking" | "listening" | "thinking";
 
-// ─── مكون الفقاعة ───
+// ─── فقاعة الكلام ───
 const SpeechBubble = memo(function SpeechBubble({
   text,
   side,
-  isPointing,
+  isThinking,
 }: {
   text: string;
   side: "left" | "right";
-  isPointing: boolean;
+  isThinking?: boolean;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.7, y: 8 }}
+      initial={{ opacity: 0, scale: 0.75, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.7, y: 8 }}
-      transition={{ type: "spring", stiffness: 400, damping: 28 }}
-      className="absolute pointer-events-none"
+      exit={{ opacity: 0, scale: 0.75, y: 10 }}
+      transition={{ type: "spring", stiffness: 420, damping: 30 }}
       style={{
-        bottom: "calc(100% + 10px)",
-        [side === "right" ? "left" : "right"]: "-8px",
-        width: 180,
-        willChange: "opacity, transform",
+        position: "absolute",
+        bottom: "calc(100% + 12px)",
+        [side === "right" ? "left" : "right"]: "-6px",
+        width: 190,
         zIndex: 10,
+        pointerEvents: "none",
+        willChange: "opacity, transform",
       }}
     >
-      {/* الفقاعة نفسها */}
       <div
         style={{
-          background: "linear-gradient(135deg, rgba(20,10,40,0.97) 0%, rgba(60,20,100,0.97) 100%)",
-          border: "1.5px solid rgba(180,100,255,0.35)",
-          borderRadius: 16,
-          padding: "10px 13px",
-          boxShadow: "0 8px 32px rgba(120,40,220,0.25), 0 2px 8px rgba(0,0,0,0.4)",
-          backdropFilter: "blur(12px)",
+          background: "linear-gradient(135deg,rgba(14,6,32,0.97) 0%,rgba(55,15,95,0.97) 100%)",
+          border: "1.5px solid rgba(180,90,255,0.35)",
+          borderRadius: 18,
+          padding: "10px 14px",
+          boxShadow: "0 8px 30px rgba(110,30,200,0.28), 0 2px 8px rgba(0,0,0,0.5)",
         }}
       >
-        {isPointing && (
-          <div className="flex items-center gap-1 mb-1 opacity-70">
-            <span style={{ fontSize: 9, color: "#c084fc", letterSpacing: 1, fontWeight: 700 }}>
-              BoyCash AI
-            </span>
-            <motion.span
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              style={{ width: 4, height: 4, borderRadius: "50%", background: "#a855f7", display: "inline-block" }}
-            />
-          </div>
-        )}
-        <p
+        <div
           style={{
-            fontSize: 11.5,
-            lineHeight: 1.55,
-            color: "#f3e8ff",
-            margin: 0,
-            fontWeight: 500,
-            direction: "rtl",
-            textAlign: "right",
+            display: "flex",
+            alignItems: "center",
+            gap: 5,
+            marginBottom: 5,
           }}
         >
-          {text}
-        </p>
+          <span
+            style={{
+              fontSize: 9,
+              color: "#c084fc",
+              letterSpacing: 1,
+              fontWeight: 700,
+              textTransform: "uppercase",
+            }}
+          >
+            BoyCash AI
+          </span>
+          <motion.span
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 1.4, repeat: Infinity }}
+            style={{
+              width: 4,
+              height: 4,
+              borderRadius: "50%",
+              background: "#a855f7",
+              display: "inline-block",
+            }}
+          />
+        </div>
+
+        {isThinking ? (
+          <div style={{ display: "flex", gap: 5, justifyContent: "center", padding: "4px 0" }}>
+            {[0, 1, 2].map((i) => (
+              <motion.span
+                key={i}
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "#c084fc",
+                  display: "inline-block",
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <p
+            style={{
+              fontSize: 12,
+              lineHeight: 1.55,
+              color: "#f3e8ff",
+              margin: 0,
+              fontWeight: 500,
+              direction: "rtl",
+              textAlign: "right",
+            }}
+          >
+            {text}
+          </p>
+        )}
       </div>
 
       {/* ذيل الفقاعة */}
@@ -122,14 +158,13 @@ const SpeechBubble = memo(function SpeechBubble({
         style={{
           position: "absolute",
           bottom: -7,
-          [side === "right" ? "left" : "right"]: 18,
+          [side === "right" ? "left" : "right"]: 20,
           width: 14,
           height: 14,
-          background: "rgba(60,20,100,0.97)",
-          border: "1.5px solid rgba(180,100,255,0.35)",
+          background: "rgba(55,15,95,0.97)",
+          border: "1.5px solid rgba(180,90,255,0.35)",
           borderTop: "none",
-          borderLeft: side === "right" ? "none" : undefined,
-          borderRight: side === "left" ? "none" : undefined,
+          [side === "right" ? "borderLeft" : "borderRight"]: "none",
           transform: "rotate(45deg)",
           borderRadius: 2,
         }}
@@ -138,7 +173,135 @@ const SpeechBubble = memo(function SpeechBubble({
   );
 });
 
-// ─── مكون الروبوت البصري ───
+// ─── بار الكتابة الصغير تحت الروبوت ───
+const InputBar = memo(function InputBar({
+  side,
+  onSend,
+  onClose,
+  loading,
+}: {
+  side: "left" | "right";
+  onSend: (text: string) => void;
+  onClose: () => void;
+  loading: boolean;
+}) {
+  const [val, setVal] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // focus تلقائي لما يظهر البار
+    setTimeout(() => inputRef.current?.focus(), 80);
+  }, []);
+
+  const submit = () => {
+    const t = val.trim();
+    if (!t || loading) return;
+    setVal("");
+    onSend(t);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -8, scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      style={{
+        position: "absolute",
+        top: "calc(100% + 10px)",
+        [side === "right" ? "left" : "right"]: "-6px",
+        width: 200,
+        zIndex: 10,
+        willChange: "opacity, transform",
+      }}
+    >
+      <div
+        style={{
+          background: "linear-gradient(135deg,rgba(14,6,32,0.97) 0%,rgba(55,15,95,0.97) 100%)",
+          border: "1.5px solid rgba(180,90,255,0.4)",
+          borderRadius: 50,
+          padding: "6px 8px",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          boxShadow: "0 6px 24px rgba(110,30,200,0.3)",
+        }}
+      >
+        <input
+          ref={inputRef}
+          value={val}
+          onChange={(e) => setVal(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") { e.preventDefault(); submit(); }
+            if (e.key === "Escape") onClose();
+          }}
+          placeholder="اسألني..."
+          disabled={loading}
+          style={{
+            flex: 1,
+            background: "transparent",
+            border: "none",
+            outline: "none",
+            color: "#f3e8ff",
+            fontSize: 12,
+            direction: "rtl",
+            textAlign: "right",
+            paddingRight: 4,
+          }}
+        />
+
+        {/* زر إرسال أو إغلاق */}
+        {val.trim() ? (
+          <motion.button
+            whileTap={{ scale: 0.88 }}
+            onClick={submit}
+            disabled={loading}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              background: loading ? "rgba(168,85,247,0.4)" : "rgba(168,85,247,0.9)",
+              border: "none",
+              cursor: loading ? "default" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </motion.button>
+        ) : (
+          <motion.button
+            whileTap={{ scale: 0.88 }}
+            onClick={onClose}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.08)",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              color: "rgba(255,255,255,0.5)",
+              fontSize: 14,
+              fontWeight: 700,
+            }}
+          >
+            ×
+          </motion.button>
+        )}
+      </div>
+    </motion.div>
+  );
+});
+
+// ─── جسم الروبوت ───
 const RobotBody = memo(function RobotBody({
   state,
   faceDir,
@@ -148,98 +311,62 @@ const RobotBody = memo(function RobotBody({
   faceDir: "left" | "right";
   onClick: () => void;
 }) {
-  const isPointing = state === "pointing";
   const isTalking  = state === "talking";
+  const isThinking = state === "thinking";
 
   return (
     <motion.div
-      className="relative cursor-pointer"
-      style={{ width: 72, height: 100, willChange: "transform" }}
+      className="relative"
+      style={{ width: 72, height: 100, cursor: "pointer", willChange: "transform" }}
       onClick={onClick}
-      // طفو عام
       animate={{ y: [0, -7, 0] }}
       transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-      // flip اتجاه الوجه
-      initial={false}
     >
       <motion.div
-        style={{
-          width: "100%",
-          height: "100%",
-          scaleX: faceDir === "left" ? -1 : 1,
-          willChange: "transform",
-        }}
+        style={{ width: "100%", height: "100%", willChange: "transform" }}
         animate={{ scaleX: faceDir === "left" ? -1 : 1 }}
-        transition={{ duration: 0.25 }}
+        transition={{ duration: 0.22 }}
       >
-        {/* الرأس */}
+        {/* رأس */}
         <motion.img
-          src={headImg}
-          draggable={false}
+          src={headImg} draggable={false}
           className="absolute select-none"
           style={{ left: "50%", translateX: "-50%", top: 0, width: 54 }}
-          animate={{
-            rotate: isTalking ? [-4, 4, -4] : [-3, 3, -3],
-          }}
-          transition={{
-            duration: isTalking ? 0.6 : 3.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          animate={{ rotate: isTalking || isThinking ? [-5, 5, -5] : [-3, 3, -3] }}
+          transition={{ duration: isTalking ? 0.55 : 3.5, repeat: Infinity, ease: "easeInOut" }}
         />
-
         {/* ذراع يسار */}
         <motion.img
-          src={armLeftImg}
-          draggable={false}
+          src={armLeftImg} draggable={false}
           className="absolute select-none"
           style={{ top: 46, left: 10, width: 14, transformOrigin: "50% 0%" }}
-          animate={{
-            rotate: isPointing ? [-60, -55, -60] : [0, -15, 0],
-          }}
-          transition={{
-            duration: isPointing ? 0.8 : 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          animate={{ rotate: isThinking ? [-40, -35, -40] : [0, -14, 0] }}
+          transition={{ duration: isThinking ? 1 : 2, repeat: Infinity, ease: "easeInOut" }}
         />
-
         {/* ذراع يمين */}
         <motion.img
-          src={armRightImg}
-          draggable={false}
+          src={armRightImg} draggable={false}
           className="absolute select-none"
           style={{ top: 46, right: 10, width: 14, transformOrigin: "50% 0%" }}
-          animate={{
-            rotate: isPointing ? [60, 55, 60] : [0, 10, 0],
-          }}
-          transition={{
-            duration: isPointing ? 0.8 : 2.4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          animate={{ rotate: isThinking ? [40, 35, 40] : [0, 10, 0] }}
+          transition={{ duration: isThinking ? 1 : 2.4, repeat: Infinity, ease: "easeInOut" }}
         />
-
-        {/* الجسم */}
+        {/* جسم */}
         <img
-          src={bodyImg}
-          draggable={false}
+          src={bodyImg} draggable={false}
           className="absolute select-none"
           style={{ left: "50%", translateX: "-50%", top: 42, width: 38 }}
         />
-
-        {/* الأرجل */}
+        {/* أرجل */}
         <motion.img
-          src={legLeftImg}
-          draggable={false}
+          src={legLeftImg} draggable={false}
           className="absolute select-none"
           style={{ top: 62, left: 18, width: 14, transformOrigin: "50% 0%" }}
           animate={{ rotate: isTalking ? [-8, 8, -8] : [-3, 3, -3] }}
           transition={{ duration: isTalking ? 0.5 : 1.8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.img
-          src={legRightImg}
-          draggable={false}
+          src={legRightImg} draggable={false}
           className="absolute select-none"
           style={{ top: 62, right: 18, width: 14, transformOrigin: "50% 0%" }}
           animate={{ rotate: isTalking ? [8, -8, 8] : [3, -3, 3] }}
@@ -248,19 +375,11 @@ const RobotBody = memo(function RobotBody({
       </motion.div>
 
       {/* ظل */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: -3,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 34,
-          height: 8,
-          borderRadius: "50%",
-          background: "rgba(140,60,255,0.35)",
-          filter: "blur(5px)",
-        }}
-      />
+      <div style={{
+        position: "absolute", bottom: -3, left: "50%",
+        transform: "translateX(-50%)", width: 34, height: 8,
+        borderRadius: "50%", background: "rgba(140,60,255,0.35)", filter: "blur(5px)",
+      }} />
     </motion.div>
   );
 });
@@ -269,44 +388,43 @@ const RobotBody = memo(function RobotBody({
 export default function RobotMascot() {
   const location = useLocation();
 
-  // موضع الروبوت
-  const [pos, setPos]         = useState({ x: 30, y: 200 });
-  const [faceDir, setFaceDir] = useState<"left" | "right">("right");
-  const [state, setState]     = useState<RobotState>("roaming");
-
-  // الفقاعة
+  const [pos, setPos]               = useState({ x: 30, y: 200 });
+  const [faceDir, setFaceDir]       = useState<"left" | "right">("right");
+  const [state, setState]           = useState<RobotState>("roaming");
   const [bubbleVisible, setBubbleVisible] = useState(false);
-  const [bubbleText, setBubbleText]       = useState("");
-  const [bubbleSide, setBubbleSide]       = useState<"left" | "right">("right");
+  const [bubbleText, setBubbleText] = useState("");
+  const [bubbleSide, setBubbleSide] = useState<"left" | "right">("right");
+  const [isThinkingBubble, setIsThinkingBubble] = useState(false);
+  const [inputOpen, setInputOpen]   = useState(false);
+  const [aiLoading, setAiLoading]   = useState(false);
 
-  // مؤشر الجملة الحالية بكل صفحة
   const scriptIndexRef = useRef(0);
   const timerRefs      = useRef<ReturnType<typeof setTimeout>[]>([]);
   const posRef         = useRef(pos);
   posRef.current = pos;
 
-  const clearTimers = () => {
+  const clearTimers = useCallback(() => {
     timerRefs.current.forEach(clearTimeout);
     timerRefs.current = [];
-  };
+  }, []);
 
-  const addTimer = (fn: () => void, ms: number) => {
+  const addTimer = useCallback((fn: () => void, ms: number) => {
     const id = setTimeout(fn, ms);
     timerRefs.current.push(id);
     return id;
-  };
+  }, []);
 
-  // ─── انتقال الروبوت لموضع جديد ───
+  const getSide = useCallback(() =>
+    posRef.current.x > window.innerWidth / 2 ? "left" : "right", []);
+
   const moveTo = useCallback((x: number, y: number) => {
-    const oldX = posRef.current.x;
-    setFaceDir(x > oldX ? "right" : "left");
+    setFaceDir(x > posRef.current.x ? "right" : "left");
     setPos({ x, y });
   }, []);
 
-  // ─── إظهار فقاعة ───
-  const showBubble = useCallback((text: string, durationMs = 4000) => {
-    const side = posRef.current.x > window.innerWidth / 2 ? "left" : "right";
-    setBubbleSide(side);
+  const showTip = useCallback((text: string, durationMs = 4500) => {
+    setIsThinkingBubble(false);
+    setBubbleSide(getSide());
     setBubbleText(text);
     setBubbleVisible(true);
     setState("talking");
@@ -314,60 +432,89 @@ export default function RobotMascot() {
       setBubbleVisible(false);
       setState("roaming");
     }, durationMs);
-  }, []);
+  }, [getSide, addTimer]);
 
-  // ─── جولة التجوّل العشوائية ───
-  const startRoamCycle = useCallback(() => {
-    const roam = () => {
+  const roamCycle = useCallback(() => {
+    const doRoam = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const rx = 20 + Math.random() * (vw - 110);
-      const ry = 100 + Math.random() * (vh - 260);
-      moveTo(rx, ry);
-      // بعد 4 ثواني من التجوّل، عرض نصيحة تلقائية
+      moveTo(20 + Math.random() * (vw - 110), 100 + Math.random() * (vh - 260));
       addTimer(() => {
-        const script = getScriptForPath(location.pathname);
+        const script = getScript(location.pathname);
         scriptIndexRef.current = (scriptIndexRef.current + 1) % script.length;
-        showBubble(script[scriptIndexRef.current], 4200);
-        // بعد الفقاعة، روح لموضع تاني
-        addTimer(roam, 5500);
+        showTip(script[scriptIndexRef.current], 4200);
+        addTimer(doRoam, 5800);
       }, 4000);
     };
-    roam();
-  }, [location.pathname, moveTo, showBubble]);
+    doRoam();
+  }, [location.pathname, moveTo, showTip, addTimer]);
 
-  // ─── إعادة تشغيل عند تغيير الصفحة ───
+  // عند تغيير الصفحة
   useEffect(() => {
     clearTimers();
+    setBubbleVisible(false);
+    setInputOpen(false);
+    setAiLoading(false);
     scriptIndexRef.current = 0;
     setState("roaming");
-    setBubbleVisible(false);
 
-    // انتقل فوراً لموضع عشوائي
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const rx = 20 + Math.random() * (vw - 110);
-    const ry = 100 + Math.random() * (vh - 260);
-    moveTo(rx, ry);
+    moveTo(20 + Math.random() * (vw - 110), 100 + Math.random() * (vh - 260));
 
-    // أظهر فقاعة الترحيب بالصفحة بعد ثانية
     addTimer(() => {
-      const script = getScriptForPath(location.pathname);
-      showBubble(script[0], 4500);
-      addTimer(startRoamCycle, 6000);
-    }, 1200);
+      showTip(getScript(location.pathname)[0], 5000);
+      addTimer(roamCycle, 6500);
+    }, 1000);
 
     return clearTimers;
   }, [location.pathname]);
 
-  // ─── عند الضغط على الروبوت ───
-  const handleClick = useCallback(() => {
+  // عند الضغط على الروبوت
+  const handleRobotClick = useCallback(() => {
+    if (aiLoading) return;
     clearTimers();
-    const script = getScriptForPath(location.pathname);
-    scriptIndexRef.current = (scriptIndexRef.current + 1) % script.length;
-    showBubble(script[scriptIndexRef.current], 5000);
-    addTimer(startRoamCycle, 6500);
-  }, [location.pathname, showBubble, startRoamCycle]);
+    setBubbleVisible(false);
+    setInputOpen(prev => !prev);
+    if (!inputOpen) setState("listening");
+    else setState("roaming");
+  }, [aiLoading, inputOpen, clearTimers]);
+
+  // إرسال سؤال للـ AI
+  const handleUserSend = useCallback(async (text: string) => {
+    setInputOpen(false);
+    setAiLoading(true);
+    setState("thinking");
+
+    // فقاعة "يفكر..."
+    setIsThinkingBubble(true);
+    setBubbleSide(getSide());
+    setBubbleVisible(true);
+
+    try {
+      const reply = await askAssistant(text);
+      setIsThinkingBubble(false);
+      setBubbleText(reply);
+      setState("talking");
+      addTimer(() => {
+        setBubbleVisible(false);
+        setState("roaming");
+        setAiLoading(false);
+        addTimer(roamCycle, 1000);
+      }, Math.max(reply.length * 60, 5000));
+    } catch {
+      setIsThinkingBubble(false);
+      setBubbleText("حدث خطأ، جرب مرة أخرى 🙏");
+      setState("talking");
+      addTimer(() => {
+        setBubbleVisible(false);
+        setState("roaming");
+        setAiLoading(false);
+      }, 3000);
+    }
+  }, [getSide, addTimer, roamCycle]);
+
+  const inputSide = getSide();
 
   return createPortal(
     <div
@@ -378,7 +525,9 @@ export default function RobotMascot() {
         width: 72,
         height: 100,
         zIndex: 9000,
-        transition: "left 2.2s cubic-bezier(0.4,0,0.2,1), top 2.2s cubic-bezier(0.4,0,0.2,1)",
+        transition: inputOpen
+          ? "none"
+          : "left 2.2s cubic-bezier(0.4,0,0.2,1), top 2.2s cubic-bezier(0.4,0,0.2,1)",
         willChange: "left, top",
       }}
     >
@@ -386,10 +535,27 @@ export default function RobotMascot() {
       <AnimatePresence mode="wait">
         {bubbleVisible && (
           <SpeechBubble
-            key={bubbleText}
+            key={isThinkingBubble ? "thinking" : bubbleText}
             text={bubbleText}
             side={bubbleSide}
-            isPointing={state === "pointing"}
+            isThinking={isThinkingBubble}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* بار الكتابة */}
+      <AnimatePresence>
+        {inputOpen && (
+          <InputBar
+            key="input-bar"
+            side={inputSide}
+            onSend={handleUserSend}
+            onClose={() => {
+              setInputOpen(false);
+              setState("roaming");
+              addTimer(roamCycle, 500);
+            }}
+            loading={aiLoading}
           />
         )}
       </AnimatePresence>
@@ -398,7 +564,7 @@ export default function RobotMascot() {
       <RobotBody
         state={state}
         faceDir={faceDir}
-        onClick={handleClick}
+        onClick={handleRobotClick}
       />
     </div>,
     document.body
