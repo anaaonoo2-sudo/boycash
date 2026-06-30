@@ -21,41 +21,32 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
   const [kbHeight, setKbHeight] = useState(0);
   const messagesRef = useRef<HTMLDivElement>(null);
 
-  // رصد الكيبورد عبر Capacitor Keyboard plugin (الطريقة الموثوقة الوحيدة على Android)
+  // رصد ارتفاع الكيبورد عبر حدث Android الأصلي (WindowInsets)
   useEffect(() => {
     if (!open) return;
 
-    let showSub: any, hideSub: any;
-    let cancelled = false;
-
-    (async () => {
-      try {
-        const mod = await import("@capacitor/keyboard");
-        const { Keyboard } = mod;
-        showSub = await Keyboard.addListener("keyboardWillShow", (info) => {
-          if (!cancelled) setKbHeight(info.keyboardHeight);
-        });
-        hideSub = await Keyboard.addListener("keyboardWillHide", () => {
-          if (!cancelled) setKbHeight(0);
-        });
-      } catch {
-        // fallback للويب: visualViewport
-        const vv = window.visualViewport;
-        if (!vv) return;
-        const update = () => {
-          const h = window.innerHeight - vv.height - vv.offsetTop;
-          setKbHeight(Math.max(h, 0));
-        };
-        vv.addEventListener("resize", update);
-        vv.addEventListener("scroll", update);
-        update();
+    const handleNativeKeyboard = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail && typeof detail.height === "number") {
+        setKbHeight(detail.height);
       }
-    })();
+    };
+    window.addEventListener("androidKeyboard", handleNativeKeyboard);
+
+    // fallback إضافي للويب أو حال عدم توفر الحدث الأصلي
+    const vv = window.visualViewport;
+    let vvUpdate: (() => void) | null = null;
+    if (vv) {
+      vvUpdate = () => {
+        const h = window.innerHeight - vv.height - vv.offsetTop;
+        setKbHeight((prev) => (prev === 0 ? Math.max(h, 0) : prev));
+      };
+      vv.addEventListener("resize", vvUpdate);
+    }
 
     return () => {
-      cancelled = true;
-      showSub?.remove?.();
-      hideSub?.remove?.();
+      window.removeEventListener("androidKeyboard", handleNativeKeyboard);
+      if (vv && vvUpdate) vv.removeEventListener("resize", vvUpdate);
       setKbHeight(0);
     };
   }, [open]);
@@ -87,7 +78,6 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
     <AnimatePresence>
       {open && (
         <>
-          {/* Overlay معتم بالكامل */}
           <motion.div
             key="overlay"
             initial={{ opacity: 0 }}
@@ -103,7 +93,6 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
             }}
           />
 
-          {/* Chat panel */}
           <motion.div
             key="panel"
             initial={{ y: "100%", opacity: 0 }}
@@ -127,7 +116,6 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
               transition: "bottom 0.15s ease-out",
             }}
           >
-            {/* Header */}
             <div style={{
               display: "flex", alignItems: "center", gap: 10,
               padding: "12px 14px",
@@ -157,7 +145,6 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
               </button>
             </div>
 
-            {/* Messages */}
             <div ref={messagesRef} style={{
               flex: 1, overflowY: "auto", overflowX: "hidden",
               padding: "12px 12px", display: "flex",
@@ -209,7 +196,6 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
               )}
             </div>
 
-            {/* Input */}
             <div style={{
               padding: "8px 10px", borderTop: "1px solid rgba(255,255,255,0.06)",
               background: "rgba(0,0,0,0.15)", display: "flex", gap: 7, flexShrink: 0,
