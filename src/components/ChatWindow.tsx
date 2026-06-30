@@ -21,21 +21,41 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
   const [kbHeight, setKbHeight] = useState(0);
   const messagesRef = useRef<HTMLDivElement>(null);
 
-  // رصد الكيبورد
+  // رصد الكيبورد عبر Capacitor Keyboard plugin (الطريقة الموثوقة الوحيدة على Android)
   useEffect(() => {
     if (!open) return;
-    const vv = window.visualViewport;
-    if (!vv) return;
-    const update = () => {
-      const h = window.innerHeight - vv.height;
-      setKbHeight(Math.max(h, 0));
-    };
-    vv.addEventListener("resize", update);
-    vv.addEventListener("scroll", update);
-    update();
+
+    let showSub: any, hideSub: any;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const mod = await import("@capacitor/keyboard");
+        const { Keyboard } = mod;
+        showSub = await Keyboard.addListener("keyboardWillShow", (info) => {
+          if (!cancelled) setKbHeight(info.keyboardHeight);
+        });
+        hideSub = await Keyboard.addListener("keyboardWillHide", () => {
+          if (!cancelled) setKbHeight(0);
+        });
+      } catch {
+        // fallback للويب: visualViewport
+        const vv = window.visualViewport;
+        if (!vv) return;
+        const update = () => {
+          const h = window.innerHeight - vv.height - vv.offsetTop;
+          setKbHeight(Math.max(h, 0));
+        };
+        vv.addEventListener("resize", update);
+        vv.addEventListener("scroll", update);
+        update();
+      }
+    })();
+
     return () => {
-      vv.removeEventListener("resize", update);
-      vv.removeEventListener("scroll", update);
+      cancelled = true;
+      showSub?.remove?.();
+      hideSub?.remove?.();
       setKbHeight(0);
     };
   }, [open]);
@@ -67,7 +87,7 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
     <AnimatePresence>
       {open && (
         <>
-          {/* Overlay */}
+          {/* Overlay معتم بالكامل */}
           <motion.div
             key="overlay"
             initial={{ opacity: 0 }}
@@ -79,7 +99,7 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
               position: "fixed",
               inset: 0,
               zIndex: 998,
-              background: "rgba(0,0,0,0.92)",
+              background: "#0a0612",
             }}
           />
 
@@ -104,7 +124,7 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
               background: "linear-gradient(160deg, #0f0a1e 0%, #1a0f35 100%)",
               border: "1px solid rgba(168,85,247,0.2)",
               boxShadow: "0 -4px 30px rgba(168,85,247,0.15), 0 20px 60px rgba(0,0,0,0.8)",
-              transition: "bottom 0.22s ease",
+              transition: "bottom 0.15s ease-out",
             }}
           >
             {/* Header */}
@@ -217,7 +237,7 @@ export default memo(function ChatWindow({ open, onClose }: ChatWindowProps) {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   flexShrink: 0,
                   boxShadow: !loading && input.trim() ? "0 3px 10px rgba(168,85,247,0.35)" : "none",
-                  transition: "all 0.18s",
+                  transition: "background 0.18s, box-shadow 0.18s",
                 }}
               >
                 <Send size={15} color="white" />
