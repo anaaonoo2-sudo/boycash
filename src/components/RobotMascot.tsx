@@ -355,7 +355,7 @@ const RobotBody = memo(function RobotBody({
         <img
           src={bodyImg} draggable={false}
           className="absolute select-none"
-          style={{ left: "50%", translateX: "-50%", top: 42, width: 38 }}
+          style={{ left: "50%", transform: "translateX(-50%)", top: 42, width: 38 }}
         />
         {/* أرجل */}
         <motion.img
