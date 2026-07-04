@@ -22,7 +22,10 @@ export default function Wallet() {
   const [methods, setMethods] = useState<any[]>([
     { 
       id: "paypal",
-      logo: "https://img.icons8.com/fluency/144/paypal.png", 
+      logo: "https://img.icons8.com/fluency/144/paypal.png",
+      cardImg: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/1200px-PayPal.svg.png",
+      cardBg: "from-[#003087] via-[#0070ba] to-[#009cde]",
+      cardPattern: "linear-gradient(135deg, rgba(0,112,186,0.8) 0%, rgba(0,48,135,0.95) 100%)",
       name: t("payout_paypal"), 
       type: t("digital_wallet"),
       color: "from-[#003087] via-[#0070ba] to-[#009cde]",
@@ -33,7 +36,10 @@ export default function Wallet() {
     },
     { 
       id: "binance",
-      logo: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/bnb.png", 
+      logo: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/bnb.png",
+      cardImg: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Binance_logo.svg/1200px-Binance_logo.svg.png",
+      cardBg: "from-[#1a1200] via-[#2d1f00] to-[#F3BA2F]",
+      cardPattern: "linear-gradient(135deg, rgba(20,14,0,0.95) 0%, rgba(43,30,0,0.9) 60%, rgba(243,186,47,0.3) 100%)",
       name: t("payout_binance"), 
       type: t("crypto_wallet"),
       color: "from-[#F3BA2F] via-[#b68c22] to-black",
@@ -44,7 +50,10 @@ export default function Wallet() {
     },
     { 
       id: "morocco",
-      logo: "https://img.icons8.com/fluency/144/bank.png", 
+      logo: "https://img.icons8.com/fluency/144/bank.png",
+      cardImg: "https://img.icons8.com/fluency/144/bank.png",
+      cardBg: "from-[#8B0000] via-[#006233] to-black",
+      cardPattern: "linear-gradient(135deg, rgba(139,0,0,0.9) 0%, rgba(0,98,51,0.8) 60%, rgba(0,0,0,0.95) 100%)",
       name: t("payout_morocco"), 
       type: t("local_bank"),
       color: "from-red-600 via-red-900 to-green-900",
@@ -55,7 +64,10 @@ export default function Wallet() {
     },
     { 
       id: "sepa",
-      logo: "https://img.icons8.com/fluency/144/bank-building.png", 
+      logo: "https://img.icons8.com/fluency/144/bank-building.png",
+      cardImg: "https://img.icons8.com/fluency/144/bank-building.png",
+      cardBg: "from-[#003399] via-[#1a237e] to-[#0d47a1]",
+      cardPattern: "linear-gradient(135deg, rgba(0,51,153,0.95) 0%, rgba(26,35,126,0.9) 100%)",
       name: t("payout_sepa"), 
       type: t("international_bank"),
       color: "from-blue-900 via-indigo-950 to-blue-950",
@@ -66,7 +78,10 @@ export default function Wallet() {
     },
     { 
       id: "cih",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/CIH_Bank_logo.svg/200px-CIH_Bank_logo.svg.png", 
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/CIH_Bank_logo.svg/200px-CIH_Bank_logo.svg.png",
+      cardImg: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/CIH_Bank_logo.svg/200px-CIH_Bank_logo.svg.png",
+      cardBg: "from-[#004B9B] via-[#1565C0] to-[#0d47a1]",
+      cardPattern: "linear-gradient(135deg, rgba(0,75,155,0.95) 0%, rgba(0,52,107,0.9) 60%, rgba(0,0,0,0.8) 100%)",
       name: t("payout_cih"), 
       type: t("local_bank"),
       color: "from-[#004B9B] via-[#00346b] to-black",
@@ -77,7 +92,10 @@ export default function Wallet() {
     },
     { 
       id: "cashplus",
-      logo: "https://img.icons8.com/fluency/144/cash.png", 
+      logo: "https://img.icons8.com/fluency/144/cash.png",
+      cardImg: "https://img.icons8.com/fluency/144/cash.png",
+      cardBg: "from-[#FF6600] via-[#cc3300] to-[#8B0000]",
+      cardPattern: "linear-gradient(135deg, rgba(255,102,0,0.9) 0%, rgba(204,51,0,0.85) 60%, rgba(139,0,0,0.95) 100%)",
       name: t("payout_cashplus"), 
       type: t("money_transfer"),
       color: "from-orange-500 via-orange-800 to-red-900",
@@ -281,78 +299,98 @@ export default function Wallet() {
 
       <div className="space-y-4 pt-6">
         <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/30 px-1">{t("withdraw")} Infrastructure</h3>
-        <div className="flex flex-col gap-4 px-1">
+        <div className="flex flex-col gap-3 px-1">
           {methods.map((m, i) => (
             <motion.div
               key={i}
-              whileHover={{ x: 5, scale: 1.01 }}
+              whileHover={{ y: -2, scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className="group"
+              onClick={() => setSelectedMethod(m)}
+              className="cursor-pointer"
             >
-              <GlassCard 
-                className={cn(
-                  "relative h-[80px] w-full rounded-xl p-4 flex items-center transition-all duration-500",
-                  m.border || "border-white/10",
-                  `bg-gradient-to-r ${m.color.split(' ')[0]}/20 via-black/20 to-transparent`,
-                  m.glow,
-                  "cursor-pointer group overflow-hidden backdrop-blur-3xl"
-                )}
-                onClick={() => setSelectedMethod(m)}
+              {/* بطاقة بتصميم كاربون/معدني مع صورة البطاقة على اليمين */}
+              <div
+                className={cn("relative h-[88px] w-full rounded-2xl overflow-hidden", m.glow)}
+                style={{ background: m.cardPattern }}
               >
-                {/* Dynamic Brand Background Glow */}
-                <div className={cn(
-                  "absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-1000 bg-gradient-to-br",
-                  m.color
-                )} />
-
-                {/* Enhanced Reflective Shine Effect */}
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
-                  <div className="absolute inset-[-200%] bg-gradient-to-tr from-transparent via-white/10 to-transparent rotate-[35deg] animate-glint" style={{ animationDuration: '3s' }} />
-                </div>
-
-                <div className="flex items-center gap-6 w-full relative z-10">
-                  {/* Brand Icon Container */}
-                  <div className="w-16 h-16 rounded-2xl bg-black/50 flex items-center justify-center p-2.5 border border-white/10 group-hover:border-white/30 transition-all duration-500 shadow-2xl group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <img 
-                      src={m.logo} 
-                      alt="" 
-                      className="w-4/5 h-4/5 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] transition-all duration-500 group-hover:scale-110 relative z-10" 
-                    />
-                  </div>
-
-                  {/* Details */}
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                       <h4 
-                         className="text-[17px] font-bold text-white/90 tracking-tight leading-none"
-                       >
-                         {m.name}
-                       </h4>
-                       {m.active && (
-                         <div className="bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-                           <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest leading-none">Verified</span>
-                         </div>
-                       )}
-                    </div>
-                    <p className="text-[10px] font-semibold text-white/30 uppercase tracking-[0.15em]">{m.type}</p>
-                  </div>
-
-                  {/* Action Icon */}
-                  <div className="flex flex-col items-end gap-1.5">
-                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-primary group-hover:border-primary/50 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
-                      <ChevronRight size={18} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Brand Accent Bottom Line */}
-                <div 
-                  className="absolute bottom-0 left-6 right-6 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-1 group-hover:translate-y-0"
-                  style={{ background: m.accent, boxShadow: `0 0 10px ${m.accent}` }}
+                {/* نقش كاربون خفي */}
+                <div className="absolute inset-0 opacity-[0.06]"
+                  style={{
+                    backgroundImage: "repeating-linear-gradient(45deg, #fff 0px, #fff 1px, transparent 1px, transparent 8px), repeating-linear-gradient(-45deg, #fff 0px, #fff 1px, transparent 1px, transparent 8px)"
+                  }}
                 />
-              </GlassCard>
+
+                {/* بريق علوي */}
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+
+                {/* الجزء الأيسر — لوجو + معلومات */}
+                <div className="absolute left-0 top-0 bottom-0 flex items-center gap-3 px-4 z-10">
+                  <div className="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center p-2 backdrop-blur-sm shadow-lg flex-shrink-0">
+                    <img src={m.logo} alt="" className="w-full h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[15px] font-bold text-white tracking-tight leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{m.name}</span>
+                      {m.active && (
+                        <div className="bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30">
+                          <span className="text-[7px] font-black text-emerald-400 uppercase tracking-widest">✓ VERIFIED</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{m.type}</p>
+                  </div>
+                </div>
+
+                {/* الجزء الأيمن — صورة البطاقة */}
+                <div className="absolute right-0 top-0 bottom-0 w-[140px] z-10 flex items-center justify-end pr-3">
+                  {/* تدرج للإخفاء من اليسار */}
+                  <div className="absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-transparent" 
+                    style={{ background: `linear-gradient(to right, ${m.accent}00, transparent)` }}
+                  />
+                  {/* صورة بطاقة بنكية */}
+                  <div
+                    className="w-[115px] h-[72px] rounded-xl relative overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.6)] border border-white/10"
+                    style={{ background: `linear-gradient(135deg, ${m.accent}99 0%, rgba(0,0,0,0.8) 100%)` }}
+                  >
+                    {/* نقش كاربون */}
+                    <div className="absolute inset-0 opacity-10"
+                      style={{
+                        backgroundImage: "repeating-linear-gradient(45deg, #fff 0px, #fff 1px, transparent 1px, transparent 6px)"
+                      }}
+                    />
+                    {/* شريط مغناطيسي */}
+                    <div className="absolute top-4 left-0 right-0 h-6 bg-black/60" />
+                    {/* بريق */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/30" />
+                    {/* لوجو صغير */}
+                    <img 
+                      src={m.cardImg || m.logo} 
+                      alt="" 
+                      className="absolute bottom-2 left-2 h-5 w-auto object-contain filter brightness-0 invert opacity-70"
+                    />
+                    {/* Mastercard circles */}
+                    <div className="absolute bottom-2 right-2 flex">
+                      <div className="w-5 h-5 rounded-full opacity-80" style={{ background: m.accent }} />
+                      <div className="w-5 h-5 rounded-full -ml-2 opacity-60 bg-orange-400" />
+                    </div>
+                    {/* أرقام وهمية */}
+                    <div className="absolute bottom-8 left-2 text-[6px] font-mono text-white/40 tracking-widest">
+                      •••• •••• ••••
+                    </div>
+                  </div>
+                </div>
+
+                {/* زر السهم */}
+                <div className="absolute bottom-2 right-[148px] z-20">
+                  <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                    <ChevronRight size={12} className="text-white/60" />
+                  </div>
+                </div>
+
+                {/* خط ملون أسفل */}
+                <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: `linear-gradient(to right, ${m.accent}, transparent)` }} />
+              </div>
             </motion.div>
           ))}
         </div>
