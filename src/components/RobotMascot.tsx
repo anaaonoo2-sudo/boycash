@@ -340,7 +340,7 @@ const RobotBody = memo(function RobotBody({
           src={armLeftImg} draggable={false}
           className="absolute select-none"
           style={{ top: 46, left: 10, width: 14, transformOrigin: "50% 0%" }}
-          animate={{ rotate: isThinking ? [-40, -35, -40] : [0, -14, 0] }}
+          animate={{ rotate: isThinking ? [40, 35, 40] : [0, -14, 0] }}
           transition={{ duration: isThinking ? 1 : 2, repeat: Infinity, ease: "easeInOut" }}
         />
         {/* ذراع يمين */}
@@ -348,7 +348,7 @@ const RobotBody = memo(function RobotBody({
           src={armRightImg} draggable={false}
           className="absolute select-none"
           style={{ top: 46, right: 10, width: 14, transformOrigin: "50% 0%" }}
-          animate={{ rotate: isThinking ? [40, 35, 40] : [0, 10, 0] }}
+          animate={{ rotate: isThinking ? [-40, -35, -40] : [0, 10, 0] }}
           transition={{ duration: isThinking ? 1 : 2.4, repeat: Infinity, ease: "easeInOut" }}
         />
         {/* جسم */}
