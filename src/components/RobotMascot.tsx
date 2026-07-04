@@ -327,13 +327,26 @@ const RobotBody = memo(function RobotBody({
         animate={{ scaleX: faceDir === "left" ? -1 : 1 }}
         transition={{ duration: 0.22 }}
       >
-        {/* رأس */}
+        {/* أرجل */}
         <motion.img
-          src={headImg} draggable={false}
+          src={legLeftImg} draggable={false}
           className="absolute select-none"
-          style={{ left: "50%", translateX: "-50%", top: 0, width: 54 }}
-          animate={{ rotate: isTalking || isThinking ? [-5, 5, -5] : [-3, 3, -3] }}
-          transition={{ duration: isTalking ? 0.55 : 3.5, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: 62, left: 18, width: 14, transformOrigin: "50% 0%" }}
+          animate={{ rotate: isTalking ? [-8, 8, -8] : [-3, 3, -3] }}
+          transition={{ duration: isTalking ? 0.5 : 1.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.img
+          src={legRightImg} draggable={false}
+          className="absolute select-none"
+          style={{ top: 62, right: 18, width: 14, transformOrigin: "50% 0%" }}
+          animate={{ rotate: isTalking ? [8, -8, 8] : [3, -3, 3] }}
+          transition={{ duration: isTalking ? 0.5 : 1.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* جسم */}
+        <img
+          src={bodyImg} draggable={false}
+          className="absolute select-none"
+          style={{ left: "50%", transform: "translateX(-50%)", top: 42, width: 38 }}
         />
         {/* ذراع يسار */}
         <motion.img
@@ -351,26 +364,13 @@ const RobotBody = memo(function RobotBody({
           animate={{ rotate: isThinking ? [-80, -75, -80] : [0, 10, 0] }}
           transition={{ duration: isThinking ? 1 : 2.4, repeat: Infinity, ease: "easeInOut" }}
         />
-        {/* جسم */}
-        <img
-          src={bodyImg} draggable={false}
-          className="absolute select-none"
-          style={{ left: "50%", transform: "translateX(-50%)", top: 42, width: 38 }}
-        />
-        {/* أرجل */}
+        {/* رأس */}
         <motion.img
-          src={legLeftImg} draggable={false}
+          src={headImg} draggable={false}
           className="absolute select-none"
-          style={{ top: 62, left: 18, width: 14, transformOrigin: "50% 0%" }}
-          animate={{ rotate: isTalking ? [-8, 8, -8] : [-3, 3, -3] }}
-          transition={{ duration: isTalking ? 0.5 : 1.8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.img
-          src={legRightImg} draggable={false}
-          className="absolute select-none"
-          style={{ top: 62, right: 18, width: 14, transformOrigin: "50% 0%" }}
-          animate={{ rotate: isTalking ? [8, -8, 8] : [3, -3, 3] }}
-          transition={{ duration: isTalking ? 0.5 : 1.8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ left: "50%", translateX: "-50%", top: 0, width: 54 }}
+          animate={{ rotate: isTalking || isThinking ? [-5, 5, -5] : [-3, 3, -3] }}
+          transition={{ duration: isTalking ? 0.55 : 3.5, repeat: Infinity, ease: "easeInOut" }}
         />
       </motion.div>
 
