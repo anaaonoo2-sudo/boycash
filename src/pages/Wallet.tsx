@@ -1,168 +1,118 @@
 /* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronRight, Clock, CheckCircle2, AlertCircle, Gift, Zap, X } from "lucide-react";
+import GlassCard from "@/src/components/ui/GlassCard";
+import { ChevronRight, Clock, CheckCircle2, AlertCircle, History, Plus, X, CreditCard, Globe, Gift, Zap, User } from "lucide-react";
 import { useApp } from "@/src/context/AppContext";
 import { useNavigate } from "react-router-dom";
 import Button from "@/src/components/ui/Button";
-import GlassCard from "@/src/components/ui/GlassCard";
 import { motion, AnimatePresence } from "motion/react";
+import CoinIcon from "@/src/components/ui/CoinIcon";
+import { cn } from "@/src/lib/utils";
 import toast from "react-hot-toast";
-
-// بطاقة بنكية واقعية مبنية بـ CSS
-function BankCard({ method }: { method: any }) {
-  return (
-    <div style={{
-      width: "100%",
-      height: 90,
-      borderRadius: 14,
-      position: "relative",
-      overflow: "hidden",
-      background: method.cardGradient,
-      boxShadow: `0 8px 25px ${method.shadowColor}`,
-      border: `1px solid ${method.borderColor}`,
-      flexShrink: 0,
-    }}>
-      {/* Shine overlay */}
-      <div style={{
-        position: "absolute", inset: 0,
-        background: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 50%, rgba(0,0,0,0.15) 100%)",
-        pointerEvents: "none",
-      }} />
-      {/* Chip */}
-      <div style={{
-        position: "absolute", left: 14, top: 14,
-        width: 30, height: 22,
-        background: "linear-gradient(135deg, #f4d03f, #d4a017)",
-        borderRadius: 4,
-        boxShadow: "inset 0 0 6px rgba(0,0,0,0.4)",
-      }} />
-      {/* Card logo */}
-      <div style={{
-        position: "absolute", right: 14, top: 12,
-        display: "flex", alignItems: "center",
-      }}>
-        {method.logoEl}
-      </div>
-      {/* Card number */}
-      <div style={{
-        position: "absolute", left: 14, bottom: 26,
-        color: method.textColor, fontSize: 11,
-        fontFamily: "monospace", letterSpacing: 2, opacity: 0.85,
-      }}>
-        •••• •••• •••• 4829
-      </div>
-      {/* Brand */}
-      <div style={{
-        position: "absolute", right: 14, bottom: 10,
-        color: method.textColor, fontSize: 10, fontWeight: 700, opacity: 0.9,
-      }}>
-        {method.brand}
-      </div>
-      {/* Name */}
-      <div style={{
-        position: "absolute", left: 14, bottom: 10,
-        color: method.textColor, fontSize: 9, opacity: 0.7, textTransform: "uppercase", letterSpacing: 1,
-      }}>
-        BOYCASH USER
-      </div>
-    </div>
-  );
-}
 
 export default function Wallet() {
   const { t, i18n } = useTranslation();
   const { state, requestWithdrawal } = useApp();
   const navigate = useNavigate();
   const [selectedMethod, setSelectedMethod] = useState<any | null>(null);
-  const [payoutDetails, setPayoutDetails] = useState("");
+  const [isAddingMethod, setIsAddingMethod] = useState(false);
+  const [newMethod, setNewMethod] = useState({ name: "", number: "", country: "" });
 
-  const methods = [
-    {
+  const [methods, setMethods] = useState<any[]>([
+    { 
       id: "paypal",
-      logo: "https://img.icons8.com/fluency/144/paypal.png",
-      name: t("payout_paypal"),
+      logo: "https://img.icons8.com/fluency/144/paypal.png", 
+      name: t("payout_paypal"), 
       type: t("digital_wallet"),
-      accent: "#0070ba",
+      color: "from-[#003087] via-[#0070ba] to-[#009cde]",
+      card1: "#003087", card2: "#009cde", cardLabel: "PayPal", network: "visa", accent: "#0070ba",
+      glow: "shadow-[0_0_50px_rgba(0,112,186,0.2)]",
       active: true,
-      cardGradient: "linear-gradient(135deg, #003087 0%, #0070ba 60%, #009cde 100%)",
-      shadowColor: "rgba(0,112,186,0.35)",
-      borderColor: "rgba(0,150,220,0.4)",
-      textColor: "white",
-      brand: "VISA",
-      logoEl: <span style={{ color: "white", fontWeight: 900, fontSize: 16, letterSpacing: -1 }}>PayPal</span>,
+      border: "border-[#0070ba]/30"
     },
-    {
+    { 
       id: "binance",
-      logo: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/bnb.png",
-      name: t("payout_binance"),
+      logo: "https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/bnb.png", 
+      name: t("payout_binance"), 
       type: t("crypto_wallet"),
-      accent: "#F3BA2F",
+      color: "from-[#F3BA2F] via-[#b68c22] to-black",
+      card1: "#1a1200", card2: "#2d1f00", cardLabel: "BINANCE", network: "visa", accent: "#F3BA2F",
+      glow: "shadow-[0_0_50px_rgba(243,186,47,0.15)]",
       active: true,
-      cardGradient: "linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #2d1f00 100%)",
-      shadowColor: "rgba(243,186,47,0.25)",
-      borderColor: "rgba(243,186,47,0.4)",
-      textColor: "#F3BA2F",
-      brand: "VISA",
-      logoEl: <span style={{ color: "#F3BA2F", fontWeight: 900, fontSize: 15 }}>BINANCE</span>,
+      border: "border-[#F3BA2F]/30"
     },
-    {
+    { 
       id: "morocco",
-      logo: "https://img.icons8.com/fluency/144/bank.png",
-      name: t("payout_morocco"),
+      logo: "https://img.icons8.com/fluency/144/bank.png", 
+      name: t("payout_morocco"), 
       type: t("local_bank"),
-      accent: "#c1272d",
+      color: "from-red-600 via-red-900 to-green-900",
+      card1: "#8B0000", card2: "#006233", cardLabel: "MAROC", network: "mc", mc1: "#c1272d", mc2: "#f79e1b", accent: "#c1272d",
+      glow: "shadow-[0_0_50px_rgba(193,39,45,0.15)]",
       active: false,
-      cardGradient: "linear-gradient(135deg, #8B0000 0%, #c1272d 40%, #006233 100%)",
-      shadowColor: "rgba(193,39,45,0.3)",
-      borderColor: "rgba(193,39,45,0.3)",
-      textColor: "white",
-      brand: "Mastercard",
-      logoEl: <span style={{ fontSize: 22 }}>🇲🇦</span>,
+      border: "border-red-500/20"
     },
-    {
+    { 
       id: "sepa",
-      logo: "https://img.icons8.com/fluency/144/bank-building.png",
-      name: t("payout_sepa"),
+      logo: "https://img.icons8.com/fluency/144/bank-building.png", 
+      name: t("payout_sepa"), 
       type: t("international_bank"),
-      accent: "#003399",
+      color: "from-blue-900 via-indigo-950 to-blue-950",
+      card1: "#003399", card2: "#001a66", cardLabel: "SEPA EU", network: "mc", mc1: "#003399", mc2: "#4466cc", accent: "#003399",
+      glow: "shadow-[0_0_50px_rgba(0,51,153,0.15)]",
       active: false,
-      cardGradient: "linear-gradient(135deg, #001a80 0%, #003399 50%, #1a237e 100%)",
-      shadowColor: "rgba(0,51,153,0.35)",
-      borderColor: "rgba(0,51,153,0.4)",
-      textColor: "white",
-      brand: "Mastercard",
-      logoEl: <span style={{ color: "white", fontWeight: 700, fontSize: 13 }}>🇪🇺 SEPA</span>,
+      border: "border-blue-400/20"
     },
-    {
+    { 
       id: "cih",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/CIH_Bank_logo.svg/200px-CIH_Bank_logo.svg.png",
-      name: t("payout_cih"),
+      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/CIH_Bank_logo.svg/200px-CIH_Bank_logo.svg.png", 
+      name: t("payout_cih"), 
       type: t("local_bank"),
-      accent: "#004B9B",
+      color: "from-[#004B9B] via-[#00346b] to-black",
+      card1: "#004B9B", card2: "#00346b", cardLabel: "CIH", network: "mc", mc1: "#004B9B", mc2: "#ffd700", accent: "#004B9B",
+      glow: "shadow-[0_0_50px_rgba(0,75,155,0.2)]",
       active: true,
-      cardGradient: "linear-gradient(135deg, #002255 0%, #004B9B 50%, #1565C0 100%)",
-      shadowColor: "rgba(0,75,155,0.35)",
-      borderColor: "rgba(0,75,155,0.4)",
-      textColor: "white",
-      brand: "Mastercard",
-      logoEl: <span style={{ color: "#ffd700", fontWeight: 900, fontSize: 18 }}>CIH</span>,
+      border: "border-[#004B9B]/40"
     },
-    {
+    { 
       id: "cashplus",
-      logo: "https://img.icons8.com/fluency/144/cash.png",
-      name: t("payout_cashplus"),
+      logo: "https://img.icons8.com/fluency/144/cash.png", 
+      name: t("payout_cashplus"), 
       type: t("money_transfer"),
-      accent: "#FF6600",
+      color: "from-orange-500 via-orange-800 to-red-900",
+      card1: "#c8102e", card2: "#ff6600", cardLabel: "CASH+", network: "mc", mc1: "#c8102e", mc2: "#ff6600", accent: "#FF6600",
+      glow: "shadow-[0_0_50px_rgba(255,102,0,0.15)]",
       active: false,
-      cardGradient: "linear-gradient(135deg, #8B0000 0%, #cc3300 40%, #FF6600 100%)",
-      shadowColor: "rgba(255,102,0,0.3)",
-      borderColor: "rgba(255,102,0,0.35)",
-      textColor: "white",
-      brand: "Mastercard",
-      logoEl: <span style={{ color: "white", fontWeight: 900, fontSize: 15 }}>CASH+</span>,
+      border: "border-orange-500/30"
     },
-  ];
+  ]);
+
+  const handleAddCard = () => {
+    if (!newMethod.name || !newMethod.number) {
+      toast.error(i18n.language === 'ar' ? "يرجى ملء الحقول المطلوبة" : "Please fill required fields");
+      return;
+    }
+    
+    const newEntry = {
+      id: Math.random().toString(36).substr(2, 9),
+      logo: "https://img.icons8.com/fluency/144/visa.png",
+      name: newMethod.name,
+      type: `${newMethod.country || (i18n.language === 'ar' ? 'عالمي' : 'Global')} Card`,
+      color: "from-gray-700 via-gray-900 to-black",
+      accent: "#ffffff",
+      glow: "shadow-[0_0_40px_rgba(255,255,255,0.1)]",
+      active: true,
+      custom: true
+    };
+
+    setMethods([...methods, newEntry]);
+    setIsAddingMethod(false);
+    setNewMethod({ name: "", number: "", country: "" });
+    toast.success(t("payout_method_saved"));
+  };
+
+  const [payoutDetails, setPayoutDetails] = useState("");
 
   const handleWithdrawal = async () => {
     if (!payoutDetails) return;
@@ -175,267 +125,403 @@ export default function Wallet() {
 
   return (
     <div className="space-y-6 pb-24">
-      {/* Balance */}
-      <div style={{
-        background: "linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(168,85,247,0.15) 100%)",
-        border: "1px solid rgba(168,85,247,0.2)",
-        borderRadius: 20, padding: "20px 24px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-      }}>
-        <div>
-          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 3, marginBottom: 4 }}>
-            {t("balance")}
-          </p>
-          <p style={{ color: "white", fontSize: 36, fontWeight: 900, lineHeight: 1 }}>
-            ${state.balance.toFixed(2)}
-          </p>
-          <div style={{ marginTop: 10, width: 200, height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 4, overflow: "hidden" }}>
-            <div style={{
-              height: "100%", borderRadius: 4,
-              background: "linear-gradient(90deg, #a855f7, #6366f1)",
-              width: `${Math.min((state.balance / 5) * 100, 100)}%`,
-              transition: "width 0.5s ease",
-            }} />
-          </div>
-          <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 9, marginTop: 4, fontWeight: 600 }}>
-            ${state.balance.toFixed(2)} / $5.00 {t("min_payout")}
-          </p>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{
-            background: "rgba(168,85,247,0.15)", border: "1px solid rgba(168,85,247,0.3)",
-            borderRadius: 12, padding: "8px 14px", marginBottom: 8,
-          }}>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 8, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 }}>COINS</p>
-            <p style={{ color: "#fbbf24", fontSize: 18, fontWeight: 900 }}>{state.coins.toLocaleString()}</p>
-          </div>
-        </div>
-      </div>
+      <header className="text-center mb-8">
+        <h1 className="text-3xl font-bold neon-text-blue uppercase tracking-tight">{t("wallet")}</h1>
+      </header>
 
-      {/* Progress bars */}
-      {[
-        { label: "REWARDS UP TO 5.00 COINS", target: 5 },
-        { label: "REWARDS UP TO 10.00 COINS", target: 10 },
-      ].map((bar) => (
-        <div key={bar.target} style={{ padding: "0 4px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-            <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 9, fontWeight: 700, letterSpacing: 1 }}>{bar.label}</span>
-            <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 9, fontWeight: 700 }}>
-              {Math.min(Math.round((state.balance / bar.target) * 100), 100)}%
-            </span>
-          </div>
-          <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 3, overflow: "hidden" }}>
-            <div style={{
-              height: "100%", borderRadius: 3,
-              background: "linear-gradient(90deg, #a855f7, #6366f1)",
-              width: `${Math.min((state.balance / bar.target) * 100, 100)}%`,
-            }} />
+      <GlassCard className="relative overflow-hidden p-10 bg-gradient-to-tr from-secondary/30 via-transparent to-primary/30 border-white/20 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] mb-8">
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
+          transition={{ duration: 8, repeat: Infinity }}
+          className="absolute top-0 left-0 w-80 h-80 bg-secondary/30 blur-[130px] -ml-40 -mt-40 rounded-full" 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.3, 1], opacity: [0.1, 0.15, 0.1] }}
+          transition={{ duration: 12, repeat: Infinity }}
+          className="absolute bottom-0 right-0 w-64 h-64 bg-primary/30 blur-[110px] -mr-32 -mb-32 rounded-full" 
+        />
+        
+        <div className="text-center relative z-10">
+          <p className="text-[11px] font-bold text-white/40 mb-3 uppercase tracking-[0.5em]">{t("total_assets")}</p>
+          <h2 className="text-6xl sm:text-7xl font-black text-white drop-shadow-[0_20px_60px_rgba(255,255,255,0.2)] mb-8 tracking-tighter">
+            <span className="text-3xl font-normal opacity-30 mr-1">$</span>
+            {state.balance.toFixed(2)}
+          </h2>
+          
+          <div className="w-full h-14 bg-white/[0.04] backdrop-blur-3xl border border-white/10 rounded-[1.5rem] flex items-center px-6 gap-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group transition-all duration-500 hover:bg-white/[0.08]">
+            <CoinIcon size={24} />
+            <div className="flex-1 flex flex-col items-start translate-y-0.5">
+               <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mb-0.5">{t("coins")} AVAILABLE</span>
+               <span className="text-xl font-bold text-accent-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]">{state.coins.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
+                 <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest leading-none">Live</span>
+            </div>
           </div>
         </div>
-      ))}
+      </GlassCard>
 
-      {/* Add payout method */}
-      <div style={{
-        background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",
-        borderRadius: 16, padding: "14px 18px",
-        display: "flex", alignItems: "center", gap: 14, cursor: "pointer",
-      }}>
-        <div style={{
-          width: 36, height: 36, borderRadius: 10,
-          background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: "#a855f7",
-        }}>+</div>
-        <div>
-          <p style={{ color: "white", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>ADD PAYOUT METHOD</p>
-          <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 9, textTransform: "uppercase", letterSpacing: 1 }}>SECURE INFRASTRUCTURE GATEWAY</p>
-        </div>
-        <ChevronRight size={16} color="rgba(255,255,255,0.3)" style={{ marginLeft: "auto" }} />
-      </div>
-
-      {/* Withdraw Infrastructure */}
-      <div>
-        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          WITHDRAW INFRASTRUCTURE
-        </p>
+      <div className="space-y-6 pt-2">
         <div className="space-y-3">
-          {methods.map((method) => (
+          <div className="flex justify-between items-center text-[10px] font-black text-white/40 uppercase tracking-widest">
+            <span className="font-bold">{t("rewards_up_to", { amount: "5.00" })}</span>
+            <span className="text-white">{Math.min((state.balance / 5) * 100, 100).toFixed(0)}%</span>
+          </div>
+          <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden border border-white/5 p-0.5">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min((state.balance / 5) * 100, 100)}%` }}
+              className="h-full bg-gradient-to-r from-blue-500 via-primary to-purple-600 rounded-full shadow-[0_0_10px_rgba(139,92,246,0.3)]" 
+            />
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          <div className="flex justify-between items-center text-[10px] font-black text-white/40 uppercase tracking-widest">
+            <span className="font-bold">{t("rewards_up_to", { amount: "10.00" })}</span>
+            <span className="text-white">{Math.min((state.balance / 10) * 100, 100).toFixed(0)}%</span>
+          </div>
+          <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden border border-white/5 p-0.5">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min((state.balance / 10) * 100, 100)}%` }}
+              className="h-full bg-gradient-to-r from-primary via-purple-600 to-pink-600 rounded-full shadow-[0_0_10px_rgba(168,85,247,0.3)]" 
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Add New Payout Method Section */}
+      <div className="space-y-4">
+        <button 
+          onClick={() => setIsAddingMethod(!isAddingMethod)}
+          className="w-full p-6 rounded-[2.5rem] bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 flex items-center justify-between group hover:bg-primary/20 transition-all shadow-lg shadow-primary/5"
+        >
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-inner ${isAddingMethod ? 'bg-primary text-white rotate-90' : 'bg-primary/10 text-primary'}`}>
+              <Plus size={24} />
+            </div>
+            <div className="text-left">
+              <span className="block text-xs font-black uppercase tracking-widest text-white/90">{t("add_payout_method")}</span>
+              <p className="text-[9px] text-primary/60 font-bold uppercase tracking-tighter mt-0.5">{t("secure_gateway_desc")}</p>
+            </div>
+          </div>
+          <ChevronRight size={18} className={`text-primary/40 transition-transform duration-500 ${isAddingMethod ? 'rotate-90' : ''}`} />
+        </button>
+
+        <AnimatePresence>
+          {isAddingMethod && (
             <motion.div
-              key={method.id}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setSelectedMethod(method)}
-              style={{
-                display: "flex", alignItems: "center", gap: 14,
-                background: "rgba(255,255,255,0.03)",
-                border: `1px solid ${method.borderColor}`,
-                borderRadius: 16, padding: "10px 14px",
-                cursor: "pointer", overflow: "hidden", position: "relative",
-              }}
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
             >
-              {/* Left: Icon */}
-              <div style={{
-                width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-                background: `${method.accent}22`,
-                border: `1px solid ${method.accent}44`,
-                display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
-              }}>
-                <img src={method.logo} alt={method.name} style={{ width: 28, height: 28, objectFit: "contain" }} />
-              </div>
+              <GlassCard className="p-8 space-y-6 border-primary/20 bg-primary/5 relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl -mr-16 -mt-16 rounded-full" />
+                
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2 flex items-center gap-2">
+                      <User size={12} className="text-primary" /> {t("payout_name")}
+                    </label>
+                    <input 
+                      type="text"
+                      value={newMethod.name}
+                      onChange={(e) => setNewMethod({ ...newMethod, name: e.target.value })}
+                      placeholder="e.g. JOHN DOE"
+                      className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-white placeholder:text-white/10 focus:outline-none focus:border-primary/50 focus:bg-black/60 transition-all"
+                    />
+                  </div>
 
-              {/* Middle: Info */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                  <p style={{ color: "white", fontSize: 13, fontWeight: 700 }}>{method.name}</p>
-                  {method.active && (
-                    <span style={{
-                      background: `${method.accent}22`, color: method.accent,
-                      fontSize: 8, fontWeight: 700, padding: "2px 6px",
-                      borderRadius: 4, textTransform: "uppercase", letterSpacing: 1,
-                      border: `1px solid ${method.accent}44`,
-                    }}>VERIFIED</span>
-                  )}
+                  <div className="grid grid-cols-1 gap-5">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2 flex items-center gap-2">
+                        <CreditCard size={12} className="text-primary" /> {t("payout_number")}
+                      </label>
+                      <input 
+                        type="text"
+                        value={newMethod.number}
+                        onChange={(e) => setNewMethod({ ...newMethod, number: e.target.value })}
+                        placeholder="ID / WALLET ADDRESS"
+                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-white placeholder:text-white/10 focus:outline-none focus:border-primary/50 focus:bg-black/60 transition-all"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2 flex items-center gap-2">
+                        <Globe size={12} className="text-primary" /> {t("payout_country")}
+                      </label>
+                      <input 
+                        type="text"
+                        value={newMethod.country}
+                        onChange={(e) => setNewMethod({ ...newMethod, country: e.target.value })}
+                        placeholder="MOROCCO / USA / GLOBAL"
+                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-6 py-4 text-xs font-bold uppercase tracking-widest text-white placeholder:text-white/10 focus:outline-none focus:border-primary/50 focus:bg-black/60 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    variant="primary" 
+                    glow 
+                    className="w-full py-5 text-xs font-black uppercase mt-4 shadow-xl shadow-primary/20"
+                    onClick={handleAddCard}
+                  >
+                    {t("save_method")}
+                  </Button>
                 </div>
-                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 10, textTransform: "uppercase", letterSpacing: 1 }}>{method.type}</p>
-              </div>
+              </GlassCard>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-              {/* Right: Mini card */}
-              <div style={{ width: 110, flexShrink: 0 }}>
-                <BankCard method={method} />
-              </div>
+      <div className="space-y-4 pt-6">
+        <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/30 px-1">{t("withdraw")} Infrastructure</h3>
+        <div className="flex flex-col gap-4 px-1">
+          {methods.map((m, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ x: 5, scale: 1.01 }}
+              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              className="group"
+            >
+              <GlassCard 
+                className={cn(
+                  "relative h-[80px] w-full rounded-xl p-4 flex items-center transition-all duration-500",
+                  m.border || "border-white/10",
+                  `bg-gradient-to-r ${m.color.split(' ')[0]}/20 via-black/20 to-transparent`,
+                  m.glow,
+                  "cursor-pointer group overflow-hidden backdrop-blur-3xl"
+                )}
+                onClick={() => setSelectedMethod(m)}
+              >
+                {/* Dynamic Brand Background Glow */}
+                <div className={cn(
+                  "absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-1000 bg-gradient-to-br",
+                  m.color
+                )} />
 
-              {/* Arrow */}
-              <div style={{
-                width: 28, height: 28, borderRadius: 8, flexShrink: 0,
-                background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <ChevronRight size={14} color="rgba(255,255,255,0.4)" />
-              </div>
+                {/* Enhanced Reflective Shine Effect */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
+                  <div className="absolute inset-[-200%] bg-gradient-to-tr from-transparent via-white/10 to-transparent rotate-[35deg] animate-glint" style={{ animationDuration: '3s' }} />
+                </div>
+
+                <div className="flex items-center gap-6 w-full relative z-10">
+                  {/* Brand Icon Container */}
+                  <div className="w-16 h-16 rounded-2xl bg-black/50 flex items-center justify-center p-2.5 border border-white/10 group-hover:border-white/30 transition-all duration-500 shadow-2xl group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <img 
+                      src={m.logo} 
+                      alt="" 
+                      className="w-4/5 h-4/5 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] transition-all duration-500 group-hover:scale-110 relative z-10" 
+                    />
+                  </div>
+
+                  {/* Details */}
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center gap-2">
+                       <h4 
+                         className="text-[17px] font-bold text-white/90 tracking-tight leading-none"
+                       >
+                         {m.name}
+                       </h4>
+                       {m.active && (
+                         <div className="bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                           <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest leading-none">Verified</span>
+                         </div>
+                       )}
+                    </div>
+                    <p className="text-[10px] font-semibold text-white/30 uppercase tracking-[0.15em]">{m.type}</p>
+                  </div>
+
+                  {/* Action Icon */}
+                  <div className="flex flex-col items-end gap-1.5">
+                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-primary group-hover:border-primary/50 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
+                      <ChevronRight size={18} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Brand Accent Bottom Line */}
+                <div 
+                  className="absolute bottom-0 left-6 right-6 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-1 group-hover:translate-y-0"
+                  style={{ background: m.accent, boxShadow: `0 0 10px ${m.accent}` }}
+                />
+              </GlassCard>
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* History */}
-      <div>
-        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 3, marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
-          <Clock size={12} /> HISTORY
-        </p>
-        {state.transactions.length === 0 ? (
-          <GlassCard className="p-6 flex flex-col items-center gap-3 border-white/5">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <Gift className="text-primary" size={24} />
-            </div>
-            <p className="text-xs font-bold text-white/40 uppercase tracking-widest text-center">{t("empty_transactions")}</p>
-            <p className="text-[10px] text-white/20 uppercase tracking-widest text-center">{t("empty_transactions_desc")}</p>
-            <Button variant="ghost" className="text-[10px] font-black uppercase tracking-widest border-white/5 mt-1" onClick={() => navigate('/earn')}>
-              {t("earn_now")}
-            </Button>
-          </GlassCard>
-        ) : (
-          <div className="space-y-2">
-            {state.transactions.map((tx) => (
-              <GlassCard key={tx.id} className="p-4 flex items-center justify-between border-white/5 bg-white/[0.02]" animate={false}>
+      <div className="space-y-4 pt-8">
+        <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-white/80">
+          <History size={16} />
+          <h3>{t("history")}</h3>
+        </div>
+        
+        <div className="space-y-3">
+          {state.transactions.length === 0 ? (
+            <GlassCard className="p-10 flex flex-col items-center text-center space-y-4 border-dashed border-white/10 bg-white/[0.01]">
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+                <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center border border-white/5 relative z-10">
+                  <Gift className="text-primary animate-bounce-slow" size={32} />
+                </div>
+                <div className="absolute -top-1 -right-1">
+                   <div className="w-4 h-4 rounded-full bg-accent-gold flex items-center justify-center border border-dark-bg animate-pulse">
+                      <Zap size={8} className="text-black" />
+                   </div>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-sm font-black uppercase tracking-tight text-white/80">{t("empty_transactions")}</h4>
+                <p className="text-[10px] text-white/40 uppercase tracking-widest max-w-[200px] leading-relaxed">
+                  {t("empty_transactions_desc")}
+                </p>
+              </div>
+              <Button 
+                variant="ghost" 
+                className="text-[10px] font-black uppercase tracking-[0.2em] border-white/5 hover:bg-white/5 mt-2"
+                onClick={() => navigate('/earn')}
+              >
+                {t("earn_now")}
+              </Button>
+            </GlassCard>
+          ) : (
+            state.transactions.map((tx) => (
+              <GlassCard key={tx.id} className="p-4 flex items-center justify-between border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors" animate={false}>
                 <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${tx.type === 'withdraw' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-green-500/10 text-green-500 border-green-500/20'}`}>
-                    {tx.type === 'withdraw' ? <ChevronRight className="rotate-180" size={14} /> : <CheckCircle2 size={14} />}
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all ${
+                    tx.type === 'withdraw' 
+                      ? 'bg-red-500/10 text-red-500 border-red-500/20' 
+                      : 'bg-green-500/10 text-green-500 border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)]'
+                  }`}>
+                    {tx.type === 'withdraw' ? <ChevronRight className="rotate-180" size={16} /> : <CheckCircle2 size={16} />}
                   </div>
                   <div>
                     <p className="text-xs font-bold uppercase tracking-tight text-white/90">
                       {tx.type === 'withdraw' ? `${t("withdraw")}: ${tx.method}` : t("tasks") + " Reward"}
                     </p>
-                    <p className="text-[9px] text-gray-500 font-bold uppercase">{new Date(tx.date).toLocaleDateString()}</p>
+                    <p className="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">{new Date(tx.date).toLocaleDateString()} • {new Date(tx.date).toLocaleTimeString()}</p>
                   </div>
                 </div>
+
                 <div className="text-right">
                   <p className={`text-xs font-black ${tx.type === 'withdraw' ? 'text-red-400' : 'text-green-400'}`}>
                     {tx.type === 'withdraw' ? '-' : '+'}${tx.type === 'withdraw' ? tx.amount.toFixed(2) : (tx.amount / 1000).toFixed(2)}
                   </p>
-                  <span className={`text-[8px] font-black uppercase ${tx.status === 'pending' ? 'text-yellow-500' : tx.status === 'completed' ? 'text-green-500' : 'text-red-500'}`}>
-                    {tx.status}
-                  </span>
+                  <div className="flex items-center justify-end gap-1">
+                    {tx.status === 'pending' && <Clock size={8} className="text-yellow-500 animate-pulse" />}
+                    <span className={`text-[8px] font-black uppercase ${
+                      tx.status === 'pending' ? 'text-yellow-500' : 
+                      tx.status === 'completed' ? 'text-green-500' : 'text-red-500'
+                    }`}>
+                      {tx.status}
+                    </span>
+                  </div>
                 </div>
               </GlassCard>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
       </div>
 
       {/* Withdrawal Modal */}
       <AnimatePresence>
         {selectedMethod && (
-          <motion.div
+          <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[110] bg-black/90 flex items-center justify-center p-6"
+            className="fixed inset-0 z-[110] bg-dark-bg/95 backdrop-blur-2xl flex items-center justify-center p-6"
           >
-            <GlassCard className="w-full max-w-sm p-0 overflow-hidden border-white/10 shadow-2xl">
-              <div style={{
-                background: selectedMethod.cardGradient,
-                padding: "20px 20px 16px",
-                position: "relative", overflow: "hidden",
-              }}>
-                <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.2)" }} />
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  <div className="flex justify-between items-center mb-3">
-                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 }}>{selectedMethod.type}</span>
-                    <button onClick={() => setSelectedMethod(null)} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 8, padding: 6, cursor: "pointer", color: "white" }}>
-                      <X size={16} />
-                    </button>
+            <GlassCard className={`w-full max-w-sm p-0 space-y-0 border-white/10 shadow-2xl relative overflow-hidden bg-gradient-to-b ${selectedMethod.color.split(' ')[0]}/20`}>
+              {/* Header with Brand Gradient */}
+              <div className={`h-32 bg-gradient-to-br ${selectedMethod.color} p-8 relative overflow-hidden`}>
+                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute inset-[-100%] bg-gradient-to-tr from-transparent via-white/5 to-transparent rotate-[35deg] animate-glint" />
+                  <div className="relative z-10 flex flex-col h-full justify-between">
+                    <div className="flex justify-between items-center text-white/80">
+                      <span className="text-[10px] font-bold tracking-[0.2em] uppercase">{selectedMethod.type}</span>
+                      <button onClick={() => setSelectedMethod(null)} className="p-1 hover:bg-white/10 rounded-full transition-colors">
+                        <X size={20} />
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-2xl font-bold text-white tracking-tight">{selectedMethod.name}</h3>
+                    </div>
                   </div>
-                  <BankCard method={selectedMethod} />
-                </div>
               </div>
 
-              <div className="p-6 space-y-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] text-white/30 uppercase tracking-widest">Balance</p>
-                    <p className="text-3xl font-black text-primary">${state.balance.toFixed(2)}</p>
+              <div className="p-8 space-y-6">
+                <div className="flex items-center justify-between px-1">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] leading-none">Account Balance</p>
+                    <p className="text-3xl font-bold text-primary tracking-tight">${state.balance.toFixed(2)}</p>
                   </div>
-                  <img src={selectedMethod.logo} alt="" className="h-14 w-14 object-contain" />
+                  <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 flex items-center justify-center shadow-inner">
+                    <img src={selectedMethod.logo} alt="" className="h-16 w-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]" />
+                  </div>
                 </div>
 
-                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-3 flex items-start gap-2">
-                  <AlertCircle size={14} className="text-yellow-500 mt-0.5 shrink-0" />
-                  <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-wider">{t("withdrawal_time_warning")}</p>
+                <div className="space-y-4">
+                  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex items-start gap-3">
+                    <AlertCircle size={16} className="text-accent-gold mt-0.5 shrink-0" />
+                    <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-wider">
+                      {t("withdrawal_time_warning")}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest px-1">
+                      {selectedMethod.id === 'binance' ? t("wallet_address_label") : t("account_id_label")}
+                    </label>
+                    <input 
+                      type="text"
+                      value={payoutDetails}
+                      onChange={(e) => setPayoutDetails(e.target.value)}
+                      placeholder={selectedMethod.id === 'binance' ? t("wallet_address_placeholder") : t("account_details_placeholder")}
+                      className="w-full bg-black/20 border border-white/10 rounded-2xl px-5 py-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-primary transition-all placeholder:text-white/10"
+                    />
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-white/40 uppercase tracking-widest">
-                    {selectedMethod.id === 'binance' ? t("wallet_address_label") : t("account_id_label")}
-                  </label>
-                  <input
-                    type="text"
-                    value={payoutDetails}
-                    onChange={(e) => setPayoutDetails(e.target.value)}
-                    placeholder={selectedMethod.id === 'binance' ? t("wallet_address_placeholder") : t("account_details_placeholder")}
-                    className="w-full bg-black/20 border border-white/10 rounded-2xl px-4 py-3 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-primary transition-all placeholder:text-white/10"
-                  />
-                </div>
-
-                {state.balance < 5 && (
-                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500 text-[10px] font-bold text-center uppercase tracking-widest">
+                {state.balance < 5 ? (
+                  <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-[10px] font-bold text-center uppercase tracking-widest">
                     {t("min_payout_error", { amount: "5.00" })}
                   </div>
+                ) : (
+                  <p className="text-[8px] text-white/20 uppercase font-black text-center tracking-widest animate-pulse">Ready for secure transfer</p>
                 )}
 
-                <Button
+                <Button 
                   disabled={state.balance < 5 || !payoutDetails}
                   style={{ backgroundColor: (state.balance < 5 || !payoutDetails) ? '#333' : selectedMethod.accent }}
-                  className="w-full py-5 rounded-2xl text-sm font-black tracking-widest uppercase flex items-center justify-center gap-2"
+                  className="w-full py-6 rounded-2xl text-base font-black tracking-widest uppercase flex items-center justify-center gap-3 group relative overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-xl"
                   onClick={handleWithdrawal}
                 >
-                  <span className="text-white">{t("process_payout")}</span>
-                  <ChevronRight className="text-white" size={16} />
+                  <span className="relative z-10 text-white">{t("process_payout")}</span>
+                  <ChevronRight className="relative z-10 group-hover:translate-x-1 transition-transform text-white" />
+                  <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-glint" />
                 </Button>
               </div>
             </GlassCard>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <div className="text-center opacity-30 py-8 border-t border-white/5 mt-8">
+        <p className="text-[8px] font-black tracking-[0.5em] uppercase text-gray-300 italic">
+          BOUCHIBAT
+        </p>
+        <p className="text-[6px] text-white/20 mt-1 uppercase tracking-widest leading-loose">{t("owned_by")} • 2026</p>
+      </div>
     </div>
   );
 }
