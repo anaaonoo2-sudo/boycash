@@ -281,78 +281,92 @@ export default function Wallet() {
 
       <div className="space-y-4 pt-6">
         <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/30 px-1">{t("withdraw")} Infrastructure</h3>
-        <div className="flex flex-col gap-4 px-1">
+        <div className="flex flex-col gap-3 px-1">
           {methods.map((m, i) => (
             <motion.div
               key={i}
-              whileHover={{ x: 5, scale: 1.01 }}
+              whileHover={{ y: -2, scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className="group"
+              onClick={() => setSelectedMethod(m)}
+              className="cursor-pointer"
             >
-              <GlassCard 
-                className={cn(
-                  "relative h-[80px] w-full rounded-xl p-4 flex items-center transition-all duration-500",
-                  m.border || "border-white/10",
-                  `bg-gradient-to-r ${m.color.split(' ')[0]}/20 via-black/20 to-transparent`,
-                  m.glow,
-                  "cursor-pointer group overflow-hidden backdrop-blur-3xl"
-                )}
-                onClick={() => setSelectedMethod(m)}
+              <div
+                className={cn("relative h-[90px] w-full rounded-2xl overflow-hidden flex items-center", m.glow)}
+                style={{ background: `linear-gradient(135deg, ${m.card1} 0%, ${m.card2} 100%)`, border: m.id === "binance" ? "1.5px solid rgba(243,186,47,0.3)" : "1px solid rgba(255,255,255,0.08)" }}
               >
-                {/* Dynamic Brand Background Glow */}
-                <div className={cn(
-                  "absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-1000 bg-gradient-to-br",
-                  m.color
-                )} />
+                {/* بريق علوي */}
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/20 pointer-events-none" />
 
-                {/* Enhanced Reflective Shine Effect */}
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
-                  <div className="absolute inset-[-200%] bg-gradient-to-tr from-transparent via-white/10 to-transparent rotate-[35deg] animate-glint" style={{ animationDuration: '3s' }} />
-                </div>
-
-                <div className="flex items-center gap-6 w-full relative z-10">
-                  {/* Brand Icon Container */}
-                  <div className="w-16 h-16 rounded-2xl bg-black/50 flex items-center justify-center p-2.5 border border-white/10 group-hover:border-white/30 transition-all duration-500 shadow-2xl group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <img 
-                      src={m.logo} 
-                      alt="" 
-                      className="w-4/5 h-4/5 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] transition-all duration-500 group-hover:scale-110 relative z-10" 
-                    />
+                {/* الجزء الأيسر — لوجو + معلومات */}
+                <div className="flex items-center gap-3 px-4 z-10 flex-1 min-w-0">
+                  <div className="w-11 h-11 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center p-2 flex-shrink-0 shadow-lg">
+                    <img src={m.logo} alt="" className="w-full h-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
                   </div>
-
-                  {/* Details */}
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                       <h4 
-                         className="text-[17px] font-bold text-white/90 tracking-tight leading-none"
-                       >
-                         {m.name}
-                       </h4>
-                       {m.active && (
-                         <div className="bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-                           <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest leading-none">Verified</span>
-                         </div>
-                       )}
+                  <div className="space-y-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[14px] font-bold tracking-tight leading-none"
+                        style={{ color: m.id === "binance" ? "#F3BA2F" : "white" }}
+                      >{m.name}</span>
+                      {m.active && (
+                        <div className="bg-emerald-500/20 px-1.5 py-0.5 rounded-full border border-emerald-400/30 flex-shrink-0">
+                          <span className="text-[7px] font-black text-emerald-400 uppercase tracking-widest">✓ VERIFIED</span>
+                        </div>
+                      )}
                     </div>
-                    <p className="text-[10px] font-semibold text-white/30 uppercase tracking-[0.15em]">{m.type}</p>
-                  </div>
-
-                  {/* Action Icon */}
-                  <div className="flex flex-col items-end gap-1.5">
-                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-primary group-hover:border-primary/50 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
-                      <ChevronRight size={18} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-                    </div>
+                    <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{m.type}</p>
                   </div>
                 </div>
 
-                {/* Brand Accent Bottom Line */}
-                <div 
-                  className="absolute bottom-0 left-6 right-6 h-[2px] opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-1 group-hover:translate-y-0"
-                  style={{ background: m.accent, boxShadow: `0 0 10px ${m.accent}` }}
+                {/* الجزء الأيمن — بطاقة بنكية */}
+                <div className="flex-shrink-0 pr-3 z-10">
+                  <div
+                    className="relative overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
+                    style={{
+                      width: 120, height: 75, borderRadius: 10,
+                      background: `linear-gradient(135deg, ${m.card1} 0%, ${m.card2} 100%)`,
+                      border: "1px solid rgba(255,255,255,0.15)",
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/30" />
+                    {/* شريح */}
+                    <div className="absolute top-[10px] left-[10px] w-[22px] h-[16px] rounded-[3px]"
+                      style={{ background: "linear-gradient(135deg, #f4d03f, #d4af37)", boxShadow: "inset 0 0 4px rgba(0,0,0,0.4)" }}>
+                      <div className="absolute inset-x-0 top-1/2 h-[1px] bg-yellow-800/40" />
+                      <div className="absolute inset-y-0 left-1/2 w-[1px] bg-yellow-800/40" />
+                    </div>
+                    {/* اسم */}
+                    <div className="absolute top-[9px] right-[7px] text-[7px] font-black tracking-wider"
+                      style={{ color: m.id === "binance" ? "#F3BA2F" : "rgba(255,255,255,0.85)" }}
+                    >{m.cardLabel}</div>
+                    {/* أرقام */}
+                    <div className="absolute text-[5.5px] font-mono tracking-widest"
+                      style={{ bottom: 22, left: 10, color: "rgba(255,255,255,0.45)" }}
+                    >•••• •••• •••• 4829</div>
+                    {/* تاريخ */}
+                    <div className="absolute text-[5px] font-mono"
+                      style={{ bottom: 9, left: 10, color: "rgba(255,255,255,0.35)" }}
+                    >12/28</div>
+                    {/* شبكة الدفع */}
+                    {m.network === "visa" ? (
+                      <div className="absolute bottom-[7px] right-[8px] text-[9px] font-black italic"
+                        style={{ color: "rgba(255,255,255,0.85)", fontFamily: "serif", letterSpacing: 1 }}
+                      >VISA</div>
+                    ) : (
+                      <div className="absolute bottom-[6px] right-[6px] flex items-center">
+                        <div className="w-[14px] h-[14px] rounded-full" style={{ background: m.mc1 || "#eb001b", opacity: 0.9 }} />
+                        <div className="w-[14px] h-[14px] rounded-full -ml-[7px]" style={{ background: m.mc2 || "#f79e1b", opacity: 0.8 }} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* خط ملون أسفل */}
+                <div className="absolute bottom-0 left-0 right-0 h-[2px]"
+                  style={{ background: `linear-gradient(to right, ${m.accent}, transparent)` }}
                 />
-              </GlassCard>
+              </div>
             </motion.div>
           ))}
         </div>
