@@ -1,4 +1,10 @@
 /* Developed & Owned by Bouchibat - bouchibattauomi@gmail.com - 2026 */
+import cardPaypal from "@/src/assets/cards/card_paypal.png";
+import cardBinance from "@/src/assets/cards/card_binance.png";
+import cardMorocco from "@/src/assets/cards/card_morocco.png";
+import cardSepa from "@/src/assets/cards/card_sepa.png";
+import cardCih from "@/src/assets/cards/card_cih.png";
+import cardGoogleplay from "@/src/assets/cards/card_googleplay.png";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import GlassCard from "@/src/components/ui/GlassCard";
@@ -26,7 +32,7 @@ export default function Wallet() {
       name: t("payout_paypal"), 
       type: t("digital_wallet"),
       color: "from-[#003087] via-[#0070ba] to-[#009cde]",
-      card1: "#003087", card2: "#009cde", cardLabel: "PayPal", network: "visa", accent: "#0070ba",
+      card1: "#003087", card2: "#009cde", cardLabel: "PayPal", cardImg: cardPaypal, network: "visa", accent: "#0070ba",
       glow: "shadow-[0_0_50px_rgba(0,112,186,0.2)]",
       active: true,
       border: "border-[#0070ba]/30"
@@ -37,7 +43,7 @@ export default function Wallet() {
       name: t("payout_binance"), 
       type: t("crypto_wallet"),
       color: "from-[#F3BA2F] via-[#b68c22] to-black",
-      card1: "#1a1200", card2: "#2d1f00", cardLabel: "BINANCE", network: "visa", accent: "#F3BA2F",
+      card1: "#1a1200", card2: "#2d1f00", cardLabel: "BINANCE", cardImg: cardBinance, network: "visa", accent: "#F3BA2F",
       glow: "shadow-[0_0_50px_rgba(243,186,47,0.15)]",
       active: true,
       border: "border-[#F3BA2F]/30"
@@ -48,7 +54,7 @@ export default function Wallet() {
       name: t("payout_morocco"), 
       type: t("local_bank"),
       color: "from-red-600 via-red-900 to-green-900",
-      card1: "#8B0000", card2: "#006233", cardLabel: "MAROC", network: "mc", mc1: "#c1272d", mc2: "#f79e1b", accent: "#c1272d",
+      card1: "#8B0000", card2: "#006233", cardLabel: "MAROC", cardImg: cardMorocco, network: "mc", mc1: "#c1272d", mc2: "#f79e1b", accent: "#c1272d",
       glow: "shadow-[0_0_50px_rgba(193,39,45,0.15)]",
       active: false,
       border: "border-red-500/20"
@@ -59,7 +65,7 @@ export default function Wallet() {
       name: t("payout_sepa"), 
       type: t("international_bank"),
       color: "from-blue-900 via-indigo-950 to-blue-950",
-      card1: "#003399", card2: "#001a66", cardLabel: "SEPA EU", network: "mc", mc1: "#003399", mc2: "#4466cc", accent: "#003399",
+      card1: "#003399", card2: "#001a66", cardLabel: "SEPA EU", cardImg: cardSepa, network: "mc", mc1: "#003399", mc2: "#4466cc", accent: "#003399",
       glow: "shadow-[0_0_50px_rgba(0,51,153,0.15)]",
       active: false,
       border: "border-blue-400/20"
@@ -70,7 +76,7 @@ export default function Wallet() {
       name: t("payout_cih"), 
       type: t("local_bank"),
       color: "from-[#004B9B] via-[#00346b] to-black",
-      card1: "#004B9B", card2: "#00346b", cardLabel: "CIH", network: "mc", mc1: "#004B9B", mc2: "#ffd700", accent: "#004B9B",
+      card1: "#004B9B", card2: "#00346b", cardLabel: "CIH", cardImg: cardCih, network: "mc", mc1: "#004B9B", mc2: "#ffd700", accent: "#004B9B",
       glow: "shadow-[0_0_50px_rgba(0,75,155,0.2)]",
       active: true,
       border: "border-[#004B9B]/40"
@@ -81,7 +87,7 @@ export default function Wallet() {
       name: t("payout_cashplus"), 
       type: t("money_transfer"),
       color: "from-orange-500 via-orange-800 to-red-900",
-      card1: "#c8102e", card2: "#ff6600", cardLabel: "CASH+", network: "mc", mc1: "#c8102e", mc2: "#ff6600", accent: "#FF6600",
+      card1: "#c8102e", card2: "#ff6600", cardLabel: "CASH+", cardImg: cardGoogleplay, network: "mc", mc1: "#c8102e", mc2: "#ff6600", accent: "#FF6600",
       glow: "shadow-[0_0_50px_rgba(255,102,0,0.15)]",
       active: false,
       border: "border-orange-500/30"
@@ -281,23 +287,32 @@ export default function Wallet() {
 
       <div className="space-y-4 pt-6">
         <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/30 px-1">{t("withdraw")} Infrastructure</h3>
-        <div className="flex flex-col gap-3 px-1">
+        <div className="flex flex-col gap-4 px-1">
           {methods.map((m, i) => (
             <motion.div
               key={i}
-              whileHover={{ y: -2, scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ x: 5, scale: 1.01 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              onClick={() => setSelectedMethod(m)}
-              className="cursor-pointer"
+              className="group"
             >
               <div
-                className={cn("relative h-[90px] w-full rounded-2xl overflow-hidden flex items-center", m.glow)}
-                style={{ background: `linear-gradient(135deg, ${m.card1} 0%, ${m.card2} 100%)`, border: m.id === "binance" ? "1.5px solid rgba(243,186,47,0.3)" : "1px solid rgba(255,255,255,0.08)" }}
+                className={cn("relative h-[96px] w-full rounded-2xl overflow-hidden flex items-center cursor-pointer", m.glow)}
+                style={{ background: `linear-gradient(135deg, ${m.card1} 0%, ${m.card2} 100%)`, border: "1px solid rgba(255,255,255,0.1)" }}
+                onClick={() => setSelectedMethod(m)}
               >
-                {/* بريق علوي */}
-                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/20 pointer-events-none" />
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                {/* Dynamic Brand Background Glow */}
+                <div className={cn(
+                  "absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-1000 bg-gradient-to-br",
+                  m.color
+                )} />
+
+                {/* Enhanced Reflective Shine Effect */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
+                  <div className="absolute inset-[-200%] bg-gradient-to-tr from-transparent via-white/10 to-transparent rotate-[35deg] animate-glint" style={{ animationDuration: '3s' }} />
+                </div>
 
                 {/* الجزء الأيسر — لوجو + معلومات */}
                 <div className="flex items-center gap-3 px-4 z-10 flex-1 min-w-0">
@@ -319,46 +334,12 @@ export default function Wallet() {
                   </div>
                 </div>
 
-                {/* الجزء الأيمن — بطاقة بنكية */}
+                {/* الجزء الأيمن — صورة البطاقة الحقيقية */}
                 <div className="flex-shrink-0 pr-3 z-10">
-                  <div
-                    className="relative overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
-                    style={{
-                      width: 120, height: 75, borderRadius: 10,
-                      background: `linear-gradient(135deg, ${m.card1} 0%, ${m.card2} 100%)`,
-                      border: "1px solid rgba(255,255,255,0.15)",
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/30" />
-                    {/* شريح */}
-                    <div className="absolute top-[10px] left-[10px] w-[22px] h-[16px] rounded-[3px]"
-                      style={{ background: "linear-gradient(135deg, #f4d03f, #d4af37)", boxShadow: "inset 0 0 4px rgba(0,0,0,0.4)" }}>
-                      <div className="absolute inset-x-0 top-1/2 h-[1px] bg-yellow-800/40" />
-                      <div className="absolute inset-y-0 left-1/2 w-[1px] bg-yellow-800/40" />
-                    </div>
-                    {/* اسم */}
-                    <div className="absolute top-[9px] right-[7px] text-[7px] font-black tracking-wider"
-                      style={{ color: m.id === "binance" ? "#F3BA2F" : "rgba(255,255,255,0.85)" }}
-                    >{m.cardLabel}</div>
-                    {/* أرقام */}
-                    <div className="absolute text-[5.5px] font-mono tracking-widest"
-                      style={{ bottom: 22, left: 10, color: "rgba(255,255,255,0.45)" }}
-                    >•••• •••• •••• 4829</div>
-                    {/* تاريخ */}
-                    <div className="absolute text-[5px] font-mono"
-                      style={{ bottom: 9, left: 10, color: "rgba(255,255,255,0.35)" }}
-                    >12/28</div>
-                    {/* شبكة الدفع */}
-                    {m.network === "visa" ? (
-                      <div className="absolute bottom-[7px] right-[8px] text-[9px] font-black italic"
-                        style={{ color: "rgba(255,255,255,0.85)", fontFamily: "serif", letterSpacing: 1 }}
-                      >VISA</div>
-                    ) : (
-                      <div className="absolute bottom-[6px] right-[6px] flex items-center">
-                        <div className="w-[14px] h-[14px] rounded-full" style={{ background: m.mc1 || "#eb001b", opacity: 0.9 }} />
-                        <div className="w-[14px] h-[14px] rounded-full -ml-[7px]" style={{ background: m.mc2 || "#f79e1b", opacity: 0.8 }} />
-                      </div>
-                    )}
+                  <div className="relative overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.8)]"
+                    style={{ width: 145, height: 90, borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)" }}>
+                    <img src={m.cardImg} alt="" className="w-full h-full object-cover" style={{ borderRadius: 12 }} />
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" style={{ borderRadius: 12 }} />
                   </div>
                 </div>
 
