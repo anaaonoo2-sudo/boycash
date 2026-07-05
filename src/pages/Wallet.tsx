@@ -337,7 +337,7 @@ export default function Wallet() {
                 {/* الجزء الأيمن — صورة البطاقة الحقيقية */}
                 <div className="flex-shrink-0 pr-3 z-10">
                   <div className="relative overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.8)]"
-                    style={{ width: 145, height: 90, borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)" }}>
+                    style={{ width: 118, height: 74, borderRadius: 10, border: "1px solid rgba(255,255,255,0.12)" }}>
                     <img src={m.cardImg} alt="" className="w-full h-full object-cover" style={{ borderRadius: 12 }} />
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" style={{ borderRadius: 12 }} />
                   </div>
