@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'BoyCash',
   webDir: 'dist',
   android: {
-    allowMixedContent: true,
+    allowMixedContent: false,
     webContentsDebuggingEnabled: false,
     adjustResize: false
   },
