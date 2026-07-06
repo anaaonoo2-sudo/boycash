@@ -368,7 +368,7 @@ const RobotBody = memo(function RobotBody({
         <motion.img
           src={headImg} draggable={false}
           className="absolute select-none"
-          style={{ left: "50%", translateX: "-50%", top: -5, width: 54 }}
+          style={{ left: "50%", translateX: "-50%", top: -3, width: 54 }}
           animate={{ rotate: isTalking || isThinking ? [-5, 5, -5] : [-3, 3, -3] }}
           transition={{ duration: isTalking ? 0.55 : 3.5, repeat: Infinity, ease: "easeInOut" }}
         />
