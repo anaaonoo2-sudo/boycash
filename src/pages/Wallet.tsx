@@ -320,7 +320,7 @@ export default function Wallet() {
 
                 {/* الجزء الأيسر — لوجو + معلومات */}
                 <div className="flex items-center gap-3 px-4 z-10 flex-1 min-w-0">
-                  <div className={`w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 shadow-lg ${["morocco","sepa"].includes(m.id) ? "bg-white p-1" : ""}`}>
+                  <div className={`w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 shadow-lg ${["morocco","sepa","cih"].includes(m.id) ? "bg-white p-1" : ""}`}>
                     <img src={m.logo} alt="" className="w-full h-full object-cover" />
                   </div>
                   <div className="space-y-1 min-w-0">
