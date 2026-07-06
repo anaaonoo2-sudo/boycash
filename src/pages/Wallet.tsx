@@ -50,7 +50,7 @@ export default function Wallet() {
     },
     { 
       id: "morocco",
-      logo: "https://img.icons8.com/fluency/144/bank.png", 
+      logo: "https://img.icons8.com/fluency/144/morocco.png", 
       name: t("payout_morocco"), 
       type: t("local_bank"),
       color: "from-red-600 via-red-900 to-green-900",
@@ -61,7 +61,7 @@ export default function Wallet() {
     },
     { 
       id: "sepa",
-      logo: "https://img.icons8.com/fluency/144/bank-building.png", 
+      logo: "https://img.icons8.com/fluency/144/european-union.png", 
       name: t("payout_sepa"), 
       type: t("international_bank"),
       color: "from-blue-900 via-indigo-950 to-blue-950",
@@ -72,7 +72,7 @@ export default function Wallet() {
     },
     { 
       id: "cih",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/CIH_Bank_logo.svg/200px-CIH_Bank_logo.svg.png", 
+      logo: "https://img.icons8.com/fluency/144/bank-cards.png", 
       name: t("payout_cih"), 
       type: t("local_bank"),
       color: "from-[#004B9B] via-[#00346b] to-black",
@@ -83,9 +83,9 @@ export default function Wallet() {
     },
     { 
       id: "cashplus",
-      logo: "https://img.icons8.com/fluency/144/cash.png", 
-      name: t("payout_cashplus"), 
-      type: t("money_transfer"),
+      logo: "https://img.icons8.com/fluency/144/google-play.png", 
+      name: "Google Play Gift Card", 
+      type: "DIGITAL VOUCHER",
       color: "from-orange-500 via-orange-800 to-red-900",
       card1: "#c8102e", card2: "#ff6600", cardLabel: "CASH+", cardImg: cardGoogleplay, network: "mc", mc1: "#c8102e", mc2: "#ff6600", accent: "#FF6600",
       glow: "shadow-[0_0_50px_rgba(255,102,0,0.15)]",
