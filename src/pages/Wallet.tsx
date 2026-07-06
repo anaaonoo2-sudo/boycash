@@ -321,7 +321,7 @@ export default function Wallet() {
                 {/* الجزء الأيسر — لوجو + معلومات */}
                 <div className="flex items-center gap-3 px-4 z-10 flex-1 min-w-0">
                   <div className="w-11 h-11 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center p-2 flex-shrink-0 shadow-lg">
-                    <img src={m.logo} alt="" className="w-full h-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
+                    <img src={m.logo} alt="" className="w-full h-full object-cover" />
                   </div>
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
