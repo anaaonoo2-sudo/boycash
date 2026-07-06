@@ -5,6 +5,10 @@ import cardMorocco from "@/src/assets/cards/card_morocco.png";
 import cardSepa from "@/src/assets/cards/card_sepa.png";
 import cardCih from "@/src/assets/cards/card_cih.png";
 import cardGoogleplay from "@/src/assets/cards/card_googleplay.png";
+import iconMorocco from "@/src/assets/icons/icon_morocco.png";
+import iconCih from "@/src/assets/icons/icon_cih.png";
+import iconSepa from "@/src/assets/icons/icon_sepa.png";
+import iconCashplus from "@/src/assets/icons/icon_cashplus.png";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import GlassCard from "@/src/components/ui/GlassCard";
@@ -50,7 +54,7 @@ export default function Wallet() {
     },
     { 
       id: "morocco",
-      logo: "https://img.icons8.com/fluency/144/morocco.png", 
+      logo: iconMorocco, 
       name: t("payout_morocco"), 
       type: t("local_bank"),
       color: "from-red-600 via-red-900 to-green-900",
@@ -61,7 +65,7 @@ export default function Wallet() {
     },
     { 
       id: "sepa",
-      logo: "https://img.icons8.com/fluency/144/european-union.png", 
+      logo: iconSepa, 
       name: t("payout_sepa"), 
       type: t("international_bank"),
       color: "from-blue-900 via-indigo-950 to-blue-950",
@@ -72,7 +76,7 @@ export default function Wallet() {
     },
     { 
       id: "cih",
-      logo: "https://img.icons8.com/fluency/144/bank-cards.png", 
+      logo: iconCih, 
       name: t("payout_cih"), 
       type: t("local_bank"),
       color: "from-[#004B9B] via-[#00346b] to-black",
