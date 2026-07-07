@@ -10,6 +10,34 @@ const SYSTEM_PROMPT = `انت "BoyCash AI"، المساعد الذكي الرس�
 أجب بنفس لغة المستخدم (عربي أو إنجليزي).
 مهمتك مساعدة المستخدمين على فهم كيفية كسب النقاط، إتمام المهام، السحب، ومستويات الرتب داخل تطبيق BoyCash فقط.`;
 
+const MODELS = [
+  "google/gemma-4-31b-it:free",
+  "google/gemma-4-26b-a4b-it:free",
+  "openai/gpt-oss-20b:free",
+  "qwen/qwen3-coder:free"
+];
+
+async function callModel(model: string, messages: any[]): Promise<string> {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`,
+      "X-Title": "BoyCash"
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      max_tokens: 300
+    })
+  });
+  const data = await response.json();
+  if (data.error) throw new Error(data.error?.message || "model_error");
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content) throw new Error("empty_content");
+  return content;
+}
+
 export async function askAssistant(prompt: string, history: { role: "user" | "model"; text: string }[] = []) {
   const messages = [
     { role: "system", content: SYSTEM_PROMPT },
@@ -17,48 +45,9 @@ export async function askAssistant(prompt: string, history: { role: "user" | "mo
     { role: "user", content: prompt }
   ];
 
-  const maxRetries = 4;
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${API_KEY}`,
-          "X-Title": "BoyCash"
-        },
-        body: JSON.stringify({
-          model: "google/gemma-4-31b-it:free",
-          messages,
-          max_tokens: 300
-        })
-      });
-      const data = await response.json();
-
-      if (data.error) {
-        if (attempt < maxRetries) {
-          await new Promise(r => setTimeout(r, 1200 * (attempt + 1)));
-          continue;
-        }
-        return "المساعد مشغول دلوقتي، جرب تاني بعد لحظات 🙏";
-      }
-
-      const content = data?.choices?.[0]?.message?.content;
-      if (!content) {
-        if (attempt < maxRetries) {
-          await new Promise(r => setTimeout(r, 1200 * (attempt + 1)));
-          continue;
-        }
-        return "المساعد مشغول دلوقتي، جرب تاني بعد لحظات 🙏";
-      }
-      return content;
-    } catch (error: any) {
-      if (attempt < maxRetries) {
-        await new Promise(r => setTimeout(r, 1200 * (attempt + 1)));
-        continue;
-      }
-      return i18n.t("ai_connection_error");
-    }
+  try {
+    return await Promise.any(MODELS.map(model => callModel(model, messages)));
+  } catch (aggregateError) {
+    return i18n.t("ai_connection_error") || "المساعد مشغول دلوقتي، جرب تاني بعد لحظات 🙏";
   }
-  return i18n.t("ai_connection_error");
 }
