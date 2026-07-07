@@ -94,7 +94,7 @@ export default function Layout({ children }: LayoutProps) {
       </header>
 
       <main className={cn(
-        "flex-1 w-full mx-auto px-4 sm:px-6 pt-24 transition-all duration-700 ease-in-out",
+        "flex-1 w-full mx-auto px-4 sm:px-6 pt-28 transition-all duration-700 ease-in-out",
         isAssistant ? "pb-0" : "pb-12",
         isAdmin ? "max-w-6xl" : "max-w-xl",
         !user && "max-w-4xl"

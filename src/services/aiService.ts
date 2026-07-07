@@ -17,7 +17,7 @@ export async function askAssistant(prompt: string, history: { role: "user" | "mo
     { role: "user", content: prompt }
   ];
 
-  const maxRetries = 2;
+  const maxRetries = 4;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -37,7 +37,7 @@ export async function askAssistant(prompt: string, history: { role: "user" | "mo
 
       if (data.error) {
         if (attempt < maxRetries) {
-          await new Promise(r => setTimeout(r, 800 * (attempt + 1)));
+          await new Promise(r => setTimeout(r, 1200 * (attempt + 1)));
           continue;
         }
         return "المساعد مشغول دلوقتي، جرب تاني بعد لحظات 🙏";
@@ -46,7 +46,7 @@ export async function askAssistant(prompt: string, history: { role: "user" | "mo
       const content = data?.choices?.[0]?.message?.content;
       if (!content) {
         if (attempt < maxRetries) {
-          await new Promise(r => setTimeout(r, 800 * (attempt + 1)));
+          await new Promise(r => setTimeout(r, 1200 * (attempt + 1)));
           continue;
         }
         return "المساعد مشغول دلوقتي، جرب تاني بعد لحظات 🙏";
@@ -54,7 +54,7 @@ export async function askAssistant(prompt: string, history: { role: "user" | "mo
       return content;
     } catch (error: any) {
       if (attempt < maxRetries) {
-        await new Promise(r => setTimeout(r, 800 * (attempt + 1)));
+        await new Promise(r => setTimeout(r, 1200 * (attempt + 1)));
         continue;
       }
       return i18n.t("ai_connection_error");
