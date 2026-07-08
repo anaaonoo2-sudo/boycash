@@ -352,7 +352,7 @@ const RobotBody = memo(function RobotBody({
         <motion.img
           src={armLeftImg} draggable={false}
           className="absolute select-none"
-          style={{ top: 46, left: 10, width: 14, transformOrigin: "50% 0%", clipPath: "inset(12% 0 0 0)" }}
+          style={{ top: 46, left: 10, width: 14, transformOrigin: "50% 0%" }}
           animate={{ rotate: [0, -14, 0] }}
           transition={{ duration: isThinking ? 1 : 2, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -360,7 +360,7 @@ const RobotBody = memo(function RobotBody({
         <motion.img
           src={armRightImg} draggable={false}
           className="absolute select-none"
-          style={{ top: 46, right: 10, width: 14, transformOrigin: "50% 0%", clipPath: "inset(12% 0 0 0)" }}
+          style={{ top: 46, right: 10, width: 14, transformOrigin: "50% 0%" }}
           animate={{ rotate: [0, 10, 0] }}
           transition={{ duration: isThinking ? 1 : 2.4, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -374,14 +374,6 @@ const RobotBody = memo(function RobotBody({
         />
       </motion.div>
 
-      {/* glow */}
-      <div style={{
-        position: "absolute", inset: -8,
-        borderRadius: "50%",
-        background: "radial-gradient(ellipse, rgba(140,60,255,0.18) 0%, transparent 70%)",
-        pointerEvents: "none",
-        zIndex: -1,
-      }} />
       {/* ظل */}
       <div style={{
         position: "absolute", bottom: -3, left: "50%",
