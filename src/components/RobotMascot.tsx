@@ -317,7 +317,7 @@ const RobotBody = memo(function RobotBody({
   return (
     <motion.div
       className="relative"
-      style={{ width: 88, height: 118, cursor: "pointer", willChange: "transform" }}
+      style={{ width: 72, height: 100, cursor: "pointer", willChange: "transform" }}
       onClick={onClick}
       animate={{ y: [0, -7, 0] }}
       transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
@@ -331,14 +331,14 @@ const RobotBody = memo(function RobotBody({
         <motion.img
           src={legLeftImg} draggable={false}
           className="absolute select-none"
-          style={{ top: 78, left: 22, width: 16, transformOrigin: "50% 0%" }}
+          style={{ top: 62, left: 18, width: 14, transformOrigin: "50% 0%" }}
           animate={{ rotate: isTalking ? [-8, 8, -8] : [-3, 3, -3] }}
           transition={{ duration: isTalking ? 0.5 : 1.8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.img
           src={legRightImg} draggable={false}
           className="absolute select-none"
-          style={{ top: 78, right: 22, width: 16, transformOrigin: "50% 0%" }}
+          style={{ top: 62, right: 18, width: 14, transformOrigin: "50% 0%" }}
           animate={{ rotate: isTalking ? [8, -8, 8] : [3, -3, 3] }}
           transition={{ duration: isTalking ? 0.5 : 1.8, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -346,13 +346,13 @@ const RobotBody = memo(function RobotBody({
         <img
           src={bodyImg} draggable={false}
           className="absolute select-none"
-          style={{ left: "50%", transform: "translateX(-50%)", top: 50, width: 46 }}
+          style={{ left: "50%", transform: "translateX(-50%)", top: 42, width: 38 }}
         />
         {/* ذراع يسار */}
         <motion.img
           src={armLeftImg} draggable={false}
           className="absolute select-none"
-          style={{ top: 56, left: 11, width: 16, transformOrigin: "50% 0%", clipPath: "inset(8% 0 0 0)" }}
+          style={{ top: 46, left: 10, width: 14, transformOrigin: "50% 0%", clipPath: "inset(12% 0 0 0)" }}
           animate={{ rotate: [0, -14, 0] }}
           transition={{ duration: isThinking ? 1 : 2, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -360,7 +360,7 @@ const RobotBody = memo(function RobotBody({
         <motion.img
           src={armRightImg} draggable={false}
           className="absolute select-none"
-          style={{ top: 56, right: 11, width: 16, transformOrigin: "50% 0%", clipPath: "inset(8% 0 0 0)" }}
+          style={{ top: 46, right: 10, width: 14, transformOrigin: "50% 0%", clipPath: "inset(12% 0 0 0)" }}
           animate={{ rotate: [0, 10, 0] }}
           transition={{ duration: isThinking ? 1 : 2.4, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -368,7 +368,7 @@ const RobotBody = memo(function RobotBody({
         <motion.img
           src={headImg} draggable={false}
           className="absolute select-none"
-          style={{ left: "50%", transform: "translateX(-50%)", top: -4, width: 64 }}
+          style={{ left: "50%", transform: "translateX(-50%)", top: -3, width: 54 }}
           animate={{ rotate: isTalking || isThinking ? [-5, 5, -5] : [-3, 3, -3] }}
           transition={{ duration: isTalking ? 0.55 : 3.5, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -384,9 +384,9 @@ const RobotBody = memo(function RobotBody({
       }} />
       {/* ظل */}
       <div style={{
-        position: "absolute", bottom: -4, left: "50%",
-        transform: "translateX(-50%)", width: 50, height: 10,
-        borderRadius: "50%", background: "rgba(140,60,255,0.4)", filter: "blur(8px)",
+        position: "absolute", bottom: -3, left: "50%",
+        transform: "translateX(-50%)", width: 34, height: 8,
+        borderRadius: "50%", background: "rgba(140,60,255,0.35)", filter: "blur(5px)",
       }} />
     </motion.div>
   );
@@ -530,8 +530,8 @@ export default function RobotMascot() {
         position: "fixed",
         left: pos.x,
         top: pos.y,
-        width: 88,
-        height: 118,
+        width: 72,
+        height: 100,
         zIndex: 9000,
         transition: inputOpen
           ? "none"
